@@ -31,8 +31,10 @@ The script uses config.json for storing user preferences such as download path a
 }
 ```
 
-"quality": "1080p" sets the default video quality to 1080p for downloads. You can adjust this to other supported resolutions like 720p, 480p, etc, depending on your needs.
-"download_path": "./downloads" specifies the default path where the downloaded videos will be saved. You can change this to any valid directory path on your system.
+The `"quality": "1080p"` sets the default video quality to 1080p for downloads. You can adjust this to other supported resolutions like 720p, 480p, etc, depending on your needs.
+
+The `"download_path": "./downloads"` specifies the default path where the downloaded videos will be saved. You can change this to any valid directory path on your system.
+
 
 ## Features
 
@@ -43,9 +45,15 @@ The script uses config.json for storing user preferences such as download path a
 - Logging of key events with timestamps.
 - Can override the config with new defaults when required.
 - The script now includes a try-except block around the disk space check and configuration file operations to catch and handle errors gracefully.
+- Automatic Scheduling: The script can now be scheduled to run at regular intervals, automatically downloading new content from configured playlists or channels.
+- Configurable Auto-Download List: Users can specify playlists or channels in the config.json file for automatic downloading.
 
 
 ### Change Log
+#### v1.3.0
+- Added automatic scheduling functionality to periodically check and download new videos from specified playlists or channels.
+- Introduced a new auto_download configuration option to list URLs for automatic downloading.
+
 #### v1.2.0
 - Improved interactive console menus using `PyInquirer` for a more user-friendly experience.
 - Added color-coded console messages with `colorama` for better visibility of success and error messages.

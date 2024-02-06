@@ -33,5 +33,20 @@ The script uses config.json for storing user preferences such as download path a
 - Can override the config with new defaults when required.
 - The script now includes a try-except block around the disk space check and configuration file operations to catch and handle errors gracefully.
 
-## Disclaimer
+## Change Log
+v1.1.0
+Added interactive menus using PyInquirer for improved user experience.
+Implemented disk space checks before downloads to ensure sufficient storage.
+Introduced color-coded console messages for better readability.
+Enhanced error handling and logging for robust operation.
+
+v1.0.0
+Initial release with basic downloading capabilities.
+
+---
+
+### License
+This project is open-source and available under the MIT License.
+
+### Disclaimer
 This tool is for personal and educational use only. Ensure compliance with YouTube's Terms of Service before downloading content.

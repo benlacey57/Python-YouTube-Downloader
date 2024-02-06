@@ -132,17 +132,20 @@ class YouTubeDownloader:
         notifier_type = self.config.get('notification', 'email')  # Default to email
         notifier = None
 
-        if notifier_type == 'slack':
-            notifier = SlackNotification()
-        elif notifier_type == 'email':
-            notifier = EmailNotification()
-        else:
-            logging.error(f"Unsupported notifier type: {notifier_type}")
-            return
-
         try:
+            if notifier_type == 'slack':
+                notifier = SlackNotification()
+            elif notifier_type == 'email':
+                notifier = EmailNotification()
+            else:
+                print(Fore.RED + f"Unsupported notifier type: {notifier_type}")
+                logging.error(f"Unsupported notifier type: {notifier_type}")
+                return
+
             notifier.send(message)
+            print(Fore.GREEN + "Notification sent successfully.")
         except Exception as e:
+            print(Fore.RED + f"Failed to send notification: {e}")
             logging.error(f"Failed to send notification: {e}")
     
     def menu(self) -> None:

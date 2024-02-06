@@ -128,6 +128,23 @@ class YouTubeDownloader:
             schedule.run_pending()
             time.sleep(1)
     
+    def send_notification(self, message: str):
+        notifier_type = self.config.get('notification', 'email')  # Default to email
+        notifier = None
+
+        if notifier_type == 'slack':
+            notifier = SlackNotification()
+        elif notifier_type == 'email':
+            notifier = EmailNotification()
+        else:
+            logging.error(f"Unsupported notifier type: {notifier_type}")
+            return
+
+        try:
+            notifier.send(message)
+        except Exception as e:
+            logging.error(f"Failed to send notification: {e}")
+    
     def menu(self) -> None:
         print("\nWelcome to YouTubeDownloader")
         action_question = [

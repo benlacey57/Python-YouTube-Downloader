@@ -8,7 +8,7 @@ YouTubeDownloader is a Python script for downloading YouTube videos, playlists, 
 2. Install required packages:
 
 ```bash
-pip install pytube tqdm PyInquirer colorama
+pip install pytube tqdm PyInquirer colorama python-dotenv
 ```
 
 ## Running The Script

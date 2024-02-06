@@ -35,6 +35,13 @@ The `"quality": "1080p"` sets the default video quality to 1080p for downloads. 
 
 The `"download_path": "./downloads"` specifies the default path where the downloaded videos will be saved. You can change this to any valid directory path on your system.
 
+## Storing Credentials
+Create a .env file in the same directory as the script.
+
+```bash
+SLACK_WEBHOOK_URL='Slack_Webhook_URL'
+```
+
 ## Features
 
 - Download individual videos or entire playlists with specified quality.

@@ -111,6 +111,21 @@ class YouTubeDownloader:
         for playlist_url in selected_playlists:
             self.download_playlist(playlist_url, quality, os.path.join(download_path, channel.channel_name))
 
+    def auto_download_task(self):
+        for item in self.config.get('auto_download', []):
+            if "playlist" in item:
+                self.download_playlist(item, self.config.get('quality', '1080p'), self.config.get('download_path', './downloads'))
+            elif "channel" in item:
+                self.handle_channel(item, self.config.get('quality', '1080p'), self.config.get('download_path', './downloads'))
+            else:
+                logging.warning(f"Unsupported URL in auto_download: {item}")
+
+    def schedule_downloads(self, interval=1):
+        schedule.every(interval).hours.do(self.auto_download_task)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+    
     def menu(self) -> None:
         print("\nWelcome to YouTubeDownloader")
         action_question = [
@@ -140,4 +155,7 @@ class YouTubeDownloader:
             self.save_config()
 
 if __name__ == '__main__':
-    YouTubeDownloader()
+    downloader = YouTubeDownloader()
+
+    # This will block; consider running in a separate thread
+    downloader.schedule_downloads()

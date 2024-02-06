@@ -66,8 +66,13 @@ EMAIL_PASSWORD='YourEmailPassword'
 - Configurable Auto-Download List: Users can specify playlists or channels in the config.json file for automatic downloading.
 - Notification System: The script can now send notifications via Slack or email upon download completions or errors, enhancing the monitoring capabilities.
 - Secure Credential Storage: Sensitive information for notifications is stored securely in .env files, following best practices for credential management.
+- Robust Error Handling: The notification system now includes comprehensive error handling, ensuring that issues during notification sending are properly caught and logged.
+- Detailed Logging: The application logs detailed information about its operation, including any errors that occur, making it easier to monitor and troubleshoot.
 
 ### Change Log
+#### v1.5.0
+- Enhanced error handling and logging within the notification system to ensure smooth operation and ease of troubleshooting.
+
 #### v1.4.0
 - Introduced a notification system with a base class and implementations for Slack and email notifications.
 - Added .env support for secure storage of sensitive information like API keys and SMTP credentials.

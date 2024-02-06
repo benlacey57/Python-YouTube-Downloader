@@ -1,24 +1,23 @@
 # Python YouTube Downloader
 
-YouTube Downloader is a Python script that allows for the downloading of YouTube videos, playlists, and potentially entire channels at specified qualities. It utilizes `pytube` for interaction with YouTube and `tqdm` for progress bars.
+YouTubeDownloader is a Python script for downloading YouTube videos, playlists, and videos from channels with specified qualities. It features a user-friendly console interface with multi-select options for playlists, comprehensive download summaries, and disk space checks before downloads.
 
 ## Features
 
-- Download single YouTube videos.
-- Download entire YouTube playlists.
-- Specify video quality for downloads (320p, 720p, 1080p, 2k, 4k).
-- Progress tracking with a visual progress bar.
-- Configuration file support for default settings.
+- Download individual videos or entire playlists with specified quality.
+- Select and download videos from YouTube channels.
+- Check for sufficient disk space before downloading.
+- Console interface with progress bars and multi-select options.
+- Logging of key events with timestamps.
 - Can override the config with new defaults when required.
 
 ## Installation
 
-First, ensure you have Python installed on your system. 
-
-Then, install the required dependencies:
+1. Ensure Python is installed on your system.
+2. Install required packages:
 
 ```bash
-pip install pytube tqdm
+pip install pytube tqdm inquirer
 ```
 
 ## Running The Script

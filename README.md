@@ -5,16 +5,17 @@ YouTubeDownloader is a Python script for downloading YouTube videos, playlists, 
 ## Installation
 
 1. Ensure Python is installed on your system.
-2. Install required packages:
-
+2. Install required packages
 ```bash
 pip install pytube tqdm PyInquirer colorama python-dotenv
 ```
 
-## Running The Script
+3. Running The Script
 ```bash
 python3 main.py
 ```
+
+---
 
 ## Configuration
 The script uses config.json for storing user preferences such as download path and default video quality. If the configuration file does not exist, the script will prompt for necessary information and offer to save it for future sessions.
@@ -53,6 +54,8 @@ EMAIL_USERNAME='your_email@example.com'
 EMAIL_PASSWORD='YourEmailPassword'
 ```
 
+---
+
 ## Features
 
 - Download individual videos or entire playlists with specified quality.
@@ -68,6 +71,8 @@ EMAIL_PASSWORD='YourEmailPassword'
 - Secure Credential Storage: Sensitive information for notifications is stored securely in .env files, following best practices for credential management.
 - Robust Error Handling: The notification system now includes comprehensive error handling, ensuring that issues during notification sending are properly caught and logged.
 - Detailed Logging: The application logs detailed information about its operation, including any errors that occur, making it easier to monitor and troubleshoot.
+
+---
 
 ### Change Log
 #### v1.5.0
@@ -97,6 +102,17 @@ Enhanced error handling and logging for robust operation.
 
 #### v1.0.0
 Initial release with basic downloading capabilities.
+
+---
+# Developer Instructions
+## Adding In New Notification Classes
+When extending the notification system with new classes, follow these guidelines to maintain consistency in error handling and logging.
+
+Exception Handling: Wrap any code that might throw exceptions in try-except blocks. Catch specific exceptions where possible to provide more targeted error handling.
+
+Logging Errors: Use logging.error() to log any exceptions or errors that occur. Include the exception message and any relevant context to aid in troubleshooting.
+
+User Feedback: Provide immediate feedback on the console for critical errors using print(Fore.RED + "Error message") to alert the user to issues that require attention.
 
 ---
 

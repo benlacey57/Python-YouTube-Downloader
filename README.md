@@ -22,7 +22,12 @@ The script uses config.json for storing user preferences such as download path a
 ```json
 {
   "quality": "1080p",
-  "download_path": "./downloads"
+  "download_path": "./downloads",
+  "auto_download": [
+    "https://www.youtube.com/playlist?list=PLAYLIST_ID",
+    "https://www.youtube.com/channel/CHANNEL_ID"
+  ],
+  "notification": "email" // or "slack"
 }
 ```
 

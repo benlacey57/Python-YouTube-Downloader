@@ -35,11 +35,22 @@ The `"quality": "1080p"` sets the default video quality to 1080p for downloads. 
 
 The `"download_path": "./downloads"` specifies the default path where the downloaded videos will be saved. You can change this to any valid directory path on your system.
 
-## Storing Credentials
+### Storing Credentials
 Create a .env file in the same directory as the script.
 
+### Slack Notifications
 ```bash
 SLACK_WEBHOOK_URL='Slack_Webhook_URL'
+```
+
+### Email Notifications
+For email notifications, you'll need to use SMTP. The SMTP server settings, username, and password should be stored in the .env file for security.
+
+```bash
+SMTP_SERVER='smtp.example.com'
+SMTP_PORT=587
+EMAIL_USERNAME='your_email@example.com'
+EMAIL_PASSWORD='YourEmailPassword'
 ```
 
 ## Features

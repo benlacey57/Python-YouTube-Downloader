@@ -75,15 +75,36 @@ class PlaylistDownloader:
         """Extract playlist information"""
         ydl_opts = self.get_base_ydl_opts()
         ydl_opts['extract_flat'] = True
+    
+        # Add more verbose error reporting
+        ydl_opts['quiet'] = False
+        ydl_opts['no_warnings'] = False
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+               console.print("[dim]Extracting playlist information...[/dim]")
                 info = ydl.extract_info(url, download=False)
+            
+                if info:
+                    console.print(f"[green]Successfully extracted info for: {info.get('title', 'Unknown')}[/green]")
+            
                 return info
+        except yt_dlp.utils.DownloadError as e:
+            console.print(f"[red]Download error: {e}[/red]")
+            console.print("[yellow]This might be due to:[/yellow]")
+            console.print("  - Age-restricted or private content")
+            console.print("  - Geographic restrictions")
+            console.print("  - Invalid URL format")
+            return None
+        except yt_dlp.utils.ExtractorError as e:
+            console.print(f"[red]Extractor error: {e}[/red]")
+            console.print("[yellow]The URL format might not be supported[/yellow]")
+            return None
         except Exception as e:
             console.print(f"[red]Error extracting playlist info: {e}[/red]")
-            return None
-
+            console.print("[yellow]Try configuring authentication or using a proxy[/yellow]")
+            return None    ydl_opts['extract_flat'] = True
+        
     def search_channel_playlists(self, channel_url: str) -> List[Dict]:
         """Search for playlists in a channel"""
         ydl_opts = self.get_base_ydl_opts()

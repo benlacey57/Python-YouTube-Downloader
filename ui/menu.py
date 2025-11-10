@@ -23,14 +23,14 @@ class Menu:
         console.print(title)
 
         options = [
-            ("1", "📥 Download new playlist"),
-            ("2", "▶️  Resume incomplete download"),
-            ("3", "🔍 Search channel for playlists"),
-            ("4", "📊 View queue status"),
-            ("5", "📈 View statistics"),
-            ("6", "👁️  Monitoring"),
-            ("7", "⚙️  Settings"),
-            ("8", "🚪 Exit")
+            ("1", "Download new playlist"),
+            ("2", "Resume incomplete download"),
+            ("3", "Search channel for playlists"),
+            ("4", "View queue status"),
+            ("5", "View statistics"),
+            ("6", "Monitoring"),
+            ("7", "Settings"),
+            ("8", "Exit")
         ]
 
         option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])

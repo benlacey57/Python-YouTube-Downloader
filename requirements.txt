@@ -1,0 +1,14 @@
+# Core dependencies
+yt-dlp>=2024.10.7
+rich>=13.7.0
+requests>=2.31.0
+
+# Optional but recommended for yt-dlp
+certifi>=2023.7.22
+mutagen>=1.47.0
+pycryptodomex>=3.19.0
+websockets>=12.0
+brotli>=1.1.0
+
+# For better compatibility
+urllib3>=2.0.0

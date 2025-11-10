@@ -15,9 +15,9 @@ class SettingsMenu:
         """Display settings menu with enhanced UI"""
         console.print("\n")
 
-        auth_status = "✓ Enabled" if config_manager.config.cookies_file else "✗ Disabled"
-        proxy_status = f"✓ {len(config_manager.config.proxies)} proxies" if config_manager.config.proxies else "✗ Disabled"
-        slack_status = "✓ Enabled" if config_manager.config.slack_webhook_url else "✗ Disabled"
+        auth_status = "Enabled" if config_manager.config.cookies_file else "Disabled"
+        proxy_status = f"{len(config_manager.config.proxies)} proxies" if config_manager.config.proxies else "Disabled"
+        slack_status = "Enabled" if config_manager.config.slack_webhook_url else "Disabled"
 
         settings_table = Table(show_header=False, box=None, padding=(0, 2))
         settings_table.add_column("Setting", style="yellow", no_wrap=True)
@@ -39,14 +39,14 @@ class SettingsMenu:
         console.print(settings_panel)
 
         options = [
-            ("1", "🔐 Configure authentication"),
-            ("2", "🌐 Manage proxies"),
-            ("3", "⚡ Configure parallel downloads"),
-            ("4", "📝 Configure filename template"),
-            ("5", "💬 Configure Slack notifications"),
-            ("6", "⏱️  Configure download timeout"),
-            ("7", "🔔 Configure alert thresholds"),
-            ("8", "🔙 Back to main menu")
+            ("1", "Configure authentication"),
+            ("2", "Manage proxies"),
+            ("3", "Configure parallel downloads"),
+            ("4", "Configure filename template"),
+            ("5", "Configure Slack notifications"),
+            ("6", "Configure download timeout"),
+            ("7", "Configure alert thresholds"),
+            ("8", "Back to main menu")
         ]
 
         option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])

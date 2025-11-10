@@ -1,123 +1,111 @@
-# Python YouTube Downloader
+# Playlist Downloader Pro
 
-YouTubeDownloader is a Python script for downloading YouTube videos, playlists, and videos from channels with specified qualities. It features a user-friendly console interface with multi-select options for playlists, comprehensive download summaries, and disk space checks before downloads.
-
-## Installation
-
-1. Ensure Python is installed on your system.
-2. Install required packages
-```bash
-pip install pytube tqdm PyInquirer colorama python-dotenv
-```
-
-3. Running The Script
-```bash
-python3 main.py
-```
-
----
-
-## Configuration
-The script uses config.json for storing user preferences such as download path and default video quality. If the configuration file does not exist, the script will prompt for necessary information and offer to save it for future sessions.
-
-```json
-{
-  "quality": "1080p",
-  "download_path": "./downloads",
-  "auto_download": [
-    "https://www.youtube.com/playlist?list=PLAYLIST_ID",
-    "https://www.youtube.com/channel/CHANNEL_ID"
-  ],
-  "notification": "email" // or "slack"
-}
-```
-
-The `"quality": "1080p"` sets the default video quality to 1080p for downloads. You can adjust this to other supported resolutions like 720p, 480p, etc, depending on your needs.
-
-The `"download_path": "./downloads"` specifies the default path where the downloaded videos will be saved. You can change this to any valid directory path on your system.
-
-### Storing Credentials
-Create a .env file in the same directory as the script.
-
-### Slack Notifications
-```bash
-SLACK_WEBHOOK_URL='Slack_Webhook_URL'
-```
-
-### Email Notifications
-For email notifications, you'll need to use SMTP. The SMTP server settings, username, and password should be stored in the .env file for security.
-
-```bash
-SMTP_SERVER='smtp.example.com'
-SMTP_PORT=587
-EMAIL_USERNAME='your_email@example.com'
-EMAIL_PASSWORD='YourEmailPassword'
-```
-
----
+Advanced video/audio playlist management with monitoring, statistics, and Slack notifications.
 
 ## Features
 
-- Download individual videos or entire playlists with specified quality.
-- Select and download videos from YouTube channels.
-- Check for sufficient disk space before downloading.
-- Console interface with progress bars and multi-select options.
-- Logging of key events with timestamps.
-- Can override the config with new defaults when required.
-- The script now includes a try-except block around the disk space check and configuration file operations to catch and handle errors gracefully.
-- Automatic Scheduling: The script can now be scheduled to run at regular intervals, automatically downloading new content from configured playlists or channels.
-- Configurable Auto-Download List: Users can specify playlists or channels in the config.json file for automatic downloading.
-- Notification System: The script can now send notifications via Slack or email upon download completions or errors, enhancing the monitoring capabilities.
-- Secure Credential Storage: Sensitive information for notifications is stored securely in .env files, following best practices for credential management.
-- Robust Error Handling: The notification system now includes comprehensive error handling, ensuring that issues during notification sending are properly caught and logged.
-- Detailed Logging: The application logs detailed information about its operation, including any errors that occur, making it easier to monitor and troubleshoot.
+- 📥 Download entire playlists (video or audio)
+- 📊 Comprehensive statistics tracking
+- 👁️ Automated playlist monitoring
+- 🔔 Size threshold alerts
+- 💬 Slack notifications
+- 🌐 Proxy support with validation
+- 📝 Customizable filename templates
+- ⚡ Parallel downloads
+- 🗄️ SQLite database for persistence
+- 🔄 Resume incomplete downloads
 
----
+## Installation
 
-### Change Log
-#### v1.5.0
-- Enhanced error handling and logging within the notification system to ensure smooth operation and ease of troubleshooting.
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
 
-#### v1.4.0
-- Introduced a notification system with a base class and implementations for Slack and email notifications.
-- Added .env support for secure storage of sensitive information like API keys and SMTP credentials.
+# Install FFmpeg (required for audio conversion)
+# Ubuntu/Debian:
+sudo apt install ffmpeg
 
-#### v1.3.0
-- Added automatic scheduling functionality to periodically check and download new videos from specified playlists or channels.
-- Introduced a new auto_download configuration option to list URLs for automatic downloading.
+# macOS:
+brew install ffmpeg
 
-#### v1.2.0
-- Improved interactive console menus using `PyInquirer` for a more user-friendly experience.
-- Added color-coded console messages with `colorama` for better visibility of success and error messages.
-- Implemented disk space checks before initiating downloads to ensure sufficient storage availability.
-- Introduced functionality to handle YouTube channels, allowing users to select and download content from specific playlists within a channel.
-- Enhanced error handling and logging for more robust operation and troubleshooting.
-- Included a safety check to run the main downloader functionality only when the script is executed directly.
+# Windows:
+choco install ffmpeg
+Usage
+python main.py
+Project Structure
+playlist_downloader/
+├── main.py                    # Application entry point
+├── enums.py                   # Enumerations
+├── models/                    # Database models
+│   ├── channel.py
+│   ├── queue.py
+│   ├── download_item.py
+│   ├── daily_stats.py
+│   └── download_alert.py
+├── managers/                  # Business logic
+│   ├── database_manager.py
+│   ├── config_manager.py
+│   ├── stats_manager.py
+│   ├── queue_manager.py
+│   ├── monitor_manager.py
+│   └── proxy_manager.py
+├── downloaders/               # Download logic
+│   └── playlist_downloader.py
+├── utils/                     # Utilities
+│   ├── file_renamer.py
+│   └── oauth_handler.py
+├── notifiers/                 # Notifications
+│   └── slack_notifier.py
+└── ui/                        # User interface
+    ├── menu.py
+    ├── settings_menu.py
+    ├── monitoring_menu.py
+    ├── stats_display.py
+    └── progress_display.py
+Configuration
+Proxies
+Create either proxies.txt or proxies.csv:
+proxies.txt:
+http://proxy1.example.com:8080
+socks5://127.0.0.1:1080
+proxies.csv:
+http://proxy1.example.com:8080,US Proxy
+socks5://127.0.0.1:1080,Local SOCKS
+Authentication
+Use cookies.txt for YouTube authentication:
+Install browser extension (Chrome: "Get cookies.txt LOCALLY")
+Export cookies whilst logged in to YouTube
+Configure in Settings menu
+Slack Notifications
+Create Slack app at https://api.slack.com/apps
+Enable Incoming Webhooks
+Copy webhook URL
+Configure in Settings menu
+Database
+All data is stored in playlist_downloader.db (SQLite):
+Channels and monitoring settings
+Download queues and items
+Daily statistics
+Alert thresholds
+License
+MIT License
+Perfect! The complete application is now ready. Here's what we've built:
 
-#### v1.1.0
-Added interactive menus using PyInquirer for improved user experience.
-Implemented disk space checks before downloads to ensure sufficient storage.
-Introduced color-coded console messages for better readability.
-Enhanced error handling and logging for robust operation.
+## Summary of Architecture
 
-#### v1.0.0
-Initial release with basic downloading capabilities.
+✅ **Modular Structure**: One class per file, one responsibility per method
+✅ **SQLite Database**: Relational data with proper foreign keys
+✅ **Download Size Alerts**: Configurable thresholds (250MB, 1GB, 5GB, 10GB)
+✅ **Proxy Validation**: Test and remove dead proxies
+✅ **Clean Progress Display**: Single progress bar, no yt-dlp clutter
+✅ **Channel-Based Monitoring**: Auto-discover channels from playlists
+✅ **Graceful Error Handling**: Proper try-catch for CSV parsing and all operations
+✅ **Statistics Tracking**: Daily stats with empty date handling
+✅ **Slack Notifications**: Queue completion, failures, size alerts
+✅ **File Size Tracking**: Recorded on download completion
 
----
-# Developer Instructions
-## Adding In New Notification Classes
-When extending the notification system with new classes, follow these guidelines to maintain consistency in error handling and logging.
+To run the application:
 
-Exception Handling: Wrap any code that might throw exceptions in try-except blocks. Catch specific exceptions where possible to provide more targeted error handling.
-
-Logging Errors: Use logging.error() to log any exceptions or errors that occur. Include the exception message and any relevant context to aid in troubleshooting.
-
-User Feedback: Provide immediate feedback on the console for critical errors using print(Fore.RED + "Error message") to alert the user to issues that require attention.
-
----
-
-### License
-This project is open-source and available under the MIT License.
-
-### Disclaimer
-This tool is for personal and educational use only. Ensure compliance with YouTube's Terms of Service before downloading content.
+```bash
+pip install -r requirements.txt
+python main.py

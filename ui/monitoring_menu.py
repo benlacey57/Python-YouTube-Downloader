@@ -18,7 +18,7 @@ class MonitoringMenu:
         """Display monitoring menu"""
         console.print("\n")
 
-        status = "🟢 Running" if monitor_manager.is_running else "🔴 Stopped"
+        status = "Running" if monitor_manager.is_running else "Stopped"
         channels = monitor_manager.get_all_channels()
 
         status_panel = Panel(
@@ -45,26 +45,26 @@ class MonitoringMenu:
                     dt = datetime.fromisoformat(channel.last_checked)
                     last_checked = dt.strftime("%Y-%m-%d %H:%M")
 
-                status_emoji = "✓" if channel.enabled else "✗"
+                status_indicator = "Active" if channel.enabled else "Inactive"
 
                 channel_table.add_row(
                     channel.title[:40],
                     channel.format_type,
                     f"{channel.check_interval_minutes}m",
                     last_checked,
-                    status_emoji
+                    status_indicator
                 )
 
             console.print("\n")
             console.print(channel_table)
 
         options = [
-            ("1", "➕ Add channel to monitoring"),
-            ("2", "➖ Remove channel from monitoring"),
-            ("3", "▶️  Start monitoring"),
-            ("4", "⏸️  Stop monitoring"),
-            ("5", "🔄 Check now"),
-            ("6", "🔙 Back to main menu")
+            ("1", "Add channel to monitoring"),
+            ("2", "Remove channel from monitoring"),
+            ("3", "Start monitoring"),
+            ("4", "Stop monitoring"),
+            ("5", "Check now"),
+            ("6", "Back to main menu")
         ]
 
         option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])
@@ -87,10 +87,17 @@ class MonitoringMenu:
         playlist_url = Prompt.ask("\n[cyan]Enter playlist URL[/cyan]")
 
         console.print("\n[yellow]Fetching playlist information...[/yellow]")
+        console.print("[dim]This may take a moment...[/dim]")
+        
         playlist_info = downloader.get_playlist_info(playlist_url)
 
         if not playlist_info:
             console.print("[red]Failed to fetch playlist information[/red]")
+            console.print("\n[yellow]Troubleshooting tips:[/yellow]")
+            console.print("  1. Check the URL is correct")
+            console.print("  2. Try configuring authentication in Settings")
+            console.print("  3. Check your internet connection")
+            console.print("  4. Try using a different proxy (if enabled)")
             return
 
         playlist_title = playlist_info.get('title', 'Unknown Playlist')
@@ -137,7 +144,7 @@ class MonitoringMenu:
             existing_channel.filename_template = filename_template
             existing_channel.download_order = download_order
             monitor_manager.update_channel(existing_channel)
-            console.print(f"\n[green]✓ Updated monitoring for {existing_channel.title}[/green]")
+            console.print(f"\n[green]Updated monitoring for {existing_channel.title}[/green]")
         else:
             # Create new channel
             channel = Channel(
@@ -153,7 +160,7 @@ class MonitoringMenu:
                 download_order=download_order
             )
             monitor_manager.add_channel(channel)
-            console.print(f"\n[green]✓ Added {channel.title} to monitoring[/green]")
+            console.print(f"\n[green]Added {channel.title} to monitoring[/green]")
 
     @staticmethod
     def remove_channel_from_monitoring(monitor_manager):
@@ -178,7 +185,7 @@ class MonitoringMenu:
             channel = monitored[selection - 1]
             channel.is_monitored = False
             monitor_manager.update_channel(channel)
-            console.print(f"[green]✓ Removed {channel.title} from monitoring[/green]")
+            console.print(f"[green]Removed {channel.title} from monitoring[/green]")
 
     @staticmethod
     def _get_quality_choice(format_type: str) -> str:

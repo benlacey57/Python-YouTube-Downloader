@@ -1857,3 +1857,315 @@ def add_playlist_to_monitoring(monitor_manager: MonitorManager,
     console.print(f"\n[green]✓ Added {playlist_title} to monitoring[/green]")
 
 
+def remove_playlist_from_monitoring(monitor_manager: MonitorManager):
+    """Remove a playlist from monitoring"""
+    if not monitor_manager.playlists:
+        console.print("\n[yellow]No monitored playlists[/yellow]")
+        return
+    
+    console.print("\n[cyan]Monitored Playlists:[/cyan]")
+    playlists_list = list(monitor_manager.playlists.items())
+    
+    for idx, (url, playlist) in enumerate(playlists_list, 1):
+        console.print(f"  {idx}. {playlist.playlist_title}")
+    
+    selection = IntPrompt.ask(
+        "Select playlist to remove (0 to cancel)",
+        default=0
+    )
+    
+    if selection > 0 and selection <= len(playlists_list):
+        url, playlist = playlists_list[selection - 1]
+        monitor_manager.remove_playlist(url)
+        console.print(f"[green]✓ Removed {playlist.playlist_title} from monitoring[/green]")
+
+
+def get_quality_choice(format_type: DownloadFormat) -> str:
+    """Get quality selection from user"""
+    if format_type == DownloadFormat.AUDIO:
+        return "192"
+
+    console.print("\n[cyan]Video Quality Options:[/cyan]")
+    qualities = ["best", "1080p", "720p", "480p", "360p", "worst"]
+
+    for idx, quality in enumerate(qualities, 1):
+        console.print(f"  {idx}. {quality}")
+
+    choice = Prompt.ask(
+        "Select quality",
+        choices=[str(i) for i in range(1, len(qualities) + 1)],
+        default="1"
+    )
+
+    return qualities[int(choice) - 1]
+
+
+def get_download_order() -> str:
+    """Get download order preference from user"""
+    console.print("\n[cyan]Download Order:[/cyan]")
+    orders = [
+        ("original", "Original playlist order"),
+        ("oldest_first", "Oldest to newest"),
+        ("newest_first", "Newest to oldest")
+    ]
+
+    for idx, (value, description) in enumerate(orders, 1):
+        console.print(f"  {idx}. {description}")
+
+    choice = Prompt.ask(
+        "Select order",
+        choices=[str(i) for i in range(1, len(orders) + 1)],
+        default="1"
+    )
+
+    return orders[int(choice) - 1][0]
+
+
+def main():
+    """Main application entry point"""
+    stats_manager = StatsManager()
+    config_manager = ConfigManager()
+    slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
+    queue_manager = QueueManager(stats_manager=stats_manager)
+    monitor_manager = MonitorManager()
+    downloader = PlaylistDownloader(config_manager.config, stats_manager, slack_notifier)
+    
+    if config_manager.config.monitoring_enabled and monitor_manager.playlists:
+        monitor_manager.start_monitoring(downloader, queue_manager, slack_notifier)
+
+    while True:
+        choice = display_menu()
+
+        if choice == "1":
+            playlist_url = Prompt.ask("\n[cyan]Enter playlist URL[/cyan]")
+
+            console.print("\n[yellow]Fetching playlist information...[/yellow]")
+            playlist_info = downloader.get_playlist_info(playlist_url)
+
+            if not playlist_info:
+                console.print("[red]Failed to fetch playlist information[/red]")
+                console.print("[yellow]Tip: Configure authentication in Settings if needed[/yellow]")
+                continue
+
+            playlist_title = playlist_info.get('title', 'Unknown Playlist')
+            
+            entries = playlist_info.get('entries')
+            if entries is None:
+                entries = []
+            
+            entries = [e for e in entries if e is not None]
+
+            if not entries:
+                console.print("[red]No entries found in playlist[/red]")
+                continue
+
+            info_panel = Panel(
+                f"[green]Playlist:[/green] {playlist_title}\n"
+                f"[green]Total items:[/green] {len(entries)}",
+                title="[bold]Playlist Info[/bold]",
+                border_style="green"
+            )
+            console.print("\n")
+            console.print(info_panel)
+
+            if len(entries) > 50:
+                if Confirm.ask(f"\nLimit downloads from {len(entries)} items?"):
+                    limit = IntPrompt.ask("How many items to download?", default=50)
+                    entries = entries[:limit]
+
+            format_choice = Prompt.ask(
+                "\nDownload format",
+                choices=["video", "audio"],
+                default="video"
+            )
+            format_type = DownloadFormat.VIDEO if format_choice == "video" else DownloadFormat.AUDIO
+
+            if format_type == DownloadFormat.AUDIO:
+                if not downloader.check_ffmpeg():
+                    console.print("[red]Cannot proceed without FFmpeg[/red]")
+                    continue
+
+            quality = get_quality_choice(format_type)
+            download_order = get_download_order()
+
+            use_template = Confirm.ask(
+                f"\nUse filename template? (default: {config_manager.config.default_filename_template})",
+                default=True
+            )
+            filename_template = config_manager.config.default_filename_template if use_template else None
+
+            default_dir = f"downloads/{playlist_title}"
+            output_dir = Prompt.ask("\nOutput directory", default=default_dir)
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+
+            items = []
+            for entry in entries:
+                if not entry:
+                    continue
+                
+                url = entry.get('url', '')
+                title = entry.get('title', 'Unknown')
+                
+                if not url:
+                    continue
+                
+                items.append(DownloadItem(
+                    url=url,
+                    title=title,
+                    status=DownloadStatus.PENDING,
+                    upload_date=entry.get('upload_date'),
+                    uploader=entry.get('uploader'),
+                    video_id=entry.get('id')
+                ))
+
+            if not items:
+                console.print("[red]No valid items found[/red]")
+                continue
+
+            queue_id = queue_manager.create_queue(
+                playlist_url=playlist_url,
+                playlist_title=playlist_title,
+                format_type=format_type,
+                quality=quality,
+                output_dir=output_dir,
+                items=items,
+                download_order=download_order,
+                filename_template=filename_template
+            )
+
+            console.print(f"\n[green]✓ Queue created:[/green] {queue_id}")
+
+            if Confirm.ask("\nStart download now?", default=True):
+                queue = queue_manager.get_queue(queue_id)
+                downloader.download_queue(queue, queue_manager)
+
+        elif choice == "2":
+            incomplete = queue_manager.list_incomplete_queues()
+
+            if not incomplete:
+                console.print("\n[yellow]No incomplete queues found[/yellow]")
+                continue
+
+            console.print("\n")
+            queue_table = Table(title="Incomplete Queues")
+            queue_table.add_column("#", style="cyan")
+            queue_table.add_column("Playlist", style="magenta")
+            queue_table.add_column("Pending", style="yellow", justify="right")
+            queue_table.add_column("Failed", style="red", justify="right")
+            
+            for idx, queue in enumerate(incomplete, 1):
+                pending = sum(1 for item in queue.items if item.status == DownloadStatus.PENDING)
+                failed = sum(1 for item in queue.items if item.status == DownloadStatus.FAILED)
+                queue_table.add_row(str(idx), queue.playlist_title[:40], str(pending), str(failed))
+            
+            console.print(queue_table)
+
+            selection = IntPrompt.ask(
+                "\nSelect queue",
+                default=1,
+                choices=[str(i) for i in range(1, len(incomplete) + 1)]
+            )
+
+            queue = incomplete[selection - 1]
+
+            if Confirm.ask("\nRestart downloads?", default=True):
+                downloader = PlaylistDownloader(config_manager.config, stats_manager, slack_notifier)
+                downloader.download_queue(queue, queue_manager)
+
+        elif choice == "3":
+            channel_url = Prompt.ask("\n[cyan]Enter channel URL[/cyan]")
+
+            console.print("\n[yellow]Searching for playlists...[/yellow]")
+            playlists = downloader.search_channel_playlists(channel_url)
+
+            if not playlists:
+                console.print("[red]No playlists found[/red]")
+                continue
+
+            console.print(f"\n[green]Found {len(playlists)} playlists:[/green]\n")
+            for idx, playlist in enumerate(playlists, 1):
+                count = playlist.get('playlist_count', 'Unknown')
+                console.print(f"  {idx}. {playlist['title']} ({count} items)")
+
+            if playlists:
+                selection = IntPrompt.ask(
+                    "\nSelect playlist (0 to cancel)",
+                    default=0
+                )
+
+                if selection > 0 and selection <= len(playlists):
+                    selected = playlists[selection - 1]
+                    info_panel = Panel(
+                        f"[cyan]Title:[/cyan] {selected['title']}\n"
+                        f"[cyan]URL:[/cyan] {selected['url']}",
+                        title="[bold]Selected Playlist[/bold]",
+                        border_style="green"
+                    )
+                    console.print("\n")
+                    console.print(info_panel)
+
+        elif choice == "4":
+            if not queue_manager.queues:
+                console.print("\n[yellow]No queues found[/yellow]")
+                continue
+
+            dashboard = create_dashboard_layout(queue_manager, monitor_manager, stats_manager)
+            console.print("\n")
+            console.print(dashboard)
+
+            table = Table(title="\nDownload Queues", show_header=True, header_style="bold cyan")
+            table.add_column("ID", style="cyan")
+            table.add_column("Playlist", style="magenta")
+            table.add_column("Format", style="yellow")
+            table.add_column("✓", style="green", justify="right")
+            table.add_column("✗", style="red", justify="right")
+            table.add_column("Total", style="blue", justify="right")
+            table.add_column("Time", style="white")
+
+            for queue_id, queue in queue_manager.queues.items():
+                completed = sum(1 for item in queue.items if item.status == DownloadStatus.COMPLETED)
+                failed = sum(1 for item in queue.items if item.status == DownloadStatus.FAILED)
+                
+                total_time = sum(
+                    item.download_duration_seconds or 0
+                    for item in queue.items
+                )
+                time_str = downloader._format_duration(total_time) if total_time > 0 else "N/A"
+
+                table.add_row(
+                    queue_id[:8],
+                    queue.playlist_title[:35],
+                    queue.format_type.value,
+                    str(completed),
+                    str(failed),
+                    str(len(queue.items)),
+                    time_str
+                )
+
+            console.print("\n")
+            console.print(table)
+
+        elif choice == "5":
+            display_statistics(stats_manager)
+
+        elif choice == "6":
+            display_monitoring_menu(monitor_manager, downloader, queue_manager, config_manager, slack_notifier)
+
+        elif choice == "7":
+            display_settings_menu(config_manager)
+            downloader = PlaylistDownloader(config_manager.config, stats_manager, slack_notifier)
+            slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
+
+        elif choice == "8":
+            if monitor_manager.is_running:
+                monitor_manager.stop_monitoring()
+            console.print("\n[cyan]Goodbye![/cyan]\n")
+            break
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        console.print("\n\n[yellow]Interrupted by user[/yellow]")
+        sys.exit(0)

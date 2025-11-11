@@ -461,7 +461,7 @@ def handle_channel_search(downloader):
     input("\nPress Enter to continue...")
 
 
- def handle_view_queue(queue_manager):
+def handle_view_queue(queue_manager):
     """Handle viewing queue status"""
     console.print("\n[cyan]Queue Status[/cyan]")
     

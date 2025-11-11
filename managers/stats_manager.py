@@ -1,4 +1,7 @@
-"""Statistics management and alerts"""
+"""Statistics management"""
+import sqlite3
+from pathlib import Path
+from datetime import datetime, date
 from datetime import date, datetime, timedelta
 from typing import List, Dict, Optional
 from rich.console import Console
@@ -9,13 +12,24 @@ from managers.database_manager import DatabaseManager
 
 console = Console()
 
+@dataclass
+class DownloadStats:
+    """Download statistics data"""
+    date: str
+    total_downloads: int = 0
+    successful_downloads: int = 0
+    failed_downloads: int = 0
+    total_file_size_bytes: int = 0
+    total_duration_seconds: float = 0.0
+    queues_completed: int = 0
+
 
 class StatsManager:
-    """Manages daily statistics and download alerts"""
-
-    def __init__(self, db_manager: DatabaseManager):
-        self.db = db_manager
-        self._initialize_alerts()
+    """Manages download statistics"""
+    
+    def __init__(self, db_path: str = "stats.db"):
+        self.db_path = Path(db_path)
+        self._init_database()
 
     def _initialize_alerts(self):
         """Initialize alert thresholds if they don't exist"""

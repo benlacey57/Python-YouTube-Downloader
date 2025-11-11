@@ -1,22 +1,26 @@
 """Main application entry point"""
-from managers.config_manager import ConfigManager
-from managers.queue_manager import QueueManager
-from managers.stats_manager import StatsManager
-from managers.proxy_manager import ProxyManager
-from managers.monitor_manager import MonitorManager
-from downloaders.playlist_downloader import PlaylistDownloader
-from notifiers.slack_notifier import SlackNotifier
-from ui.menu import Menu
-from ui.settings_menu import SettingsMenu
-from ui.monitoring_menu import MonitoringMenu
-from ui.storage_menu import StorageMenu
-from ui.setup_wizard import SetupWizard, StatusPage
-from utils.storage_providers import StorageManager
-from rich.console import Console
-from rich.prompt import Prompt, Confirm, IntPrompt
-from rich.panel import Panel
-from pathlib import Path
 import sys
+import os
+from pathlib import Path
+
+# FIX: Add project root to sys.path for absolute imports to work correctly
+project_root = Path(__file__).resolve().parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+# END FIX
+
+# Updated imports using absolute paths
+from managers.config_manager import ConfigManager
+from managers.database_manager import DatabaseManager
+from managers.proxy_manager import ProxyManager
+from managers.stats_manager import StatsManager
+from managers.monitor_manager import MonitorManager
+from managers.queue_manager import QueueManager
+from downloaders.playlist_downloader import PlaylistDownloader
+from ui.menu import Menu
+from ui.monitoring_menu import MonitoringMenu
+from ui.settings_menu import SettingsMenu
+from ui.setup_wizard import SetupWizard
 
 console = Console()
 

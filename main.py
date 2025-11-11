@@ -314,11 +314,602 @@ def handle_new_download(downloader, queue_manager, config_manager, storage_manag
     
     input("\nPress Enter to continue...")
 
+def handle_resume_download(downloader, queue_manager, config_manager):
+    """Handle resuming incomplete downloads"""
+    console.print("\n[cyan]Resume Incomplete Download[/cyan]")
+    
+    # Get incomplete queues
+    incomplete_queues = queue_manager.get_incomplete_queues()
+    
+    if not incomplete_queues:
+        console.print("\n[yellow]No incomplete downloads found[/yellow]")
+        input("\nPress Enter to continue...")
+        return
+    
+    # Display incomplete queues
+    from rich.table import Table
+    
+    table = Table(title="Incomplete Downloads", show_header=True)
+    table.add_column("#", style="cyan", width=6)
+    table.add_column("Playlist", style="white")
+    table.add_column("Format", style="yellow")
+    table.add_column("Items", style="green")
+    table.add_column("Progress", style="magenta")
+    table.add_column("Created", style="blue")
+    
+    for idx, queue in enumerate(incomplete_queues, 1):
+        items = queue_manager.get_queue_items(queue.id)
+        
+        from enums import DownloadStatus
+        completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+        pending = sum(1 for item in items if item.status == DownloadStatus.PENDING.value)
+        failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
+        
+        total = len(items)
+        progress = f"{completed}/{total}"
+        if failed > 0:
+            progress += f" ({failed} failed)"
+        
+        created_date = queue.created_at[:10] if queue.created_at else "Unknown"
+        
+        table.add_row(
+            str(idx),
+            queue.playlist_title[:40],
+            queue.format_type,
+            str(total),
+            progress,
+            created_date
+        )
+    
+    console.print("\n")
+    console.print(table)
+    
+    # Select queue
+    selection = IntPrompt.ask(
+        "\nSelect queue number (0 to cancel)",
+        default=0
+    )
+    
+    if selection > 0 and selection <= len(incomplete_queues):
+        queue = incomplete_queues[selection - 1]
+        
+        # Show queue details
+        items = queue_manager.get_queue_items(queue.id)
+        
+        from enums import DownloadStatus
+        completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+        pending = sum(1 for item in items if item.status == DownloadStatus.PENDING.value)
+        failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
+        
+        details_panel = Panel(
+            f"[cyan]Playlist:[/cyan] {queue.playlist_title}\n"
+            f"[cyan]Format:[/cyan] {queue.format_type}\n"
+            f"[cyan]Quality:[/cyan] {queue.quality}\n"
+            f"[cyan]Output:[/cyan] {queue.output_dir}\n"
+            f"[cyan]Storage:[/cyan] {queue.storage_provider}\n\n"
+            f"[green]Completed:[/green] {completed}\n"
+            f"[yellow]Pending:[/yellow] {pending}\n"
+            f"[red]Failed:[/red] {failed}",
+            title="[bold]Queue Details[/bold]",
+            border_style="cyan"
+        )
+        console.print("\n")
+        console.print(details_panel)
+        
+        # Options
+        console.print("\n[cyan]Options:[/cyan]")
+        console.print("  1. Resume download (skip completed)")
+        console.print("  2. Retry failed items only")
+        console.print("  3. Re-download everything")
+        console.print("  4. Delete queue")
+        console.print("  5. Cancel")
+        
+        option = Prompt.ask("Select option", choices=["1", "2", "3", "4", "5"], default="1")
+        
+        if option == "1":
+            # Resume normal download
+            downloader.download_queue(queue, queue_manager)
+        
+        elif option == "2":
+            # Retry failed only
+            if failed == 0:
+                console.print("\n[yellow]No failed items to retry[/yellow]")
+            else:
+                console.print(f"\n[yellow]Retrying {failed} failed items...[/yellow]")
+                
+                # Reset failed items to pending
+                from enums import DownloadStatus
+                for item in items:
+                    if item.status == DownloadStatus.FAILED.value:
+                        item.status = DownloadStatus.PENDING.value
+                        item.error = None
+                        queue_manager.update_item(item)
+                
+                downloader.download_queue(queue, queue_manager)
+        
+        elif option == "3":
+            # Re-download everything
+            if Confirm.ask("\nThis will re-download ALL items. Continue?", default=False):
+                # Reset all items to pending
+                from enums import DownloadStatus
+                for item in items:
+                    item.status = DownloadStatus.PENDING.value
+                    item.error = None
+                    item.file_path = None
+                    item.file_size_bytes = None
+                    item.file_hash = None
+                    item.download_started_at = None
+                    item.download_completed_at = None
+                    item.download_duration_seconds = None
+                    queue_manager.update_item(item)
+                
+                downloader.download_queue(queue, queue_manager)
+        
+        elif option == "4":
+            # Delete queue
+            if Confirm.ask(f"\nDelete queue '{queue.playlist_title}'?", default=False):
+                queue_manager.delete_queue(queue.id)
+                console.print("[green]✓ Queue deleted[/green]")
+    
+    input("\nPress Enter to continue...")
 
-# Other handler functions remain the same...
-# (handle_resume_download, handle_channel_search, handle_view_queue, 
-#  handle_view_stats, handle_monitoring, handle_proxy_management)
 
+def handle_channel_search(downloader):
+    """Handle searching channel for playlists"""
+    console.print("\n[cyan]Search Channel for Playlists[/cyan]")
+    
+    channel_url = Prompt.ask("\nChannel URL")
+    
+    console.print("\n[yellow]Searching for playlists...[/yellow]")
+    console.print("[dim]This may take a moment...[/dim]")
+    
+    playlists = downloader.search_channel_playlists(channel_url)
+    
+    if not playlists:
+        console.print("\n[yellow]No playlists found in this channel[/yellow]")
+        console.print("\n[cyan]Tips:[/cyan]")
+        console.print("  • Make sure the URL is a channel page")
+        console.print("  • Some channels don't have public playlists")
+        console.print("  • Try the channel's 'Playlists' tab URL")
+        input("\nPress Enter to continue...")
+        return
+    
+    # Display playlists
+    from rich.table import Table
+    
+    table = Table(title=f"Found {len(playlists)} Playlists", show_header=True)
+    table.add_column("#", style="cyan", width=6)
+    table.add_column("Playlist", style="white")
+    table.add_column("Videos", style="green")
+    
+    for idx, playlist in enumerate(playlists, 1):
+        table.add_row(
+            str(idx),
+            playlist['title'][:60],
+            str(playlist['playlist_count'])
+        )
+    
+    console.print("\n")
+    console.print(table)
+    
+    # Show playlist URLs
+    console.print("\n[dim]Playlist URLs:[/dim]")
+    for idx, playlist in enumerate(playlists, 1):
+        console.print(f"[dim]{idx}. {playlist['url']}[/dim]")
+    
+    console.print("\n[cyan]Copy the URL of the playlist you want to download[/cyan]")
+    console.print("[cyan]Then use 'Download new playlist' from the main menu[/cyan]")
+    
+    input("\nPress Enter to continue...")
+
+
+def handle_view_queue(queue_manager):
+    """Handle viewing queue status"""
+    console.print("\n[cyan]Queue Status[/cyan]")
+    
+    all_queues = queue_manager.get_all_queues()
+    
+    if not all_queues:
+        console.print("\n[yellow]No queues found[/yellow]")
+        console.print("\nUse 'Download new playlist' to create a queue.")
+        input("\nPress Enter to continue...")
+        return
+    
+    from rich.table import Table
+    
+    table = Table(title=f"All Queues ({len(all_queues)})", show_header=True)
+    table.add_column("#", style="cyan", width=6)
+    table.add_column("Playlist", style="white")
+    table.add_column("Status", style="yellow")
+    table.add_column("Progress", style="green")
+    table.add_column("Format", style="magenta")
+    table.add_column("Storage", style="blue")
+    table.add_column("Created", style="white")
+    
+    for idx, queue in enumerate(all_queues, 1):
+        items = queue_manager.get_queue_items(queue.id)
+        
+        from enums import DownloadStatus
+        completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+        failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
+        total = len(items)
+        
+        if queue.completed_at:
+            status = "✓ Completed"
+            status_style = "green"
+        elif completed == 0:
+            status = "Pending"
+            status_style = "yellow"
+        elif completed < total:
+            status = "In Progress"
+            status_style = "cyan"
+        else:
+            status = "✓ Completed"
+            status_style = "green"
+        
+        progress = f"{completed}/{total}"
+        if failed > 0:
+            progress += f" ({failed} failed)"
+        
+        created_date = queue.created_at[:10] if queue.created_at else "Unknown"
+        
+        table.add_row(
+            str(idx),
+            queue.playlist_title[:40],
+            f"[{status_style}]{status}[/{status_style}]",
+            progress,
+            queue.format_type,
+            queue.storage_provider,
+            created_date
+        )
+    
+    console.print("\n")
+    console.print(table)
+    
+    # Show summary statistics
+    total_items = sum(len(queue_manager.get_queue_items(q.id)) for q in all_queues)
+    
+    from enums import DownloadStatus
+    all_items = []
+    for queue in all_queues:
+        all_items.extend(queue_manager.get_queue_items(queue.id))
+    
+    total_completed = sum(1 for item in all_items if item.status == DownloadStatus.COMPLETED.value)
+    total_failed = sum(1 for item in all_items if item.status == DownloadStatus.FAILED.value)
+    total_pending = sum(1 for item in all_items if item.status == DownloadStatus.PENDING.value)
+    
+    # Calculate total size
+    total_size_bytes = sum(
+        item.file_size_bytes or 0 
+        for item in all_items 
+        if item.status == DownloadStatus.COMPLETED.value
+    )
+    total_size_mb = total_size_bytes / (1024 * 1024)
+    total_size_gb = total_size_mb / 1024
+    
+    if total_size_gb >= 1:
+        size_str = f"{total_size_gb:.2f} GB"
+    else:
+        size_str = f"{total_size_mb:.1f} MB"
+    
+    summary_panel = Panel(
+        f"[cyan]Total Queues:[/cyan] {len(all_queues)}\n"
+        f"[cyan]Total Items:[/cyan] {total_items}\n\n"
+        f"[green]Completed:[/green] {total_completed}\n"
+        f"[yellow]Pending:[/yellow] {total_pending}\n"
+        f"[red]Failed:[/red] {total_failed}\n\n"
+        f"[cyan]Total Downloaded:[/cyan] {size_str}",
+        title="[bold]Summary[/bold]",
+        border_style="cyan"
+    )
+    
+    console.print("\n")
+    console.print(summary_panel)
+    
+    # Options
+    console.print("\n[cyan]Options:[/cyan]")
+    console.print("  1. View queue details")
+    console.print("  2. Delete queue")
+    console.print("  3. Back to main menu")
+    
+    option = Prompt.ask("Select option", choices=["1", "2", "3"], default="3")
+
+    if option == "1":
+        selection = IntPrompt.ask(
+            "\nQueue number to view (0 to cancel)",
+            default=0
+        )
+        
+        if selection > 0 and selection <= len(all_queues):
+            queue = all_queues[selection - 1]
+            _display_queue_details(queue, queue_manager)
+    
+    elif option == "2":
+        selection = IntPrompt.ask(
+            "\nQueue number to delete (0 to cancel)",
+            default=0
+        )
+        
+        if selection > 0 and selection <= len(all_queues):
+            queue = all_queues[selection - 1]
+            
+            if Confirm.ask(f"\nDelete queue '{queue.playlist_title}'?", default=False):
+                queue_manager.delete_queue(queue.id)
+                console.print("[green]✓ Queue deleted[/green]")
+                input("\nPress Enter to continue...")
+
+
+def _display_queue_details(queue, queue_manager):
+    """Display detailed information about a queue"""
+    from rich.table import Table
+    
+    console.print("\n")
+    
+    # Queue info
+    info_panel = Panel(
+        f"[bold cyan]Playlist:[/bold cyan] {queue.playlist_title}\n"
+        f"[cyan]URL:[/cyan] {queue.playlist_url}\n"
+        f"[cyan]Format:[/cyan] {queue.format_type}\n"
+        f"[cyan]Quality:[/cyan] {queue.quality}\n"
+        f"[cyan]Output:[/cyan] {queue.output_dir}\n"
+        f"[cyan]Storage:[/cyan] {queue.storage_provider}\n"
+        f"[cyan]Order:[/cyan] {queue.download_order}\n"
+        f"[cyan]Template:[/cyan] {queue.filename_template or 'None'}\n"
+        f"[cyan]Created:[/cyan] {queue.created_at}\n"
+        f"[cyan]Completed:[/cyan] {queue.completed_at or 'In progress'}",
+        title="[bold]Queue Details[/bold]",
+        border_style="cyan"
+    )
+    console.print(info_panel)
+    
+    # Items
+    items = queue_manager.get_queue_items(queue.id)
+    
+    from enums import DownloadStatus
+    
+    # Categorize items
+    completed_items = [item for item in items if item.status == DownloadStatus.COMPLETED.value]
+    failed_items = [item for item in items if item.status == DownloadStatus.FAILED.value]
+    pending_items = [item for item in items if item.status == DownloadStatus.PENDING.value]
+    
+    console.print(f"\n[cyan]Items ({len(items)} total):[/cyan]")
+    
+    # Show completed items (limited)
+    if completed_items:
+        console.print(f"\n[green]Completed ({len(completed_items)}):[/green]")
+        for item in completed_items[:5]:
+            size_str = ""
+            if item.file_size_bytes:
+                size_mb = item.file_size_bytes / (1024 * 1024)
+                size_str = f" ({size_mb:.1f} MB)"
+            console.print(f"  ✓ {item.title[:60]}{size_str}")
+        
+        if len(completed_items) > 5:
+            console.print(f"  [dim]... and {len(completed_items) - 5} more[/dim]")
+    
+    # Show failed items
+    if failed_items:
+        console.print(f"\n[red]Failed ({len(failed_items)}):[/red]")
+        for item in failed_items[:5]:
+            error_msg = item.error[:50] if item.error else "Unknown error"
+            console.print(f"  ✗ {item.title[:50]}: {error_msg}")
+        
+        if len(failed_items) > 5:
+            console.print(f"  [dim]... and {len(failed_items) - 5} more[/dim]")
+    
+    # Show pending items
+    if pending_items:
+        console.print(f"\n[yellow]Pending ({len(pending_items)}):[/yellow]")
+        for item in pending_items[:5]:
+            console.print(f"  • {item.title[:60]}")
+        
+        if len(pending_items) > 5:
+            console.print(f"  [dim]... and {len(pending_items) - 5} more[/dim]")
+    
+    input("\nPress Enter to continue...")
+
+
+def handle_view_stats(stats_manager):
+    """Handle viewing download statistics"""
+    from rich.table import Table
+    
+    console.print("\n[cyan]Download Statistics[/cyan]")
+    
+    if not stats_manager:
+        console.print("\n[yellow]Statistics not available[/yellow]")
+        input("\nPress Enter to continue...")
+        return
+    
+    # Get statistics
+    today_stats = stats_manager.get_today_stats()
+    all_time_stats = stats_manager.get_all_time_stats()
+    
+    # Summary panel
+    today_size_mb = today_stats.total_file_size_bytes / (1024 * 1024)
+    all_time_size_gb = all_time_stats.total_file_size_bytes / (1024 * 1024 * 1024)
+    
+    today_success_rate = (
+        (today_stats.successful_downloads / today_stats.total_downloads * 100)
+        if today_stats.total_downloads > 0 else 0
+    )
+    
+    all_time_success_rate = (
+        (all_time_stats.successful_downloads / all_time_stats.total_downloads * 100)
+        if all_time_stats.total_downloads > 0 else 0
+    )
+    
+    summary_panel = Panel(
+        f"[bold cyan]Today:[/bold cyan]\n"
+        f"  Downloads: {today_stats.total_downloads}\n"
+        f"  Successful: {today_stats.successful_downloads}\n"
+        f"  Failed: {today_stats.failed_downloads}\n"
+        f"  Success Rate: {today_success_rate:.1f}%\n"
+        f"  Data: {today_size_mb:.1f} MB\n"
+        f"  Queues: {today_stats.queues_completed}\n\n"
+        f"[bold cyan]All Time:[/bold cyan]\n"
+        f"  Downloads: {all_time_stats.total_downloads}\n"
+        f"  Successful: {all_time_stats.successful_downloads}\n"
+        f"  Failed: {all_time_stats.failed_downloads}\n"
+        f"  Success Rate: {all_time_success_rate:.1f}%\n"
+        f"  Data: {all_time_size_gb:.2f} GB\n"
+        f"  Queues: {all_time_stats.queues_completed}",
+        title="[bold]Statistics Summary[/bold]",
+        border_style="cyan"
+    )
+    
+    console.print("\n")
+    console.print(summary_panel)
+    
+    # Download history (last 7 days)
+    console.print("\n[cyan]Last 7 Days:[/cyan]")
+    
+    history_table = Table(show_header=True)
+    history_table.add_column("Date", style="cyan")
+    history_table.add_column("Downloads", style="green")
+    history_table.add_column("Success", style="white")
+    history_table.add_column("Failed", style="red")
+    history_table.add_column("Data", style="yellow")
+    
+    from datetime import datetime, timedelta
+    
+    for i in range(6, -1, -1):
+        date = datetime.now() - timedelta(days=i)
+        date_str = date.strftime("%Y-%m-%d")
+        
+        day_stats = stats_manager.get_stats_for_date(date_str)
+        
+        if day_stats.total_downloads > 0:
+            size_mb = day_stats.total_file_size_bytes / (1024 * 1024)
+            history_table.add_row(
+                date_str,
+                str(day_stats.total_downloads),
+                str(day_stats.successful_downloads),
+                str(day_stats.failed_downloads),
+                f"{size_mb:.1f} MB"
+            )
+    
+    console.print("\n")
+    console.print(history_table)
+    
+    # Alert thresholds status
+    console.print("\n[cyan]Alert Thresholds:[/cyan]")
+    
+    for threshold_mb in [250, 1000, 5000, 10000]:
+        threshold_bytes = threshold_mb * 1024 * 1024
+        if today_stats.total_file_size_bytes >= threshold_bytes:
+            console.print(f"  [green]✓[/green] {threshold_mb} MB threshold reached")
+        else:
+            remaining_mb = (threshold_bytes - today_stats.total_file_size_bytes) / (1024 * 1024)
+            console.print(f"  [dim]• {threshold_mb} MB ({remaining_mb:.1f} MB remaining)[/dim]")
+    
+    input("\nPress Enter to continue...")
+
+
+def handle_monitoring(monitor_manager, downloader, queue_manager, config_manager, slack_notifier):
+    """Handle monitoring submenu"""
+    while True:
+        choice = MonitoringMenu.display_monitoring_menu(
+            monitor_manager, downloader, queue_manager, 
+            config_manager, slack_notifier
+        )
+        
+        if choice == "1":
+            MonitoringMenu.add_channel_to_monitoring(
+                monitor_manager, downloader, config_manager
+            )
+        elif choice == "2":
+            MonitoringMenu.remove_channel_from_monitoring(monitor_manager)
+        elif choice == "3":
+            if not monitor_manager.is_running:
+                monitor_manager.start_monitoring(
+                    downloader, queue_manager, config_manager, slack_notifier
+                )
+                console.print("\n[green]✓ Monitoring started[/green]")
+            else:
+                console.print("\n[yellow]Monitoring is already running[/yellow]")
+            input("\nPress Enter to continue...")
+        elif choice == "4":
+            if monitor_manager.is_running:
+                monitor_manager.stop_monitoring()
+                console.print("\n[yellow]Monitoring stopped[/yellow]")
+            else:
+                console.print("\n[yellow]Monitoring is not running[/yellow]")
+            input("\nPress Enter to continue...")
+        elif choice == "5":
+            console.print("\n[cyan]Checking all monitored channels...[/cyan]")
+            monitor_manager.check_all_channels(
+                downloader, queue_manager, config_manager, slack_notifier
+            )
+            console.print("\n[green]✓ Check completed[/green]")
+            input("\nPress Enter to continue...")
+        elif choice == "6":
+            break
+
+
+def handle_proxy_management(proxy_manager, config_manager):
+    """Handle proxy management submenu"""
+    console.print("\n[cyan]Proxy Management[/cyan]")
+    
+    if proxy_manager.proxies:
+        console.print(f"\n[green]Current proxies: {len(proxy_manager.proxies)}[/green]")
+        proxy_manager.display_proxy_list(max_display=15)
+    else:
+        console.print("\n[yellow]No proxies configured[/yellow]")
+        console.print("\nTo use proxies, create one of these files:")
+        console.print("  • proxies.txt (one proxy per line: http://ip:port)")
+        console.print("  • proxies.csv (format: ip,port,country,https,...)\n")
+    
+    options = [
+        ("1", "Reload proxies from file"),
+        ("2", "Validate all proxies"),
+        ("3", "Remove non-working proxies"),
+        ("4", "Show all proxies"),
+        ("5", "Back")
+    ]
+    
+    option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])
+    console.print(f"\n{option_text}\n")
+    
+    choice = Prompt.ask("Select option", choices=[num for num, _ in options], default="5")
+    
+    if choice == "1":
+        if proxy_manager.load_proxies_from_file():
+            config_manager.config.proxies = proxy_manager.proxies
+            config_manager.save_config()
+        input("\nPress Enter to continue...")
+    
+    elif choice == "2":
+        if not proxy_manager.proxies:
+            console.print("\n[yellow]No proxies to validate. Load proxies first.[/yellow]")
+        else:
+            timeout = IntPrompt.ask("Proxy timeout (seconds)", default=10)
+            workers = IntPrompt.ask("Concurrent validation workers", default=5)
+            auto_remove = Confirm.ask("Automatically remove failed proxies?", default=True)
+            
+            proxy_manager.validate_all_proxies(timeout, workers, auto_remove)
+            
+            # Update config
+            config_manager.config.proxies = proxy_manager.proxies
+            config_manager.save_config()
+        
+        input("\nPress Enter to continue...")
+    
+    elif choice == "3":
+        if not proxy_manager.working_proxies:
+            console.print("\n[yellow]Run validation first (option 2)[/yellow]")
+        else:
+            proxy_manager.remove_dead_proxies()
+            config_manager.config.proxies = proxy_manager.proxies
+            config_manager.save_config()
+        
+        input("\nPress Enter to continue...")
+    
+    elif choice == "4":
+        proxy_manager.display_proxy_list(max_display=100)
+        input("\nPress Enter to continue...")
+    
+    elif choice == "5":
+        pass  # Return to settings menu
 
 if __name__ == "__main__":
     try:

@@ -1,44 +1,47 @@
-"""Playlist download operations"""
-import shutil
-import hashlib
-from typing import Optional, Dict, List
+"""Playlist downloader with advanced features"""
+import yt_dlp
+from pathlib import Path
 from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-try:
-    import yt_dlp
-except ImportError:
-    print("yt-dlp not installed. Please run: pip install yt-dlp")
-    exit(1)
-
+from typing import List, Optional
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
-from rich.prompt import Confirm
 
-# Updated imports using absolute paths
-from models.download_item import DownloadItem
-from models.queue import Queue
-from managers.queue_manager import QueueManager
+from managers.config_manager import Config
 from managers.stats_manager import StatsManager
-from managers.proxy_manager import ProxyManager
-from notifiers.slack_notifier import SlackNotifier # Assuming you update this to use BaseNotifier
-from utils.file_renamer import FileRenamer
+from managers.queue_manager import QueueManager
+from models.queue import Queue
+from models.download_item import DownloadItem
 from enums import DownloadStatus
+from notifiers.slack_notifier import SlackNotifier
+from utils.file_renamer import FileRenamer
+from utils.metadata_handler import MetadataHandler
+from utils.download_resume import DownloadResume
+from utils.live_stream_recorder import LiveStreamRecorder
+from utils.rate_limiter import RateLimiter  # Add this import
+from utils.keyboard_handler import keyboard_handler
+import hashlib
 
 console = Console()
 
-
 class PlaylistDownloader:
-    """Handles playlist downloading operations"""
-
-    def __init__(self, config, stats_manager: Optional[StatsManager] = None,
-                 slack_notifier: Optional[SlackNotifier] = None):
+    """Downloads playlists with advanced features"""
+    
+    def __init__(self, config: Config, stats_manager: StatsManager = None, 
+                 slack_notifier: SlackNotifier = None):
         self.config = config
         self.stats_manager = stats_manager
         self.slack_notifier = slack_notifier
-        self.proxy_manager = ProxyManager(config.proxies)
-
+        self.download_resume = DownloadResume()
+        self.live_stream_recorder = LiveStreamRecorder()
+        
+        # Initialize rate limiter
+        self.rate_limiter = RateLimiter(
+            max_downloads_per_hour=config.max_downloads_per_hour,
+            min_delay_seconds=config.min_delay_seconds,
+            max_delay_seconds=config.max_delay_seconds
+        )
+                     
     def check_ffmpeg(self) -> bool:
         """Check if FFmpeg is installed"""
         ffmpeg_path = shutil.which('ffmpeg')

@@ -4,10 +4,13 @@ from typing import Optional
 import requests
 from rich.console import Console
 
+# Import the new BaseNotifier
+from notifiers.base_notifier import BaseNotifier 
+
 console = Console()
 
 
-class SlackNotifier:
+class SlackNotifier(BaseNotifier):
     """Handles Slack notifications"""
 
     def __init__(self, webhook_url: Optional[str] = None):
@@ -23,10 +26,18 @@ class SlackNotifier:
             return False
 
         try:
+            # Slack uses specific colors/styles
+            color_map = {
+                "good": "good",
+                "warning": "warning",
+                "danger": "danger",
+                "#36a64f": "#36a64f"
+            }
+            
             payload = {
                 "attachments": [
                     {
-                        "color": color,
+                        "color": color_map.get(color, "good"),
                         "title": title,
                         "text": message,
                         "footer": "Playlist Downloader",
@@ -97,4 +108,4 @@ class SlackNotifier:
             f"Download Size Alert: {threshold_mb} MB Reached",
             message,
             "warning"
-                                )
+        )

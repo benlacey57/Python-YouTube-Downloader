@@ -147,7 +147,26 @@ class PlaylistDownloader:
         return []
 
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
-        """Download a single item"""
+        """Download a single item with rate limiting and skip support"""
+        from utils.keyboard_handler import keyboard_handler
+    
+        # Check if skip was requested before starting
+        if keyboard_handler.is_skip_requested():
+            console.print(f"[cyan]Skipping: {item.title}[/cyan]")
+            item.status = DownloadStatus.PENDING.value
+            item.error = "Skipped by user"
+            return item
+    
+        # Apply rate limiting
+        self.rate_limiter.wait_if_needed()
+    
+        # Show rate limit status
+        stats = self.rate_limiter.get_stats()
+        if stats['remaining'] <= 10:
+            console.print(
+                f"[dim]Rate limit: {stats['remaining']}/{stats['max_per_hour']} downloads remaining this hour[/dim]"
+            )
+    
         item.status = DownloadStatus.DOWNLOADING.value
         item.download_started_at = datetime.now().isoformat()
         start_time = datetime.now()
@@ -161,13 +180,29 @@ class PlaylistDownloader:
                 item.upload_date or "Unknown",
                 index,
                 queue.playlist_title,
-                item.video_id or "unknown"
+                item.video_id or "unknown",
+                normalize=self.config.normalize_filenames
             )
         else:
-            base_filename = FileRenamer.sanitize_filename(item.title)
+            base_filename = FileRenamer.sanitize_filename(
+                item.title,
+                normalize=self.config.normalize_filenames
+            )
 
         ydl_opts = self.get_base_ydl_opts()
         ydl_opts['outtmpl'] = f'{queue.output_dir}/{base_filename}.%(ext)s'
+    
+        # Add progress hook to check for skip during download
+        def progress_hook(d):
+            if keyboard_handler.is_skip_requested():
+                raise Exception("Download skipped by user")
+    
+        ydl_opts['progress_hooks'] = [progress_hook]
+    
+        # Check for resumable download
+        resume_info = self.download_resume.get_resume_info(item.video_id or "")
+        if resume_info:
+            console.print(f"[cyan]Resuming download: {item.title}[/cyan]")
 
         if queue.format_type == "audio":
             ydl_opts['format'] = 'bestaudio[ext=m4a]/bestaudio/best'
@@ -175,7 +210,7 @@ class PlaylistDownloader:
                 {
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'mp3',
-                    'preferredquality': '192',
+                    'preferredquality': queue.storage_audio_quality or queue.quality,
                 },
                 {
                     'key': 'FFmpegMetadata',
@@ -185,20 +220,44 @@ class PlaylistDownloader:
             ydl_opts['keepvideo'] = False
             ydl_opts['prefer_ffmpeg'] = True
         else:
-            if queue.quality == 'best':
+            # Use storage quality override if set
+            quality = queue.storage_video_quality or queue.quality
+        
+            if quality == 'best':
                 format_str = 'bestvideo+bestaudio/best'
-            elif queue.quality == 'worst':
+            elif quality == 'worst':
                 format_str = 'worstvideo+worstaudio/worst'
             else:
-                format_str = f'bestvideo[height<={queue.quality.replace("p", "")}]+bestaudio/best[height<={queue.quality.replace("p", "")}]'
+                format_str = f'bestvideo[height<={quality.replace("p", "")}]+bestaudio/best[height<={quality.replace("p", "")}]'
 
             ydl_opts['format'] = format_str
             ydl_opts['merge_output_format'] = 'mp4'
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                # First, get info to check if live
+                info = ydl.extract_info(item.url, download=False)
+            
+                # Check if live stream
+                if self.live_stream_recorder.is_live_stream(info):
+                    console.print(f"[yellow]Detected live stream: {item.title}[/yellow]")
+                
+                    if self.config.auto_record_live_streams:
+                        stream_opts = self.live_stream_recorder.get_recording_opts(
+                            wait_for_stream=self.config.wait_for_scheduled_streams,
+                            max_wait_minutes=self.config.max_stream_wait_minutes
+                        )
+                        ydl_opts.update(stream_opts)
+                        console.print("[cyan]Recording live stream...[/cyan]")
+                    else:
+                        console.print("[yellow]Skipping live stream (auto-record disabled)[/yellow]")
+                        item.status = DownloadStatus.FAILED.value
+                        item.error = "Live stream - auto-record disabled"
+                        return item
+            
+                # Now download
                 info = ydl.extract_info(item.url, download=True)
-
+            
                 # Update item metadata
                 if not item.upload_date:
                     item.upload_date = info.get('upload_date')
@@ -222,9 +281,18 @@ class PlaylistDownloader:
                 # Get file size
                 if Path(filename).exists():
                     item.file_size_bytes = Path(filename).stat().st_size
+                
+                    # Set metadata
+                    from utils.metadata_handler import MetadataHandler
+                    metadata = MetadataHandler.extract_metadata(info, index, queue.playlist_title)
+                    MetadataHandler.set_video_metadata(filename, metadata)
 
                 item.file_hash = self._calculate_file_hash(filename)
                 item.status = DownloadStatus.COMPLETED.value
+            
+                # Clear resume info
+                if item.video_id:
+                    self.download_resume.clear_resume_info(item.video_id)
 
                 end_time = datetime.now()
                 item.download_completed_at = end_time.isoformat()
@@ -233,13 +301,13 @@ class PlaylistDownloader:
                 # Record stats and check thresholds
                 if self.stats_manager:
                     self.stats_manager.record_download(True, item.download_duration_seconds, item.file_size_bytes or 0)
-                    
+                
                     # Check alert thresholds
                     triggered = self.stats_manager.check_alert_threshold(item.file_size_bytes or 0)
                     for threshold_bytes in triggered:
                         threshold_mb = threshold_bytes / (1024 * 1024)
-                        console.print(f"\n[yellow]⚠️  Alert: Downloaded {threshold_mb:.0f} MB today![/yellow]")
-                        
+                        console.print(f"\n[yellow]Alert: Downloaded {threshold_mb:.0f} MB today![/yellow]")
+                    
                         # Send Slack notification
                         if self.slack_notifier and self.slack_notifier.is_configured():
                             stats = self.stats_manager.get_today_stats()
@@ -247,8 +315,24 @@ class PlaylistDownloader:
                             self.slack_notifier.notify_size_threshold(int(threshold_mb), total_mb)
 
         except Exception as e:
-            item.status = DownloadStatus.FAILED.value
-            item.error = str(e)
+            error_msg = str(e)
+        
+            if "skipped by user" in error_msg.lower():
+                item.status = DownloadStatus.PENDING.value
+                item.error = "Skipped by user"
+                console.print(f"[cyan]⏭ Skipped: {item.title}[/cyan]")
+            else:
+                item.status = DownloadStatus.FAILED.value
+                item.error = error_msg
+            
+                # Save resume info if partial download
+                if item.video_id and item.file_path:
+                    partial_path = Path(item.file_path + ".part")
+                    if partial_path.exists():
+                        size = partial_path.stat().st_size
+                        self.download_resume.record_partial_download(
+                        item.video_id, item.url, str(partial_path), size
+                    )
 
             end_time = datetime.now()
             item.download_completed_at = end_time.isoformat()

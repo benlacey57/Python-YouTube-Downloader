@@ -5,67 +5,45 @@ from typing import Optional
 
 @dataclass
 class Queue:
-    """Represents a download queue"""
-    id: str
-    channel_id: Optional[int]
+    """Represents a download queue for a playlist"""
+    id: Optional[int]
     playlist_url: str
     playlist_title: str
-    format_type: str
+    format_type: str  # 'video' or 'audio'
     quality: str
     output_dir: str
-    download_order: str = "original"
+    download_order: str  # 'original', 'newest_first', 'oldest_first'
     filename_template: Optional[str] = None
-    is_monitored: bool = False
     created_at: Optional[str] = None
     completed_at: Optional[str] = None
-
+    
+    # Storage settings
+    storage_provider: str = "local"  # 'local' or name of configured storage
+    storage_video_quality: Optional[str] = None  # Override quality for this storage
+    storage_audio_quality: Optional[str] = None  # Override quality for this storage
+    
     def to_dict(self):
-        """Convert to dictionary"""
         return asdict(self)
-
+    
     @classmethod
-    def from_dict(cls, data: dict):
-        """Create from dictionary"""
+    def from_dict(cls, data):
         return cls(**data)
-
+    
     @classmethod
-    def from_row(cls, row: tuple):
-        """Create from database row"""
+    def from_row(cls, row):
+        """Create Queue from database row"""
         return cls(
             id=row[0],
-            channel_id=row[1],
-            playlist_url=row[2],
-            playlist_title=row[3],
-            format_type=row[4],
-            quality=row[5],
-            output_dir=row[6],
-            download_order=row[7],
-            filename_template=row[8],
-            is_monitored=bool(row[9]),
-            created_at=row[10],
-            completed_at=row[11]
-        )
-
-    def prepare_for_insert(self):
-        """Prepare data for database insert"""
-        return (
-            self.id,
-            self.channel_id,
-            self.playlist_url,
-            self.playlist_title,
-            self.format_type,
-            self.quality,
-            self.output_dir,
-            self.download_order,
-            self.filename_template,
-            int(self.is_monitored),
-            self.created_at,
-            self.completed_at
-        )
-
-    def prepare_for_update(self):
-        """Prepare data for database update"""
-        return (
-            self.completed_at,
-            self.id
+            playlist_url=row[1],
+            playlist_title=row[2],
+            format_type=row[3],
+            quality=row[4],
+            output_dir=row[5],
+            download_order=row[6],
+            filename_template=row[7],
+            created_at=row[8],
+            completed_at=row[9],
+            storage_provider=row[10] if len(row) > 10 else "local",
+            storage_video_quality=row[11] if len(row) > 11 else None,
+            storage_audio_quality=row[12] if len(row) > 12 else None
         )

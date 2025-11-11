@@ -1,8 +1,8 @@
 """Statistics management"""
 import sqlite3
 from pathlib import Path
-from datetime import datetime, date
 from datetime import date, datetime, timedelta
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from rich.console import Console
 

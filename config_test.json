@@ -1,0 +1,20 @@
+{
+  "cookies_file": null,
+  "oauth_token": null,
+  "proxies": [],
+  "max_workers": 1,
+  "default_filename_template": "{index:03d} - {title}",
+  "monitoring_enabled": false,
+  "slack_webhook_url": "http://mock.slack.webhook/test",
+  "download_timeout_minutes": 5,
+  "alert_thresholds_mb": [1000],
+  "max_downloads_per_hour": 10,
+  "min_delay_seconds": 1.0,
+  "max_delay_seconds": 2.0,
+  "default_video_quality": "720p",
+  "default_audio_quality": "192",
+  "normalize_filenames": true,
+  "storage_providers": {},
+  "default_storage": "local",
+  "setup_completed": true
+}

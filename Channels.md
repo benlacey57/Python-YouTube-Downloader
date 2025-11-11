@@ -1,7 +1,7 @@
 # YouTube Channels
 
 Blue Light
-Crime YouTube channel.
+Crime YouTube channel focusing on showing TV episodes in full.
 https://youtube.com/@_bluelight?si=VOBdypp7ay1voUFC
 
 ---
@@ -13,6 +13,7 @@ https://youtube.com/@danny_disgruntled?si=SWyXgsqAcoefslSk
 ---
 
 GB News
+Independent news YouTube channel covering various topics with different anchors.
 https://youtube.com/@gbnewsonline?si=IFMTtCKId1BhUNBt
 
 ---
@@ -38,3 +39,12 @@ https://youtube.com/@spittingimage?si=Qs593riL5JI6O-5k
 Just Steve King
 Developer YouTube channel showing live coding tutorials.
 https://youtube.com/@juststeveking?si=OS7sXF7IvuJCbof_
+
+---
+
+Rude Guy
+Independent YouTube channel covering animated childrens TV shows with funny adult themed alternative voice overs.
+https://youtube.com/@rudeguy-rg?si=Hd7AXfUb9E9R_aq1
+
+---
+

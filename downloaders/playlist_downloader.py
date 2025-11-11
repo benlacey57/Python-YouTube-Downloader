@@ -82,7 +82,7 @@ class PlaylistDownloader:
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-               console.print("[dim]Extracting playlist information...[/dim]")
+                console.print("[dim]Extracting playlist information...[/dim]")
                 info = ydl.extract_info(url, download=False)
             
                 if info:

@@ -1,0 +1,52 @@
+{
+  "storage_templates": [
+    {
+      "name": "Local NAS",
+      "provider_type": "sftp",
+      "description": "Template for Synology or other NAS devices",
+      "host": "192.168.1.100",
+      "port": 22,
+      "username": "your_username",
+      "base_path": "/volume1/downloads",
+      "video_quality": "720p",
+      "audio_quality": "192",
+      "enabled": false,
+      "notes": "Configure with your NAS IP and credentials"
+    },
+    {
+      "name": "Cloud Backup FTP",
+      "provider_type": "ftp",
+      "description": "FTP server for cloud backup storage",
+      "host": "ftp.example.com",
+      "port": 21,
+      "username": "ftp_user",
+      "base_path": "/downloads/youtube",
+      "video_quality": "480p",
+      "audio_quality": "128",
+      "enabled": false,
+      "notes": "Lower quality for cloud storage costs"
+    },
+    {
+      "name": "Google Drive Archive",
+      "provider_type": "gdrive",
+      "description": "Google Drive for long-term archival",
+      "credentials_file": "credentials.json",
+      "folder_id": null,
+      "video_quality": "best",
+      "audio_quality": "320",
+      "enabled": false,
+      "notes": "Set up Google API credentials first"
+    },
+    {
+      "name": "Dropbox Share",
+      "provider_type": "dropbox",
+      "description": "Dropbox for sharing with others",
+      "access_token": null,
+      "base_path": "/YouTube Downloads",
+      "video_quality": "720p",
+      "audio_quality": "192",
+      "enabled": false,
+      "notes": "Generate access token from Dropbox developer console"
+    }
+  ]
+}

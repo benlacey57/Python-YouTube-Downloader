@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List, Optional, Dict
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.prompt import Confirm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 console = Console()
@@ -33,6 +34,8 @@ class ProxyManager:
                         if line and not line.startswith('#'):
                             proxies.append(line)
                 console.print(f"[green]✓ Loaded {len(proxies)} proxies from proxies.txt[/green]")
+                self.proxies = proxies
+                return True
             except Exception as e:
                 console.print(f"[red]Error reading proxies.txt: {e}[/red]")
                 return False
@@ -41,26 +44,73 @@ class ProxyManager:
         elif Path("proxies.csv").exists():
             try:
                 with open("proxies.csv", 'r', encoding='utf-8') as f:
-                    reader = csv.reader(f)
-                    for row in reader:
-                        if not row:
-                            continue
-                        if len(row) < 1:
-                            continue
-                        proxy = row[0].strip()
-                        if proxy and not proxy.startswith('#'):
-                            proxies.append(proxy)
+                    reader = csv.DictReader(f)
+                    
+                    # Check if this is the expected format
+                    if reader.fieldnames and 'ip' in reader.fieldnames and 'port' in reader.fieldnames:
+                        # Format: ip,port,country,https,scraped_from,status,speed,location,last_checked
+                        for row in reader:
+                            try:
+                                ip = row.get('ip', '').strip()
+                                port = row.get('port', '').strip()
+                                https = row.get('https', 'False').strip()
+                                
+                                # Skip empty rows or header-like rows
+                                if not ip or not port or ip == 'ip':
+                                    continue
+                                
+                                # Skip commented rows
+                                if ip.startswith('#'):
+                                    continue
+                                
+                                # Determine scheme
+                                if https.lower() in ('true', '1', 'yes'):
+                                    scheme = 'https'
+                                else:
+                                    scheme = 'http'
+                                
+                                # Construct proxy URL
+                                proxy_url = f"{scheme}://{ip}:{port}"
+                                proxies.append(proxy_url)
+                                
+                            except Exception as e:
+                                console.print(f"[yellow]Warning: Skipping invalid row: {e}[/yellow]")
+                                continue
+                    else:
+                        # Fallback: Try reading just the first column as simple proxy URLs
+                        f.seek(0)  # Reset file pointer
+                        reader = csv.reader(f)
+                        for row in reader:
+                            if not row or len(row) < 1:
+                                continue
+                            proxy = row[0].strip()
+                            if proxy and not proxy.startswith('#') and proxy != 'ip':
+                                # If it doesn't have a scheme, add http://
+                                if not proxy.startswith(('http://', 'https://', 'socks4://', 'socks5://')):
+                                    proxy = f"http://{proxy}"
+                                proxies.append(proxy)
+                
+                # Remove duplicates while preserving order
+                seen = set()
+                unique_proxies = []
+                for proxy in proxies:
+                    if proxy not in seen:
+                        seen.add(proxy)
+                        unique_proxies.append(proxy)
+                
+                proxies = unique_proxies
+                
                 console.print(f"[green]✓ Loaded {len(proxies)} proxies from proxies.csv[/green]")
+                self.proxies = proxies
+                return True
+                
             except csv.Error as e:
                 console.print(f"[red]Error parsing proxies.csv: {e}[/red]")
+                console.print("[yellow]Make sure the file is a valid CSV format[/yellow]")
                 return False
             except Exception as e:
                 console.print(f"[red]Error reading proxies.csv: {e}[/red]")
                 return False
-
-        if proxies:
-            self.proxies = proxies
-            return True
 
         console.print("[yellow]No proxy file found (proxies.txt or proxies.csv)[/yellow]")
         return False
@@ -76,23 +126,46 @@ class ProxyManager:
             response = requests.get(
                 test_url,
                 proxies=proxies,
-                timeout=timeout
+                timeout=timeout,
+                verify=False  # Disable SSL verification for proxy testing
             )
             return response.status_code == 200
+        except requests.exceptions.ProxyError:
+            return False
+        except requests.exceptions.ConnectTimeout:
+            return False
+        except requests.exceptions.ReadTimeout:
+            return False
+        except requests.exceptions.Timeout:
+            return False
+        except requests.exceptions.ConnectionError:
+            return False
         except Exception:
             return False
 
-    def validate_all_proxies(self, timeout: int = 10, max_workers: int = 5):
-        """Validate all proxies and remove non-working ones"""
+    def validate_all_proxies(self, timeout: int = 10, max_workers: int = 5, auto_remove: bool = True):
+        """
+        Validate all proxies and optionally remove non-working ones
+        
+        Args:
+            timeout: Timeout in seconds per proxy
+            max_workers: Number of concurrent validation threads
+            auto_remove: Automatically remove failed proxies after validation
+        """
         if not self.proxies:
             console.print("[yellow]No proxies to validate[/yellow]")
             return
 
         console.print(f"\n[cyan]Validating {len(self.proxies)} proxies...[/cyan]")
-        console.print(f"[yellow]Timeout: {timeout} seconds per proxy[/yellow]\n")
+        console.print(f"[yellow]Timeout: {timeout} seconds per proxy[/yellow]")
+        console.print(f"[yellow]Using {max_workers} concurrent workers[/yellow]\n")
 
         self.working_proxies = []
         self.failed_proxies = []
+
+        # Disable SSL warnings for proxy testing
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
         with Progress(
             SpinnerColumn(),
@@ -128,16 +201,26 @@ class ProxyManager:
 
         # Show summary
         self._show_validation_summary()
+        
+        # Auto-remove failed proxies if requested
+        if auto_remove and self.failed_proxies:
+            if Confirm.ask(f"\n[yellow]Remove {len(self.failed_proxies)} failed proxies?[/yellow]", default=True):
+                self.remove_dead_proxies()
 
     def _show_validation_summary(self):
         """Show validation summary"""
         from rich.table import Table
         from rich.panel import Panel
 
+        total = len(self.proxies)
+        working = len(self.working_proxies)
+        failed = len(self.failed_proxies)
+        success_rate = (working / total * 100) if total > 0 else 0
+
         summary = (
-            f"[green]Working proxies:[/green] {len(self.working_proxies)}\n"
-            f"[red]Failed proxies:[/red] {len(self.failed_proxies)}\n"
-            f"[cyan]Success rate:[/cyan] {(len(self.working_proxies) / len(self.proxies) * 100):.1f}%"
+            f"[green]Working proxies:[/green] {working}\n"
+            f"[red]Failed proxies:[/red] {failed}\n"
+            f"[cyan]Success rate:[/cyan] {success_rate:.1f}%"
         )
 
         panel = Panel(
@@ -148,6 +231,14 @@ class ProxyManager:
 
         console.print("\n")
         console.print(panel)
+
+        # Show sample of working proxies
+        if self.working_proxies:
+            console.print("\n[green]Sample of working proxies:[/green]")
+            for proxy in self.working_proxies[:5]:
+                console.print(f"  • {proxy}")
+            if len(self.working_proxies) > 5:
+                console.print(f"  ... and {len(self.working_proxies) - 5} more")
 
     def remove_dead_proxies(self):
         """Remove non-working proxies and update proxy list"""
@@ -181,10 +272,35 @@ class ProxyManager:
 
         elif Path("proxies.csv").exists():
             try:
+                # Try to parse existing proxies back into CSV format
                 with open("proxies.csv", 'w', encoding='utf-8', newline='') as f:
                     writer = csv.writer(f)
+                    
+                    # Write header
+                    writer.writerow(['ip', 'port', 'country', 'https', 'scraped_from', 'status', 'speed', 'location', 'last_checked'])
+                    
+                    # Write proxy data
                     for proxy in self.proxies:
-                        writer.writerow([proxy])
+                        # Parse proxy URL
+                        if proxy.startswith('https://'):
+                            https = 'True'
+                            proxy_clean = proxy.replace('https://', '')
+                        elif proxy.startswith('http://'):
+                            https = 'False'
+                            proxy_clean = proxy.replace('http://', '')
+                        else:
+                            https = 'False'
+                            proxy_clean = proxy
+                        
+                        # Split IP and port
+                        if ':' in proxy_clean:
+                            ip, port = proxy_clean.split(':', 1)
+                        else:
+                            ip = proxy_clean
+                            port = '80'
+                        
+                        writer.writerow([ip, port, '', https, 'Validated', 'Working', '', '', ''])
+                
                 console.print("[green]✓ Updated proxies.csv[/green]")
             except Exception as e:
                 console.print(f"[red]Error saving proxies.csv: {e}[/red]")
@@ -212,3 +328,26 @@ class ProxyManager:
             'failed_proxies': len(self.failed_proxies),
             'success_rate': (len(self.working_proxies) / len(self.proxies) * 100) if self.proxies else 0
         }
+
+    def display_proxy_list(self, max_display: int = 20):
+        """Display current proxy list"""
+        from rich.table import Table
+        
+        if not self.proxies:
+            console.print("[yellow]No proxies loaded[/yellow]")
+            return
+        
+        table = Table(title=f"Loaded Proxies ({len(self.proxies)} total)", show_header=True)
+        table.add_column("#", style="cyan", width=6)
+        table.add_column("Proxy", style="white")
+        table.add_column("Scheme", style="yellow", width=8)
+        
+        for idx, proxy in enumerate(self.proxies[:max_display], 1):
+            scheme = proxy.split('://')[0] if '://' in proxy else 'http'
+            table.add_row(str(idx), proxy, scheme)
+        
+        if len(self.proxies) > max_display:
+            table.add_row("...", f"and {len(self.proxies) - max_display} more", "...")
+        
+        console.print("\n")
+        console.print(table)

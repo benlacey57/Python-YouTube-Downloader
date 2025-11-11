@@ -456,9 +456,108 @@
       "enabled": true
     },
     {
-      "url": "https://youtube.com/@RyanGeorge",
-      "title": "Ryan George",
-      "description": "Creator of Screen Rant Pitch Meetings delivering rapid-fire sketch comedy with multiple character performances and catchphrase-driven humour.",
+      "url": "https://youtube.com/@DevelopedByEd",
+      "title": "Developed By Ed",
+      "description": "Creative web development tutorials covering modern JavaScript frameworks, React, CSS animations, and full-stack projects with artistic flair and design-focused approach.",
+      "is_monitored": true,
+      "check_interval_minutes": 1440,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Developed_By_Ed",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@LaravelDaily",
+      "title": "Laravel Daily",
+      "description": "Daily Laravel tips, tricks, and tutorials by Povilas Korop covering best practices, packages, and real-world Laravel application development.",
+      "is_monitored": true,
+      "check_interval_minutes": 1440,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Laravel_Daily",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@LaravelPHP",
+      "title": "Laravel",
+      "description": "Official Laravel PHP framework channel featuring conference talks, tutorials, and updates from Taylor Otwell and the Laravel team.",
+      "is_monitored": true,
+      "check_interval_minutes": 1440,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Laravel_Official",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@ProgramWithGio",
+      "title": "Program With Gio",
+      "description": "Comprehensive PHP and Laravel tutorials covering advanced concepts, design patterns, testing, and modern PHP development practices.",
       "is_monitored": false,
       "check_interval_minutes": 1440,
-      "
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Program_With_Gio",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@CodersType",
+      "title": "Coder's Tape",
+      "description": "Laravel focused tutorials covering package development, testing strategies, and building real-world Laravel applications from scratch.",
+      "is_monitored": false,
+      "check_interval_minutes": 1440,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Coders_Tape",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@Laracasts",
+      "title": "Laracasts",
+      "description": "Premium Laravel and PHP screencasts by Jeffrey Way featuring in-depth courses, tips, and modern web development techniques.",
+      "is_monitored": false,
+      "check_interval_minutes": 2880,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Laracasts",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@CodeWithDary",
+      "title": "Code With Dary",
+      "description": "Laravel tutorials focusing on practical application development, authentication, API development, and modern Laravel features.",
+      "is_monitored": false,
+      "check_interval_minutes": 1440,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Code_With_Dary",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    },
+    {
+      "url": "https://youtube.com/@LaravelPackageTutorial",
+      "title": "Laravel Package Tutorial",
+      "description": "Specialized channel focusing on Laravel package development, creating reusable components, and contributing to the Laravel ecosystem.",
+      "is_monitored": false,
+      "check_interval_minutes": 2880,
+      "format_type": "video",
+      "quality": "720p",
+      "output_dir": "downloads/Development/Laravel_Package_Tutorial",
+      "filename_template": "{index:03d} - {title}",
+      "download_order": "newest_first",
+      "enabled": true
+    }
+  ]
+}

@@ -1,146 +1,108 @@
 """Main application entry point"""
 import sys
-import os
 from pathlib import Path
 
-# FIX: Add project root to sys.path for absolute imports to work correctly
-project_root = Path(__file__).resolve().parent
-if str(project_root) not in sys.path:
-    sys.path.insert(0, str(project_root))
-# END FIX
+# Rich imports
+from rich.console import Console
+from rich.prompt import Prompt, Confirm, IntPrompt
+from rich.panel import Panel
 
-# Updated imports using absolute paths
+# Manager imports
 from managers.config_manager import ConfigManager
-from managers.database_manager import DatabaseManager
-from managers.proxy_manager import ProxyManager
-from managers.stats_manager import StatsManager
-from managers.monitor_manager import MonitorManager
 from managers.queue_manager import QueueManager
-from downloaders.playlist_downloader import PlaylistDownloader
-from ui.menu import Menu
-from ui.monitoring_menu import MonitoringMenu
-from ui.settings_menu import SettingsMenu
-from ui.setup_wizard import SetupWizard
+from managers.stats_manager import StatsManager
+from managers.proxy_manager import ProxyManager
+from managers.monitor_manager import MonitorManager
 
+# Downloader imports
+from downloaders.playlist_downloader import PlaylistDownloader
+
+# Notifier imports
+from notifiers.slack_notifier import SlackNotifier
+
+# UI imports
+from ui.menu import Menu
+from ui.settings_menu import SettingsMenu
+from ui.monitoring_menu import MonitoringMenu
+from ui.storage_menu import StorageMenu
+from ui.setup_wizard import SetupWizard, StatusPage
+
+# Utility imports
+from utils.storage_providers import StorageManager
+
+# Model imports
+from models.queue import Queue
+from models.download_item import DownloadItem
+
+# Enum imports
+from enums import DownloadStatus
+
+# Initialize console globally
 console = Console()
 
 
 def main():
     """Main application loop"""
-    console.clear()
-    
-    # Initialize managers
-    config_manager = ConfigManager()
-    queue_manager = QueueManager()
-    stats_manager = StatsManager()
-    proxy_manager = ProxyManager(config_manager.config.proxies)
-    slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
-    monitor_manager = MonitorManager()
-    storage_manager = StorageManager()
-    
-    # Initialize downloader
-    downloader = PlaylistDownloader(
-        config_manager.config,
-        stats_manager,
-        slack_notifier
-    )
-    
-    # Run setup wizard if not completed
-    if not config_manager.config.setup_completed:
-        SetupWizard.run(config_manager)
+    try:
         console.clear()
+        
+        # Initialize managers
+        config_manager = ConfigManager()
+        queue_manager = QueueManager()
+        stats_manager = StatsManager()
+        proxy_manager = ProxyManager(config_manager.config.proxies)
+        slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
+        monitor_manager = MonitorManager()
+        storage_manager = StorageManager()
+        
+        # Initialize downloader
+        downloader = PlaylistDownloader(
+            config_manager.config,
+            stats_manager,
+            slack_notifier
+        )
+        
+        # Run setup wizard if not completed
+        if not config_manager.config.setup_completed:
+            SetupWizard.run(config_manager)
+            console.clear()
+        
+        # Load proxies if configured
+        if config_manager.config.proxies:
+            proxy_manager.proxies = config_manager.config.proxies
+        
+        # Main menu loop
+        while True:
+            choice = Menu.display_main_menu()
+            
+            if choice == "1":
+                handle_new_download(downloader, queue_manager, config_manager, storage_manager)
+            elif choice == "2":
+                handle_resume_download(downloader, queue_manager, config_manager)
+            elif choice == "3":
+                handle_channel_search(downloader)
+            elif choice == "4":
+                handle_view_queue(queue_manager)
+            elif choice == "5":
+                handle_view_stats(stats_manager)
+            elif choice == "6":
+                handle_monitoring(monitor_manager, downloader, queue_manager, 
+                                config_manager, slack_notifier)
+            elif choice == "7":
+                handle_settings(config_manager, proxy_manager, storage_manager, 
+                              stats_manager, queue_manager)
+            elif choice == "8":
+                console.print("\n[cyan]Goodbye![/cyan]")
+                break
     
-    # Load proxies if configured
-    if config_manager.config.proxies:
-        proxy_manager.proxies = config_manager.config.proxies
-    
-    # Main menu loop
-    while True:
-        choice = Menu.display_main_menu()
-        
-        if choice == "1":
-            handle_new_download(downloader, queue_manager, config_manager, storage_manager)
-        elif choice == "2":
-            handle_resume_download(downloader, queue_manager, config_manager)
-        elif choice == "3":
-            handle_channel_search(downloader)
-        elif choice == "4":
-            handle_view_queue(queue_manager)
-        elif choice == "5":
-            handle_view_stats(stats_manager)
-        elif choice == "6":
-            handle_monitoring(monitor_manager, downloader, queue_manager, 
-                            config_manager, slack_notifier)
-        elif choice == "7":
-            handle_settings(config_manager, proxy_manager, storage_manager, 
-                          stats_manager, queue_manager)
-        elif choice == "8":
-            console.print("\n[cyan]Goodbye![/cyan]")
-            break
-
-
-def handle_settings(config_manager, proxy_manager, storage_manager, stats_manager, queue_manager):
-    """Handle settings submenu"""
-    while True:
-        choice = SettingsMenu.display_settings_menu(config_manager)
-        
-        if choice == "1":
-            config_manager.configure_authentication()
-        elif choice == "2":
-            handle_proxy_management(proxy_manager, config_manager)
-        elif choice == "3":
-            config_manager.configure_workers()
-        elif choice == "4":
-            config_manager.configure_filename_template()
-        elif choice == "5":
-            config_manager.configure_slack()
-        elif choice == "6":
-            config_manager.configure_timeout()
-        elif choice == "7":
-            config_manager.configure_alert_thresholds()
-        elif choice == "8":
-            config_manager.configure_rate_limiting()
-        elif choice == "9":
-            config_manager.configure_bandwidth_limit()
-        elif choice == "10":
-            config_manager.configure_live_streams()
-        elif choice == "11":
-            config_manager.configure_default_quality()
-        elif choice == "12":
-            config_manager.configure_filename_normalization()
-        elif choice == "13":
-            handle_storage_management(config_manager, storage_manager)
-        elif choice == "14":
-            StatusPage.display(config_manager, storage_manager, proxy_manager, stats_manager)
-        elif choice == "15":
-            break
-
-
-def handle_storage_management(config_manager, storage_manager):
-    """Handle storage management submenu"""
-    while True:
-        choice = StorageMenu.display_storage_menu(config_manager, storage_manager)
-        
-        if choice == "1":
-            StorageMenu.add_ftp_storage(config_manager)
-        elif choice == "2":
-            StorageMenu.add_sftp_storage(config_manager)
-        elif choice == "3":
-            StorageMenu.add_google_drive_storage(config_manager)
-        elif choice == "4":
-            StorageMenu.add_dropbox_storage(config_manager)
-        elif choice == "5":
-            StorageMenu.add_onedrive_storage(config_manager)
-        elif choice == "6":
-            StorageMenu.configure_storage_provider(config_manager)
-        elif choice == "7":
-            StorageMenu.remove_storage_provider(config_manager)
-        elif choice == "8":
-            StorageMenu.set_default_storage(config_manager)
-        elif choice == "9":
-            StorageMenu.test_storage_connections(config_manager, storage_manager)
-        elif choice == "10":
-            break
+    except KeyboardInterrupt:
+        console.print("\n\n[yellow]Interrupted by user[/yellow]")
+        sys.exit(0)
+    except Exception as e:
+        console.print(f"\n[red]Fatal error: {e}[/red]")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
 
 def handle_new_download(downloader, queue_manager, config_manager, storage_manager):
@@ -266,8 +228,6 @@ def handle_new_download(downloader, queue_manager, config_manager, storage_manag
     download_order = orders[int(order_choice) - 1][0]
     
     # Create queue
-    from models.queue import Queue
-    
     queue = Queue(
         id=None,
         playlist_url=playlist_url,
@@ -292,9 +252,6 @@ def handle_new_download(downloader, queue_manager, config_manager, storage_manag
         if not entry:
             continue
         
-        from models.download_item import DownloadItem
-        from enums import DownloadStatus
-        
         item = DownloadItem(
             id=None,
             queue_id=queue.id,
@@ -317,6 +274,7 @@ def handle_new_download(downloader, queue_manager, config_manager, storage_manag
         console.print("[yellow]Queue saved. Use 'Resume incomplete download' to start later.[/yellow]")
     
     input("\nPress Enter to continue...")
+
 
 def handle_resume_download(downloader, queue_manager, config_manager):
     """Handle resuming incomplete downloads"""
@@ -344,7 +302,6 @@ def handle_resume_download(downloader, queue_manager, config_manager):
     for idx, queue in enumerate(incomplete_queues, 1):
         items = queue_manager.get_queue_items(queue.id)
         
-        from enums import DownloadStatus
         completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
         pending = sum(1 for item in items if item.status == DownloadStatus.PENDING.value)
         failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
@@ -380,7 +337,6 @@ def handle_resume_download(downloader, queue_manager, config_manager):
         # Show queue details
         items = queue_manager.get_queue_items(queue.id)
         
-        from enums import DownloadStatus
         completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
         pending = sum(1 for item in items if item.status == DownloadStatus.PENDING.value)
         failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
@@ -422,7 +378,6 @@ def handle_resume_download(downloader, queue_manager, config_manager):
                 console.print(f"\n[yellow]Retrying {failed} failed items...[/yellow]")
                 
                 # Reset failed items to pending
-                from enums import DownloadStatus
                 for item in items:
                     if item.status == DownloadStatus.FAILED.value:
                         item.status = DownloadStatus.PENDING.value
@@ -435,7 +390,6 @@ def handle_resume_download(downloader, queue_manager, config_manager):
             # Re-download everything
             if Confirm.ask("\nThis will re-download ALL items. Continue?", default=False):
                 # Reset all items to pending
-                from enums import DownloadStatus
                 for item in items:
                     item.status = DownloadStatus.PENDING.value
                     item.error = None
@@ -507,7 +461,7 @@ def handle_channel_search(downloader):
     input("\nPress Enter to continue...")
 
 
-def handle_view_queue(queue_manager):
+ def handle_view_queue(queue_manager):
     """Handle viewing queue status"""
     console.print("\n[cyan]Queue Status[/cyan]")
     
@@ -533,7 +487,6 @@ def handle_view_queue(queue_manager):
     for idx, queue in enumerate(all_queues, 1):
         items = queue_manager.get_queue_items(queue.id)
         
-        from enums import DownloadStatus
         completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
         failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
         total = len(items)
@@ -573,7 +526,6 @@ def handle_view_queue(queue_manager):
     # Show summary statistics
     total_items = sum(len(queue_manager.get_queue_items(q.id)) for q in all_queues)
     
-    from enums import DownloadStatus
     all_items = []
     for queue in all_queues:
         all_items.extend(queue_manager.get_queue_items(queue.id))
@@ -617,7 +569,7 @@ def handle_view_queue(queue_manager):
     console.print("  3. Back to main menu")
     
     option = Prompt.ask("Select option", choices=["1", "2", "3"], default="3")
-
+    
     if option == "1":
         selection = IntPrompt.ask(
             "\nQueue number to view (0 to cancel)",
@@ -669,8 +621,6 @@ def _display_queue_details(queue, queue_manager):
     # Items
     items = queue_manager.get_queue_items(queue.id)
     
-    from enums import DownloadStatus
-    
     # Categorize items
     completed_items = [item for item in items if item.status == DownloadStatus.COMPLETED.value]
     failed_items = [item for item in items if item.status == DownloadStatus.FAILED.value]
@@ -716,6 +666,7 @@ def _display_queue_details(queue, queue_manager):
 def handle_view_stats(stats_manager):
     """Handle viewing download statistics"""
     from rich.table import Table
+    from datetime import datetime, timedelta
     
     console.print("\n[cyan]Download Statistics[/cyan]")
     
@@ -773,8 +724,6 @@ def handle_view_stats(stats_manager):
     history_table.add_column("Success", style="white")
     history_table.add_column("Failed", style="red")
     history_table.add_column("Data", style="yellow")
-    
-    from datetime import datetime, timedelta
     
     for i in range(6, -1, -1):
         date = datetime.now() - timedelta(days=i)
@@ -850,6 +799,70 @@ def handle_monitoring(monitor_manager, downloader, queue_manager, config_manager
             break
 
 
+def handle_settings(config_manager, proxy_manager, storage_manager, stats_manager, queue_manager):
+    """Handle settings submenu"""
+    while True:
+        choice = SettingsMenu.display_settings_menu(config_manager)
+        
+        if choice == "1":
+            config_manager.configure_authentication()
+        elif choice == "2":
+            handle_proxy_management(proxy_manager, config_manager)
+        elif choice == "3":
+            config_manager.configure_workers()
+        elif choice == "4":
+            config_manager.configure_filename_template()
+        elif choice == "5":
+            config_manager.configure_slack()
+        elif choice == "6":
+            config_manager.configure_timeout()
+        elif choice == "7":
+            config_manager.configure_alert_thresholds()
+        elif choice == "8":
+            config_manager.configure_rate_limiting()
+        elif choice == "9":
+            config_manager.configure_bandwidth_limit()
+        elif choice == "10":
+            config_manager.configure_live_streams()
+        elif choice == "11":
+            config_manager.configure_default_quality()
+        elif choice == "12":
+            config_manager.configure_filename_normalization()
+        elif choice == "13":
+            handle_storage_management(config_manager, storage_manager)
+        elif choice == "14":
+            StatusPage.display(config_manager, storage_manager, proxy_manager, stats_manager)
+        elif choice == "15":
+            break
+
+
+def handle_storage_management(config_manager, storage_manager):
+    """Handle storage management submenu"""
+    while True:
+        choice = StorageMenu.display_storage_menu(config_manager, storage_manager)
+        
+        if choice == "1":
+            StorageMenu.add_ftp_storage(config_manager)
+        elif choice == "2":
+            StorageMenu.add_sftp_storage(config_manager)
+        elif choice == "3":
+            StorageMenu.add_google_drive_storage(config_manager)
+        elif choice == "4":
+            StorageMenu.add_dropbox_storage(config_manager)
+        elif choice == "5":
+            StorageMenu.add_onedrive_storage(config_manager)
+        elif choice == "6":
+            StorageMenu.configure_storage_provider(config_manager)
+        elif choice == "7":
+            StorageMenu.remove_storage_provider(config_manager)
+        elif choice == "8":
+            StorageMenu.set_default_storage(config_manager)
+        elif choice == "9":
+            StorageMenu.test_storage_connections(config_manager, storage_manager)
+        elif choice == "10":
+            break
+
+
 def handle_proxy_management(proxy_manager, config_manager):
     """Handle proxy management submenu"""
     console.print("\n[cyan]Proxy Management[/cyan]")
@@ -915,14 +928,6 @@ def handle_proxy_management(proxy_manager, config_manager):
     elif choice == "5":
         pass  # Return to settings menu
 
+
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        console.print("\n\n[yellow]Interrupted by user[/yellow]")
-        sys.exit(0)
-    except Exception as e:
-        console.print(f"\n[red]Fatal error: {e}[/red]")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+    main()

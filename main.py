@@ -49,7 +49,7 @@ def main():
         # Initialize managers
         config_manager = ConfigManager()
         queue_manager = QueueManager()
-        stats_manager = StatsManager()
+        stats_manager = StatsManager()  # Now works without parameters
         proxy_manager = ProxyManager(config_manager.config.proxies)
         slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
         monitor_manager = MonitorManager()

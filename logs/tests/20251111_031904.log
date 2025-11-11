@@ -1,0 +1,112 @@
+[1m============================= test session starts ==============================[0m
+collected 101 items / 10 errors
+
+==================================== ERRORS ====================================
+[31m[1m_____ ERROR collecting tests/unit/downloaders/test_playlist_downloader.py ______[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/downloaders/test_playlist_downloader.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/downloaders/test_playlist_downloader.py:27: in <module>
+    from playlist_downloader import PlaylistDownloader
+E   ModuleNotFoundError: No module named 'playlist_downloader'[0m
+[31m[1m__________ ERROR collecting tests/unit/managers/test_proxy_manager.py __________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/managers/test_proxy_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/managers/test_proxy_manager.py:10: in <module>
+    from proxy_manager import ProxyManager
+E   ModuleNotFoundError: No module named 'proxy_manager'[0m
+[31m[1m_________________ ERROR collecting tests/unit/ui/test_menu.py __________________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_menu.py:3: in <module>
+    from menu import Menu
+E   ModuleNotFoundError: No module named 'menu'[0m
+[31m[1m____________ ERROR collecting tests/unit/ui/test_monitoring_menu.py ____________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_monitoring_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_monitoring_menu.py:3: in <module>
+    from monitoring_menu import MonitoringMenu
+E   ModuleNotFoundError: No module named 'monitoring_menu'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_settings_menu.py _____________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_settings_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_settings_menu.py:3: in <module>
+    from settings_menu import SettingsMenu
+E   ModuleNotFoundError: No module named 'settings_menu'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_setup_wizard.py ______________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_setup_wizard.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_setup_wizard.py:3: in <module>
+    from setup_wizard import SetupWizard
+E   ModuleNotFoundError: No module named 'setup_wizard'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_stats_display.py _____________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_stats_display.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_stats_display.py:3: in <module>
+    from stats_display import StatsDisplay
+E   ModuleNotFoundError: No module named 'stats_display'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_storage_menu.py ______________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_storage_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_storage_menu.py:3: in <module>
+    from storage_menu import StorageMenu
+E   ModuleNotFoundError: No module named 'storage_menu'[0m
+[31m[1m____________ ERROR collecting tests/unit/utils/test_file_renamer.py ____________[0m
+[1m[31mtests/unit/utils/test_file_renamer.py[0m:7: in <module>
+    [0mproject_root = Path([91m__file__[39;49;00m).resolve().parent[90m[39;49;00m
+                   ^^^^[90m[39;49;00m
+[1m[31mE   NameError: name 'Path' is not defined[0m
+[31m[1m_________ ERROR collecting tests/unit/utils/test_storage_providers.py __________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/utils/test_storage_providers.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/utils/test_storage_providers.py:15: in <module>
+    from ...utils.storage_providers import (
+E   ImportError: attempted relative import with no known parent package[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mERROR[0m tests/unit/downloaders/test_playlist_downloader.py
+[31mERROR[0m tests/unit/managers/test_proxy_manager.py
+[31mERROR[0m tests/unit/ui/test_menu.py
+[31mERROR[0m tests/unit/ui/test_monitoring_menu.py
+[31mERROR[0m tests/unit/ui/test_settings_menu.py
+[31mERROR[0m tests/unit/ui/test_setup_wizard.py
+[31mERROR[0m tests/unit/ui/test_stats_display.py
+[31mERROR[0m tests/unit/ui/test_storage_menu.py
+[31mERROR[0m tests/unit/utils/test_file_renamer.py - NameError: name 'Path' is not defined
+[31mERROR[0m tests/unit/utils/test_storage_providers.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 10 errors during collection !!!!!!!!!!!!!!!!!!!
+[31m============================== [31m[1m10 errors[0m[31m in 4.86s[0m[31m ==============================[0m

@@ -1,0 +1,85 @@
+.
+├── Channels.md
+├── FOLDER_STRUCTURE.txt
+├── README.md
+├── config_test.json
+├── downloaders
+│   ├── init.py
+│   └── playlist_downloader.py
+├── downloads.db
+├── enums.py
+├── main.py
+├── managers
+│   ├── config_manager.py
+│   ├── database_manager.py
+│   ├── init.py
+│   ├── monitor_manager.py
+│   ├── proxy_manager.py
+│   ├── queue_manager.py
+│   └── stats_manager.py
+├── models
+│   ├── channel.py
+│   ├── daily_stats.py
+│   ├── download_alert.py
+│   ├── download_item.py
+│   ├── init.py
+│   └── queue.py
+├── notifiers
+│   ├── base_notifier.py
+│   ├── init.py
+│   ├── slack_notifier.py
+│   └── smtp_notifier.py
+├── pytest.ini
+├── requirements-dev.txt
+├── requirements.txt
+├── structure.sh
+├── tests
+│   ├── run.py
+│   └── unit
+│       ├── downloaders
+│       │   └── test_playlist_downloader.py
+│       ├── managers
+│       │   ├── test_config_manager.py
+│       │   ├── test_database_manager.py
+│       │   ├── test_monitor_manager.py
+│       │   └── test_proxy_manager.py
+│       ├── models
+│       │   ├── test_channel.py
+│       │   ├── test_daily_stats.py
+│       │   ├── test_download_alert.py
+│       │   ├── test_download_item.py
+│       │   └── test_queue.py
+│       ├── notifiers
+│       │   ├── test_base_notifier.py
+│       │   ├── test_slack_notifier.py
+│       │   └── test_smtp_notifier.py
+│       ├── ui
+│       │   ├── progress_display.py
+│       │   ├── test_menu.py
+│       │   ├── test_monitoring_menu.py
+│       │   ├── test_settings_menu.py
+│       │   ├── test_setup_wizard.py
+│       │   ├── test_stats_display.py
+│       │   └── test_storage_menu.py
+│       └── utils
+│           ├── test_file_renamer.py
+│           ├── test_metadata_handler.py
+│           ├── test_oauth_handler.py
+│           └── test_storage_providers.py
+├── ui
+│   ├── init.py
+│   ├── menu.py
+│   ├── monitoring_menu.py
+│   ├── progress_display.py
+│   ├── settings_menu.py
+│   ├── setup_wizard.py
+│   ├── stats_display.py
+│   └── storage_menu.py
+└── utils
+    ├── file_renamer.py
+    ├── init.py
+    ├── metadata_handler.py
+    ├── oauth_handler.py
+    └── storage_providers.py
+
+15 directories, 68 files

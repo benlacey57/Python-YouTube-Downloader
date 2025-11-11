@@ -1,0 +1,48 @@
+{
+  "playlists": [
+    {
+      "title": "BBC Documentary Collection",
+      "url": "https://youtube.com/playlist?list=PLExampleBBC123",
+      "category": "documentary",
+      "description": "Popular BBC documentaries about nature and science",
+      "estimated_videos": 50,
+      "language": "en",
+      "recommended_quality": "1080p",
+      "recommended_format": "video",
+      "notes": "High quality documentaries, large file sizes"
+    },
+    {
+      "title": "Python Programming Tutorials",
+      "url": "https://youtube.com/playlist?list=PLExamplePython456",
+      "category": "education",
+      "description": "Complete Python programming course for beginners",
+      "estimated_videos": 100,
+      "language": "en",
+      "recommended_quality": "720p",
+      "recommended_format": "video",
+      "notes": "Code-along tutorials, moderate file sizes"
+    },
+    {
+      "title": "True Crime Podcast Audio",
+      "url": "https://youtube.com/playlist?list=PLExampleCrime789",
+      "category": "true_crime",
+      "description": "Audio-focused true crime investigations",
+      "estimated_videos": 75,
+      "language": "en",
+      "recommended_quality": "192",
+      "recommended_format": "audio",
+      "notes": "Best as audio files for podcast listening"
+    },
+    {
+      "title": "Standup Comedy Specials",
+      "url": "https://youtube.com/playlist?list=PLExampleComedy012",
+      "category": "comedy",
+      "description": "Full standup comedy specials and clips",
+      "estimated_videos": 30,
+      "language": "en",
+      "recommended_quality": "720p",
+      "recommended_format": "video",
+      "notes": "Entertainment, moderate quality sufficient"
+    }
+  ]
+}

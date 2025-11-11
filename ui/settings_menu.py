@@ -46,7 +46,14 @@ class SettingsMenu:
             ("5", "Configure Slack notifications"),
             ("6", "Configure download timeout"),
             ("7", "Configure alert thresholds"),
-            ("8", "Back to main menu")
+            ("8", "Configure rate limiting"),
+            ("9", "Configure bandwidth limit"),
+            ("10", "Configure live streams"),
+            ("11", "Configure default quality"),
+            ("12", "Configure filename normalization"),
+            ("13", "Manage storage providers"),
+            ("14", "View system status"),
+            ("15", "Back to main menu")
         ]
 
         option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])

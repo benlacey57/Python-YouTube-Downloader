@@ -103,7 +103,9 @@ class PlaylistDownloader:
         except Exception as e:
             console.print(f"[red]Error extracting playlist info: {e}[/red]")
             console.print("[yellow]Try configuring authentication or using a proxy[/yellow]")
-            return None    ydl_opts['extract_flat'] = True
+            return None    
+            
+        ydl_opts['extract_flat'] = True
         
     def search_channel_playlists(self, channel_url: str) -> List[Dict]:
         """Search for playlists in a channel"""

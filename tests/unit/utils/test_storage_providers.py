@@ -3,7 +3,14 @@ from unittest.mock import patch, MagicMock, NonCallableMock, call
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-# Assuming StorageProvider and derived classes are accessible
+# --- FIX FOR PACKAGE IMPORTS ---
+# This ensures Python can find 'managers', 'utils', 'models', etc.
+# when the script is run from the root directory.
+project_root = Path(__file__).resolve().parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+# -------------------------------
+
 from ...utils.storage_providers import (
     StorageProvider, StorageManager,
     FTPStorage, SFTPStorage, GoogleDriveStorage, DropboxStorage, OneDriveStorage

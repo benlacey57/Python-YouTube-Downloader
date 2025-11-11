@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 # Assuming StorageProvider and derived classes are accessible
-from utils.storage_providers import (
+from ...utils.storage_providers import (
     StorageProvider, StorageManager,
     FTPStorage, SFTPStorage, GoogleDriveStorage, DropboxStorage, OneDriveStorage
 )

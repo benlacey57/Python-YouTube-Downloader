@@ -1,0 +1,52 @@
+{
+  "filename_templates": [
+    {
+      "name": "Simple Index",
+      "template": "{index:03d} - {title}",
+      "description": "Simple numbered format: 001 - Video Title",
+      "use_case": "general"
+    },
+    {
+      "name": "Date First",
+      "template": "{upload_date} - {title}",
+      "description": "Date-based sorting: 20250101 - Video Title",
+      "use_case": "chronological"
+    },
+    {
+      "name": "Uploader Focus",
+      "template": "{uploader} - {upload_date} - {title}",
+      "description": "Group by creator: Creator Name - 20250101 - Video Title",
+      "use_case": "multi_creator"
+    },
+    {
+      "name": "Playlist Organized",
+      "template": "{playlist_title}/{index:03d} - {title}",
+      "description": "Organize by playlist: Playlist Name/001 - Video Title",
+      "use_case": "playlist_series"
+    },
+    {
+      "name": "Video ID Reference",
+      "template": "{title} [{video_id}]",
+      "description": "Include video ID for reference: Video Title [dQw4w9WgXcQ]",
+      "use_case": "archival"
+    },
+    {
+      "name": "Full Metadata",
+      "template": "{upload_date} - {uploader} - {title} [{video_id}]",
+      "description": "Complete metadata: 20250101 - Creator - Title [abc123]",
+      "use_case": "archive_full"
+    },
+    {
+      "name": "Clean Title Only",
+      "template": "{title}",
+      "description": "Just the video title with no extras",
+      "use_case": "minimal"
+    },
+    {
+      "name": "Index with Uploader",
+      "template": "{index:03d} - {uploader} - {title}",
+      "description": "Numbered with creator: 001 - Creator Name - Video Title",
+      "use_case": "mixed_content"
+    }
+  ]
+}

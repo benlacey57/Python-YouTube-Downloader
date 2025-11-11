@@ -1,0 +1,97 @@
+/usr/local/python/3.12.1/lib/python3.12/argparse.py:2457: UserWarning: Do not expect file_or_dir in Namespace(keyword='', markexpr='managers and not live', maxfail=0, confcutdir=None, noconftest=False, keepduplicates=False, collect_in_virtualenv=False, continue_on_collection_errors=False, importmode='prepend', basetemp=None, durations=5, durations_min=None, showfixtures=False, show_fixtures_per_test=False, version=0, plugins=[], disable_plugin_autoload=False, traceconfig=False, verbose=0, no_header=True, no_summary=False, fold_skipped=True, force_short_summary=False, reportchars='a', disable_warnings=False, showlocals=False, tbstyle='auto', xfail_tb=False, showcapture='all', fulltrace=False, color='yes', code_highlight='yes', capture='fd', runxfail=False, pastebin=None, assertmode='rewrite', xmlpath=None, junitprefix=None, doctestmodules=False, doctestreport='udiff', doctestglob=[], doctest_ignore_import_errors=False, doctest_continue_on_failure=False, last_failed_no_failures='all', stepwise=False, stepwise_skip=False, stepwise_reset=False, logger_disable=[], markers=False, strict_config=None, strict_markers=True, strict=None, pythonwarnings=None, collectonly=False, pyargs=False, ignore=None, ignore_glob=None, deselect=None, inifilename=None, rootdir=None, help=False, debug=None, override_ini=['strict_markers=true', 'strict_markers=true'], usepdb=False, usepdb_cls=None, trace=False, lf=False, failedfirst=False, newfirst=False, cacheshow=None, cacheclear=False, setuponly=False, setupshow=False, setupplan=False, log_level=None, log_format=None, log_date_format=None, log_cli_level=None, log_cli_format=None, log_cli_date_format=None, log_file=None, log_file_mode=None, log_file_level=None, log_file_format=None, log_file_date_format=None, log_auto_indent=None, file_or_dir=[], cov_source=[], cov_report={}, cov_config='.coveragerc', no_cov_on_fail=False, no_cov=False, cov_fail_under=None, cov_append=False, cov_branch=None, cov_precision=None, cov_context=None)
+  warn('Do not expect %s in %s' % (action.dest, namespace))
+[1m============================= test session starts ==============================[0m
+collected 136 items / 8 errors / 136 deselected / 0 selected
+
+==================================== ERRORS ====================================
+[31m[1m_____ ERROR collecting tests/unit/downloaders/test_playlist_downloader.py ______[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/downloaders/test_playlist_downloader.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/downloaders/test_playlist_downloader.py:27: in <module>
+    from playlist_downloader import PlaylistDownloader
+E   ModuleNotFoundError: No module named 'playlist_downloader'[0m
+[31m[1m__________ ERROR collecting tests/unit/managers/test_proxy_manager.py __________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/managers/test_proxy_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/managers/test_proxy_manager.py:10: in <module>
+    from proxy_manager import ProxyManager
+E   ModuleNotFoundError: No module named 'proxy_manager'[0m
+[31m[1m_________________ ERROR collecting tests/unit/ui/test_menu.py __________________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_menu.py:3: in <module>
+    from menu import Menu
+E   ModuleNotFoundError: No module named 'menu'[0m
+[31m[1m____________ ERROR collecting tests/unit/ui/test_monitoring_menu.py ____________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_monitoring_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_monitoring_menu.py:3: in <module>
+    from monitoring_menu import MonitoringMenu
+E   ModuleNotFoundError: No module named 'monitoring_menu'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_settings_menu.py _____________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_settings_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_settings_menu.py:3: in <module>
+    from settings_menu import SettingsMenu
+E   ModuleNotFoundError: No module named 'settings_menu'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_setup_wizard.py ______________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_setup_wizard.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_setup_wizard.py:3: in <module>
+    from setup_wizard import SetupWizard
+E   ModuleNotFoundError: No module named 'setup_wizard'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_stats_display.py _____________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_stats_display.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_stats_display.py:3: in <module>
+    from stats_display import StatsDisplay
+E   ModuleNotFoundError: No module named 'stats_display'[0m
+[31m[1m_____________ ERROR collecting tests/unit/ui/test_storage_menu.py ______________[0m
+[31mImportError while importing test module '/workspaces/Python-YouTube-Downloader/tests/unit/ui/test_storage_menu.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/python/3.12.1/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/ui/test_storage_menu.py:3: in <module>
+    from storage_menu import StorageMenu
+E   ModuleNotFoundError: No module named 'storage_menu'[0m
+[36m[1m=========================== short test summary info ============================[0m
+[31mERROR[0m tests/unit/downloaders/test_playlist_downloader.py
+[31mERROR[0m tests/unit/managers/test_proxy_manager.py
+[31mERROR[0m tests/unit/ui/test_menu.py
+[31mERROR[0m tests/unit/ui/test_monitoring_menu.py
+[31mERROR[0m tests/unit/ui/test_settings_menu.py
+[31mERROR[0m tests/unit/ui/test_setup_wizard.py
+[31mERROR[0m tests/unit/ui/test_stats_display.py
+[31mERROR[0m tests/unit/ui/test_storage_menu.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!
+[31m====================== [33m136 deselected[0m, [31m[1m8 errors[0m[31m in 0.72s[0m[31m =======================[0m

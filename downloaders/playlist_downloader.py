@@ -1,7 +1,6 @@
 """Playlist download operations"""
 import shutil
 import hashlib
-from pathlib import Path
 from typing import Optional, Dict, List
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -17,12 +16,13 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskPr
 from rich.panel import Panel
 from rich.prompt import Confirm
 
+# Updated imports using absolute paths
 from models.download_item import DownloadItem
 from models.queue import Queue
 from managers.queue_manager import QueueManager
 from managers.stats_manager import StatsManager
 from managers.proxy_manager import ProxyManager
-from notifiers.slack_notifier import SlackNotifier
+from notifiers.slack_notifier import SlackNotifier # Assuming you update this to use BaseNotifier
 from utils.file_renamer import FileRenamer
 from enums import DownloadStatus
 

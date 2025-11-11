@@ -4,3 +4,5 @@ pytest
 pytest-cov
 rich
 requests
+ruff
+bandit

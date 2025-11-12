@@ -1,12 +1,9 @@
-"""Configuration management"""
+from dataclasses import dataclass, field, asdict
+from typing import Optional, List
 import json
 from pathlib import Path
-from dataclasses import dataclass, asdict, field
-from typing import Optional, List, Dict
 from rich.console import Console
 from rich.prompt import Prompt, Confirm, IntPrompt
-from rich.panel import Panel
-from rich.table import Table
 
 console = Console()
 
@@ -14,27 +11,21 @@ console = Console()
 @dataclass
 class StorageConfig:
     """Storage provider configuration"""
-    enabled: bool = False
-    provider_type: str = ""  # ftp, sftp, gdrive, dropbox, onedrive
-    
-    # FTP/SFTP settings
-    host: str = ""
-    port: int = 21
-    username: str = ""
-    password: str = ""
-    base_path: str = "/"
-    key_filename: Optional[str] = None  # For SFTP
-    
-    # Cloud storage settings
+    provider_type: str  # 'ftp', 'sftp', 'gdrive', 'dropbox', 'onedrive'
+    enabled: bool = True
+    host: Optional[str] = None
+    port: Optional[int] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+    key_filename: Optional[str] = None
+    base_path: Optional[str] = None
     credentials_file: Optional[str] = None
     access_token: Optional[str] = None
     folder_id: Optional[str] = None
     client_id: Optional[str] = None
     client_secret: Optional[str] = None
-    
-    # Quality override for this storage
-    video_quality: Optional[str] = None  # None = use default
-    audio_quality: Optional[str] = None  # None = use default
+    video_quality: Optional[str] = None
+    audio_quality: Optional[str] = None
     
     def to_dict(self):
         return asdict(self)
@@ -47,71 +38,61 @@ class StorageConfig:
 @dataclass
 class AppConfig:
     """Application configuration"""
+    # Authentication
     cookies_file: Optional[str] = None
-    oauth_token: Optional[str] = None
-    oauth_refresh_token: Optional[str] = None
-    oauth_expiry: Optional[str] = None
-    proxies: List[str] = field(default_factory=list)
+    
+    # Download settings
     max_workers: int = 3
+    default_video_quality: str = "720p"
+    default_audio_quality: str = "192"
     default_filename_template: str = "{index:03d} - {title}"
-    monitoring_enabled: bool = False
+    normalize_filenames: bool = True
+    download_timeout_seconds: int = 300
+    
+    # Rate limiting
+    max_downloads_per_hour: int = 50
+    min_delay_seconds: float = 2.0
+    max_delay_seconds: float = 5.0
+    
+    # Bandwidth
+    bandwidth_limit_mbps: Optional[float] = None
+    
+    # Live streams
+    auto_record_live_streams: bool = False
+    wait_for_scheduled_streams: bool = False
+    max_stream_wait_minutes: int = 60
+    
+    # Notifications - Slack
     slack_webhook_url: Optional[str] = None
-    download_timeout_minutes: int = 120
-    alert_thresholds_mb: List[int] = field(default_factory=lambda: [250, 1000, 5000, 10000])
-
-    # Email notification settings
+    
+    # Notifications - Email
     smtp_host: Optional[str] = None
     smtp_port: int = 587
     smtp_username: Optional[str] = None
     smtp_password: Optional[str] = None
     smtp_from_email: Optional[str] = None
-    smtp_to_emails: List[str] = None
+    smtp_to_emails: List[str] = field(default_factory=list)
     smtp_use_tls: bool = True
     email_notifications_enabled: bool = False
     
     # Daily/weekly email settings
     send_daily_summary: bool = False
     send_weekly_stats: bool = False
-    daily_summary_time: str = "18:00"  # 6 PM
+    daily_summary_time: str = "18:00"
     weekly_stats_day: int = 0  # Monday
-            
-    # Rate limiting
-    max_downloads_per_hour: int = 50
-    min_delay_seconds: float = 2.0
-    max_delay_seconds: float = 5.0
     
-    # Bandwidth limiting
-    bandwidth_limit_mbps: Optional[float] = None
+    # Alert thresholds
+    alert_thresholds_mb: List[int] = field(default_factory=lambda: [250, 1000, 5000, 10000])
     
-    # Live stream settings
-    auto_record_live_streams: bool = False
-    wait_for_scheduled_streams: bool = False
-    max_stream_wait_minutes: int = 60
+    # Proxies
+    proxies: List[str] = field(default_factory=list)
     
-    # Default quality settings
-    default_video_quality: str = "720p"
-    default_audio_quality: str = "192"
+    # Storage
+    default_storage: str = "local"
+    storage_providers: dict = field(default_factory=dict)
     
-    # Filename normalization
-    normalize_filenames: bool = True
-    
-    # Storage providers
-    storage_providers: Dict[str, dict] = field(default_factory=dict)
-    default_storage: str = "local"  # local, or name of storage provider
-    
-    # Setup completed flag
+    # Setup
     setup_completed: bool = False
-
-    def __post_init__(self):
-        if self.smtp_to_emails is None:
-            self.smtp_to_emails = []
-            
-    def to_dict(self):
-        return asdict(self)
-    
-    @classmethod
-    def from_dict(cls, data):
-        return cls(**data)
 
 
 class ConfigManager:
@@ -119,28 +100,30 @@ class ConfigManager:
     
     def __init__(self, config_file: str = "downloader_config.json"):
         self.config_file = Path(config_file)
-        self.config = self.lo_config()
+        self.config = self.load_config()
     
     def load_config(self) -> AppConfig:
         """Load configuration from file"""
         if self.config_file.exists():
             try:
-                with open(self.config_file, 'r', encoding='utf-8') as f:
+                with open(self.config_file, 'r') as f:
                     data = json.load(f)
-                    return AppConfig.from_dict(data)
+                return AppConfig(**data)
             except Exception as e:
-                console.print(f"[yellow]Warning: Could not load config: {e}[/yellow]")
-        
+                console.print(f"[yellow]Error loading config: {e}[/yellow]")
+                console.print("[yellow]Using default configuration[/yellow]")
+                return AppConfig()
         return AppConfig()
     
     def save_config(self):
         """Save configuration to file"""
         try:
-            with open(self.config_file, 'w', encoding='utf-8') as f:
-                json.dump(self.config.to_dict(), f, indent=2)
+            with open(self.config_file, 'w') as f:
+                json.dump(asdict(self.config), f, indent=2)
+            console.print("[green]✓ Configuration saved[/green]")
         except Exception as e:
             console.print(f"[red]Error saving config: {e}[/red]")
-    
+            
     def configure_default_quality(self):
         """Configure default quality settings"""
         console.print("\n[cyan]Default Quality Configuration[/cyan]")
@@ -187,51 +170,51 @@ class ConfigManager:
     def configure_email_notifications(self):
         """Configure email notifications"""
         console.print("\n[cyan]Email Notification Configuration[/cyan]")
-    
+        
         if not Confirm.ask("Enable email notifications?", default=False):
             self.config.email_notifications_enabled = False
             self.save_config()
             return
-    
+        
         console.print("\n[yellow]SMTP Server Settings:[/yellow]")
         console.print("Common providers:")
         console.print("  Gmail: smtp.gmail.com:587")
         console.print("  Outlook: smtp-mail.outlook.com:587")
         console.print("  Yahoo: smtp.mail.yahoo.com:587")
-    
+        
         self.config.smtp_host = Prompt.ask("\nSMTP Host")
         self.config.smtp_port = IntPrompt.ask("SMTP Port", default=587)
         self.config.smtp_username = Prompt.ask("SMTP Username (email)")
         self.config.smtp_password = Prompt.ask("SMTP Password", password=True)
         self.config.smtp_from_email = Prompt.ask("From Email", default=self.config.smtp_username)
-    
+        
         # To emails
         console.print("\n[yellow]Recipient Email(s):[/yellow]")
         to_emails = Prompt.ask("To Email(s) (comma-separated)")
         self.config.smtp_to_emails = [email.strip() for email in to_emails.split(',')]
-    
+        
         self.config.smtp_use_tls = Confirm.ask("Use TLS?", default=True)
         self.config.email_notifications_enabled = True
-    
+        
         # Daily/Weekly summaries
         console.print("\n[yellow]Automated Reports:[/yellow]")
         self.config.send_daily_summary = Confirm.ask("Send daily summary?", default=True)
         self.config.send_weekly_stats = Confirm.ask("Send weekly statistics?", default=True)
-    
+        
         if self.config.send_daily_summary:
             self.config.daily_summary_time = Prompt.ask(
                 "Daily summary time (HH:MM)",
                 default="18:00"
             )
-    
+        
         self.save_config()
-    
+        
         console.print("\n[green]✓ Email notifications configured[/green]")
-    
+        
         # Test email
         if Confirm.ask("\nSend test email?", default=True):
             from notifiers.email import EmailNotifier
-        
+            
             notifier = EmailNotifier(
                 smtp_host=self.config.smtp_host,
                 smtp_port=self.config.smtp_port,
@@ -241,12 +224,12 @@ class ConfigManager:
                 to_emails=self.config.smtp_to_emails,
                 use_tls=self.config.smtp_use_tls
             )
-        
+            
             if notifier.send_notification("Test Email", "This is a test email from YouTube Playlist Downloader"):
                 console.print("[green]✓ Test email sent successfully[/green]")
             else:
                 console.print("[red]✗ Failed to send test email[/red]")
-    
+                
     def configure_filename_normalization(self):
         """Configure filename normalization"""
         console.print("\n[cyan]Filename Normalization[/cyan]")

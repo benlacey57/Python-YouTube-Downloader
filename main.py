@@ -36,31 +36,32 @@ def main():
     try:
         console.clear()
         
-        # Initialize managers
+        # Initialize managers - no args needed!
         config_manager = ConfigManager()
         queue_manager = QueueManager()
         stats_manager = StatsManager()
-        proxy_manager = ProxyManager()
+        proxy_manager = ProxyManager()  # No args!
         monitor_manager = MonitorManager()
         storage_manager = StorageManager()
         
-        # Initialize notification manager (handles all notifiers)
-        notification_manager = NotificationManager()
+        # Initialize notification manager
+        notification_manager = NotificationManager(config_manager.config)
         
         # Show notification status
         notifier_status = notification_manager.get_status()
         if notifier_status['any_configured']:
             console.print()
         
-        # Initialize downloader
-        downloader = PlaylistDownloader()
+        # Initialize downloader - no args needed!
+        downloader = PlaylistDownloader()  # No args!
         
         # Run setup wizard if needed
         if not config_manager.config.setup_completed:
-            wizard = SetupWizard()
+            wizard = SetupWizard(config_manager)
             if wizard.run():
-                # Reload notification manager with new config
+                # Reload managers that depend on config
                 notification_manager.reload_config(config_manager.config)
+                proxy_manager.reload_from_config()
         
         # Main menu loop
         menu = Menu(

@@ -299,12 +299,12 @@ class ConfigManager:
         
             if notification_manager.email and notification_manager.email.is_configured():
                 if notification_manager.email.send_notification(
-                    "Test Email",
-                    "This is a test email from YouTube Playlist Downloader"
-                ):
-                console.print("[green]✓ Test email sent successfully[/green]")
-            else:
-                console.print("[red]✗ Failed to send test email[/red]")
+                        "Test YouTube Downloader Email",
+                        "This is a test email from YouTube Playlist Downloader"
+                    ):
+                    console.print("[green]✓ Test email sent successfully[/green]")
+                else:
+                    console.print("[red]✗ Failed to send test email[/red]")
                 
     def configure_filename_normalization(self):
         """Configure filename normalization"""

@@ -1,7 +1,7 @@
 """Notification modules"""
 from .base import BaseNotifier
 from .slack import SlackNotifier
-from .smtp import EmailNotifier
+from .email import EmailNotifier
 
 __all__ = [
     'BaseNotifier',

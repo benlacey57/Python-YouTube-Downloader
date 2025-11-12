@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from rich.console import Console
 from managers.config_manager import ConfigManager
 from managers.stats_manager import StatsManager
-from notifiers.email import EmailNotifier
+from managers.notification_manager import NotificationManager
 
 console = Console()
 
@@ -22,21 +22,11 @@ def generate_weekly_stats():
     # Initialize managers
     config_manager = ConfigManager()
     stats_manager = StatsManager()
+    notification_manager = NotificationManager(config_manager.config)
     
-    if not config_manager.config.email_notifications_enabled:
+    if not notification_manager.email or not notification_manager.email.is_configured():
         console.print("[yellow]Email notifications not configured[/yellow]")
         return
-    
-    # Initialize email notifier
-    email_notifier = EmailNotifier(
-        smtp_host=config_manager.config.smtp_host,
-        smtp_port=config_manager.config.smtp_port,
-        smtp_username=config_manager.config.smtp_username,
-        smtp_password=config_manager.config.smtp_password,
-        from_email=config_manager.config.smtp_from_email,
-        to_emails=config_manager.config.smtp_to_emails,
-        use_tls=config_manager.config.smtp_use_tls
-    )
     
     # Calculate date range (last 7 days)
     end_date = datetime.now()
@@ -84,7 +74,7 @@ def generate_weekly_stats():
     # Send email
     console.print("[cyan]Sending weekly statistics email...[/cyan]")
     
-    if email_notifier.notify_weekly_stats(stats_data):
+    if notification_manager.notify_weekly_stats(stats_data):
         console.print("[green]✓ Weekly statistics sent successfully[/green]")
     else:
         console.print("[red]✗ Failed to send weekly statistics[/red]")

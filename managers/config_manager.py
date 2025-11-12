@@ -181,75 +181,75 @@ class ConfigManager:
 
         
     def configure_notification_preferences(self):
-    """Configure which events trigger notifications"""
-    console.print("\n[cyan]Notification Preferences[/cyan]")
-    console.print("Choose which events should trigger notifications:\n")
+        """Configure which events trigger notifications"""
+        console.print("\n[cyan]Notification Preferences[/cyan]")
+        console.print("Choose which events should trigger notifications:\n")
     
-    self.config.notify_on_download_complete = Confirm.ask(
-        "Notify on individual download complete?",
-        default=self.config.notify_on_download_complete
-    )
+        self.config.notify_on_download_complete = Confirm.ask(
+            "Notify on individual download complete?",
+            default=self.config.notify_on_download_complete
+        )
     
-    self.config.notify_on_queue_complete = Confirm.ask(
-        "Notify on queue complete?",
-        default=self.config.notify_on_queue_complete
-    )
+        self.config.notify_on_queue_complete = Confirm.ask(
+            "Notify on queue complete?",
+            default=self.config.notify_on_queue_complete
+        )
     
-    self.config.notify_on_error = Confirm.ask(
-        "Notify on errors?",
-        default=self.config.notify_on_error
-    )
+        self.config.notify_on_error = Confirm.ask(
+            "Notify on errors?",
+            default=self.config.notify_on_error
+        )
     
-    self.config.notify_on_threshold = Confirm.ask(
-        "Notify on size thresholds?",
-        default=self.config.notify_on_threshold
-    )
+        self.config.notify_on_threshold = Confirm.ask(
+            "Notify on size thresholds?",
+            default=self.config.notify_on_threshold
+        )
     
-    self.save_config()
-    console.print("\n[green]✓ Notification preferences updated[/green]")
+        self.save_config()
+        console.print("\n[green]✓ Notification preferences updated[/green]")
 
-def toggle_notification_provider(self):
-    """Toggle notification providers on/off"""
-    console.print("\n[cyan]Notification Providers[/cyan]")
+    def toggle_notification_provider(self):
+        """Toggle notification providers on/off"""
+        console.print("\n[cyan]Notification Providers[/cyan]")
     
-    console.print(f"\n[cyan]Slack:[/cyan] {'[green]Enabled[/green]' if self.config.slack_enabled else '[red]Disabled[/red]'}")
-    if self.config.slack_webhook_url:
-        console.print(f"  Webhook: {self.config.slack_webhook_url[:50]}...")
+        console.print(f"\n[cyan]Slack:[/cyan] {'[green]Enabled[/green]' if self.config.slack_enabled else '[red]Disabled[/red]'}")
+        if self.config.slack_webhook_url:
+            console.print(f"  Webhook: {self.config.slack_webhook_url[:50]}...")
     
-    console.print(f"\n[cyan]Email:[/cyan] {'[green]Enabled[/green]' if self.config.email_enabled else '[red]Disabled[/red]'}")
-    if self.config.smtp_host:
-        console.print(f"  SMTP Host: {self.config.smtp_host}")
-        console.print(f"  From: {self.config.smtp_from_email}")
-        console.print(f"  To: {', '.join(self.config.smtp_to_emails)}")
+        console.print(f"\n[cyan]Email:[/cyan] {'[green]Enabled[/green]' if self.config.email_enabled else '[red]Disabled[/red]'}")
+        if self.config.smtp_host:
+            console.print(f"  SMTP Host: {self.config.smtp_host}")
+            console.print(f"  From: {self.config.smtp_from_email}")
+            console.print(f"  To: {', '.join(self.config.smtp_to_emails)}")
     
-    console.print("\n[yellow]Options:[/yellow]")
-    console.print("  1. Toggle Slack")
-    console.print("  2. Toggle Email")
-    console.print("  3. Back")
+        console.print("\n[yellow]Options:[/yellow]")
+        console.print("  1. Toggle Slack")
+        console.print("  2. Toggle Email")
+        console.print("  3. Back")
     
-    choice = Prompt.ask("\nSelect option", choices=["1", "2", "3"], default="3")
+        choice = Prompt.ask("\nSelect option", choices=["1", "2", "3"], default="3")
     
-    if choice == "1":
-        if not self.config.slack_webhook_url:
-            console.print("[yellow]Slack webhook not configured. Configure it first.[/yellow]")
-            if Confirm.ask("Configure now?", default=True):
-                self.configure_slack_webhook()
-        else:
-            self.config.slack_enabled = not self.config.slack_enabled
-            status = "enabled" if self.config.slack_enabled else "disabled"
-            console.print(f"[green]✓ Slack notifications {status}[/green]")
-            self.save_config()
+        if choice == "1":
+            if not self.config.slack_webhook_url:
+                console.print("[yellow]Slack webhook not configured. Configure it first.[/yellow]")
+                if Confirm.ask("Configure now?", default=True):
+                    self.configure_slack_webhook()
+            else:
+                self.config.slack_enabled = not self.config.slack_enabled
+                status = "enabled" if self.config.slack_enabled else "disabled"
+                console.print(f"[green]✓ Slack notifications {status}[/green]")
+                self.save_config()
     
-    elif choice == "2":
-        if not self.config.smtp_host:
-            console.print("[yellow]Email not configured. Configure it first.[/yellow]")
-            if Confirm.ask("Configure now?", default=True):
-                self.configure_email_notifications()
-        else:
-            self.config.email_enabled = not self.config.email_enabled
-            status = "enabled" if self.config.email_enabled else "disabled"
-            console.print(f"[green]✓ Email notifications {status}[/green]")
-            self.save_config()
+        elif choice == "2":
+            if not self.config.smtp_host:
+                console.print("[yellow]Email not configured. Configure it first.[/yellow]")
+                if Confirm.ask("Configure now?", default=True):
+                    self.configure_email_notifications()
+            else:
+                self.config.email_enabled = not self.config.email_enabled
+                status = "enabled" if self.config.email_enabled else "disabled"
+                console.print(f"[green]✓ Email notifications {status}[/green]")
+                self.save_config()
 
     def configure_email_notifications(self):
         """Configure email notifications"""

@@ -40,12 +40,12 @@ def main():
         config_manager = ConfigManager()
         queue_manager = QueueManager()
         stats_manager = StatsManager()
-        proxy_manager = ProxyManager(config_manager.config.proxies)
+        proxy_manager = ProxyManager()
         monitor_manager = MonitorManager()
         storage_manager = StorageManager()
         
         # Initialize notification manager (handles all notifiers)
-        notification_manager = NotificationManager(config_manager.config)
+        notification_manager = NotificationManager()
         
         # Show notification status
         notifier_status = notification_manager.get_status()
@@ -53,15 +53,11 @@ def main():
             console.print()
         
         # Initialize downloader
-        downloader = PlaylistDownloader(
-            config_manager.config,
-            stats_manager,
-            notification_manager
-        )
+        downloader = PlaylistDownloader()
         
         # Run setup wizard if needed
         if not config_manager.config.setup_completed:
-            wizard = SetupWizard(config_manager)
+            wizard = SetupWizard()
             if wizard.run():
                 # Reload notification manager with new config
                 notification_manager.reload_config(config_manager.config)

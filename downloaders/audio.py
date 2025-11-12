@@ -4,6 +4,9 @@ from pathlib import Path
 from datetime import datetime
 
 from downloaders.base import BaseDownloader
+from managers.config_manager import ConfigManager
+from managers.stats_manager import StatsManager
+from managers.notification_manager import NotificationManager
 from models.download_item import DownloadItem
 from models.queue import Queue
 from enums import DownloadStatus
@@ -16,7 +19,20 @@ console = Console()
 
 class AudioDownloader(BaseDownloader):
     """Handles audio/music downloads"""
-
+    
+    def __init__(self):
+        # Get managers internally
+        config_manager = ConfigManager()
+        stats_manager = StatsManager()
+        notification_manager = NotificationManager(config_manager.config)
+        
+        # Initialize base
+        super().__init__(
+            config_manager.config,
+            stats_manager,
+            notification_manager
+        )
+    
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
         """Download an audio item"""
         # Check for skip request

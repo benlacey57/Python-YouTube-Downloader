@@ -55,11 +55,28 @@ def main():
         monitor_manager = MonitorManager()
         storage_manager = StorageManager()
         
-        # Initialize downloader
+        # Initialize notifiers
+        slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
+        
+        email_notifier = None
+        if config_manager.config.email_notifications_enabled:
+            from notifiers.email import EmailNotifier
+            email_notifier = EmailNotifier(
+                smtp_host=config_manager.config.smtp_host,
+                smtp_port=config_manager.config.smtp_port,
+                smtp_username=config_manager.config.smtp_username,
+                smtp_password=config_manager.config.smtp_password,
+                from_email=config_manager.config.smtp_from_email,
+                to_emails=config_manager.config.smtp_to_emails,
+                use_tls=config_manager.config.smtp_use_tls
+            )
+        
+        # Initialize downloader with both notifiers
         downloader = PlaylistDownloader(
             config_manager.config,
             stats_manager,
-            slack_notifier
+            slack_notifier,
+            email_notifier  # Pass email notifier
         )
         
         # Run setup wizard if not completed

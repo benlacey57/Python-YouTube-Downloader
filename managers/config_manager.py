@@ -58,7 +58,23 @@ class AppConfig:
     slack_webhook_url: Optional[str] = None
     download_timeout_minutes: int = 120
     alert_thresholds_mb: List[int] = field(default_factory=lambda: [250, 1000, 5000, 10000])
+
+    # Email notification settings
+    smtp_host: Optional[str] = None
+    smtp_port: int = 587
+    smtp_username: Optional[str] = None
+    smtp_password: Optional[str] = None
+    smtp_from_email: Optional[str] = None
+    smtp_to_emails: List[str] = None
+    smtp_use_tls: bool = True
+    email_notifications_enabled: bool = False
     
+    # Daily/weekly email settings
+    send_daily_summary: bool = False
+    send_weekly_stats: bool = False
+    daily_summary_time: str = "18:00"  # 6 PM
+    weekly_stats_day: int = 0  # Monday
+            
     # Rate limiting
     max_downloads_per_hour: int = 50
     min_delay_seconds: float = 2.0
@@ -85,7 +101,11 @@ class AppConfig:
     
     # Setup completed flag
     setup_completed: bool = False
-    
+
+    def __post_init__(self):
+        if self.smtp_to_emails is None:
+            self.smtp_to_emails = []
+            
     def to_dict(self):
         return asdict(self)
     
@@ -99,7 +119,7 @@ class ConfigManager:
     
     def __init__(self, config_file: str = "downloader_config.json"):
         self.config_file = Path(config_file)
-        self.config = self.load_config()
+        self.config = self.lo_config()
     
     def load_config(self) -> AppConfig:
         """Load configuration from file"""
@@ -163,6 +183,69 @@ class ConfigManager:
         console.print(f"  • Audio: {self.config.default_audio_quality}kbps")
         
         self.save_config()
+
+    def configure_email_notifications(self):
+        """Configure email notifications"""
+        console.print("\n[cyan]Email Notification Configuration[/cyan]")
+    
+        if not Confirm.ask("Enable email notifications?", default=False):
+            self.config.email_notifications_enabled = False
+            self.save_config()
+            return
+    
+        console.print("\n[yellow]SMTP Server Settings:[/yellow]")
+        console.print("Common providers:")
+        console.print("  Gmail: smtp.gmail.com:587")
+        console.print("  Outlook: smtp-mail.outlook.com:587")
+        console.print("  Yahoo: smtp.mail.yahoo.com:587")
+    
+        self.config.smtp_host = Prompt.ask("\nSMTP Host")
+        self.config.smtp_port = IntPrompt.ask("SMTP Port", default=587)
+        self.config.smtp_username = Prompt.ask("SMTP Username (email)")
+        self.config.smtp_password = Prompt.ask("SMTP Password", password=True)
+        self.config.smtp_from_email = Prompt.ask("From Email", default=self.config.smtp_username)
+    
+        # To emails
+        console.print("\n[yellow]Recipient Email(s):[/yellow]")
+        to_emails = Prompt.ask("To Email(s) (comma-separated)")
+        self.config.smtp_to_emails = [email.strip() for email in to_emails.split(',')]
+    
+        self.config.smtp_use_tls = Confirm.ask("Use TLS?", default=True)
+        self.config.email_notifications_enabled = True
+    
+        # Daily/Weekly summaries
+        console.print("\n[yellow]Automated Reports:[/yellow]")
+        self.config.send_daily_summary = Confirm.ask("Send daily summary?", default=True)
+        self.config.send_weekly_stats = Confirm.ask("Send weekly statistics?", default=True)
+    
+        if self.config.send_daily_summary:
+            self.config.daily_summary_time = Prompt.ask(
+                "Daily summary time (HH:MM)",
+                default="18:00"
+            )
+    
+        self.save_config()
+    
+        console.print("\n[green]✓ Email notifications configured[/green]")
+    
+        # Test email
+        if Confirm.ask("\nSend test email?", default=True):
+            from notifiers.email import EmailNotifier
+        
+            notifier = EmailNotifier(
+                smtp_host=self.config.smtp_host,
+                smtp_port=self.config.smtp_port,
+                smtp_username=self.config.smtp_username,
+                smtp_password=self.config.smtp_password,
+                from_email=self.config.smtp_from_email,
+                to_emails=self.config.smtp_to_emails,
+                use_tls=self.config.smtp_use_tls
+            )
+        
+            if notifier.send_notification("Test Email", "This is a test email from YouTube Playlist Downloader"):
+                console.print("[green]✓ Test email sent successfully[/green]")
+            else:
+                console.print("[red]✗ Failed to send test email[/red]")
     
     def configure_filename_normalization(self):
         """Configure filename normalization"""

@@ -57,7 +57,7 @@ def main():
         
         # Run setup wizard if needed
         if not config_manager.config.setup_completed:
-            wizard = SetupWizard(config_manager)
+            wizard = SetupWizard()
             if wizard.run():
                 # Reload managers that depend on config
                 notification_manager.reload_config(config_manager.config)

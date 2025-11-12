@@ -179,65 +179,129 @@ class ConfigManager:
         
         self.save_config()
 
+        
+    def configure_notification_preferences(self):
+    """Configure which events trigger notifications"""
+    console.print("\n[cyan]Notification Preferences[/cyan]")
+    console.print("Choose which events should trigger notifications:\n")
+    
+    self.config.notify_on_download_complete = Confirm.ask(
+        "Notify on individual download complete?",
+        default=self.config.notify_on_download_complete
+    )
+    
+    self.config.notify_on_queue_complete = Confirm.ask(
+        "Notify on queue complete?",
+        default=self.config.notify_on_queue_complete
+    )
+    
+    self.config.notify_on_error = Confirm.ask(
+        "Notify on errors?",
+        default=self.config.notify_on_error
+    )
+    
+    self.config.notify_on_threshold = Confirm.ask(
+        "Notify on size thresholds?",
+        default=self.config.notify_on_threshold
+    )
+    
+    self.save_config()
+    console.print("\n[green]✓ Notification preferences updated[/green]")
+
+def toggle_notification_provider(self):
+    """Toggle notification providers on/off"""
+    console.print("\n[cyan]Notification Providers[/cyan]")
+    
+    console.print(f"\n[cyan]Slack:[/cyan] {'[green]Enabled[/green]' if self.config.slack_enabled else '[red]Disabled[/red]'}")
+    if self.config.slack_webhook_url:
+        console.print(f"  Webhook: {self.config.slack_webhook_url[:50]}...")
+    
+    console.print(f"\n[cyan]Email:[/cyan] {'[green]Enabled[/green]' if self.config.email_enabled else '[red]Disabled[/red]'}")
+    if self.config.smtp_host:
+        console.print(f"  SMTP Host: {self.config.smtp_host}")
+        console.print(f"  From: {self.config.smtp_from_email}")
+        console.print(f"  To: {', '.join(self.config.smtp_to_emails)}")
+    
+    console.print("\n[yellow]Options:[/yellow]")
+    console.print("  1. Toggle Slack")
+    console.print("  2. Toggle Email")
+    console.print("  3. Back")
+    
+    choice = Prompt.ask("\nSelect option", choices=["1", "2", "3"], default="3")
+    
+    if choice == "1":
+        if not self.config.slack_webhook_url:
+            console.print("[yellow]Slack webhook not configured. Configure it first.[/yellow]")
+            if Confirm.ask("Configure now?", default=True):
+                self.configure_slack_webhook()
+        else:
+            self.config.slack_enabled = not self.config.slack_enabled
+            status = "enabled" if self.config.slack_enabled else "disabled"
+            console.print(f"[green]✓ Slack notifications {status}[/green]")
+            self.save_config()
+    
+    elif choice == "2":
+        if not self.config.smtp_host:
+            console.print("[yellow]Email not configured. Configure it first.[/yellow]")
+            if Confirm.ask("Configure now?", default=True):
+                self.configure_email_notifications()
+        else:
+            self.config.email_enabled = not self.config.email_enabled
+            status = "enabled" if self.config.email_enabled else "disabled"
+            console.print(f"[green]✓ Email notifications {status}[/green]")
+            self.save_config()
+
     def configure_email_notifications(self):
         """Configure email notifications"""
         console.print("\n[cyan]Email Notification Configuration[/cyan]")
-        
-        if not Confirm.ask("Enable email notifications?", default=False):
-            self.config.email_notifications_enabled = False
-            self.save_config()
-            return
-        
+    
         console.print("\n[yellow]SMTP Server Settings:[/yellow]")
         console.print("Common providers:")
         console.print("  Gmail: smtp.gmail.com:587")
         console.print("  Outlook: smtp-mail.outlook.com:587")
         console.print("  Yahoo: smtp.mail.yahoo.com:587")
-        
+    
         self.config.smtp_host = Prompt.ask("\nSMTP Host")
         self.config.smtp_port = IntPrompt.ask("SMTP Port", default=587)
         self.config.smtp_username = Prompt.ask("SMTP Username (email)")
         self.config.smtp_password = Prompt.ask("SMTP Password", password=True)
         self.config.smtp_from_email = Prompt.ask("From Email", default=self.config.smtp_username)
-        
+    
         # To emails
         console.print("\n[yellow]Recipient Email(s):[/yellow]")
         to_emails = Prompt.ask("To Email(s) (comma-separated)")
         self.config.smtp_to_emails = [email.strip() for email in to_emails.split(',')]
-        
+    
         self.config.smtp_use_tls = Confirm.ask("Use TLS?", default=True)
-        self.config.email_notifications_enabled = True
-        
+        self.config.email_enabled = True
+        self.config.notifications_enabled = True
+    
         # Daily/Weekly summaries
         console.print("\n[yellow]Automated Reports:[/yellow]")
         self.config.send_daily_summary = Confirm.ask("Send daily summary?", default=True)
         self.config.send_weekly_stats = Confirm.ask("Send weekly statistics?", default=True)
-        
+    
         if self.config.send_daily_summary:
             self.config.daily_summary_time = Prompt.ask(
                 "Daily summary time (HH:MM)",
                 default="18:00"
             )
-        
+    
         self.save_config()
-        
+    
         console.print("\n[green]✓ Email notifications configured[/green]")
-        
+    
         # Test email
         if Confirm.ask("\nSend test email?", default=True):
-            from notifiers.email import EmailNotifier
-            
-            notifier = EmailNotifier(
-                smtp_host=self.config.smtp_host,
-                smtp_port=self.config.smtp_port,
-                smtp_username=self.config.smtp_username,
-                smtp_password=self.config.smtp_password,
-                from_email=self.config.smtp_from_email,
-                to_emails=self.config.smtp_to_emails,
-                use_tls=self.config.smtp_use_tls
-            )
-            
-            if notifier.send_notification("Test Email", "This is a test email from YouTube Playlist Downloader"):
+            from managers.notification_manager import NotificationManager
+        
+            notification_manager = NotificationManager(self.config)
+        
+            if notification_manager.email and notification_manager.email.is_configured():
+                if notification_manager.email.send_notification(
+                    "Test Email",
+                    "This is a test email from YouTube Playlist Downloader"
+                ):
                 console.print("[green]✓ Test email sent successfully[/green]")
             else:
                 console.print("[red]✗ Failed to send test email[/red]")

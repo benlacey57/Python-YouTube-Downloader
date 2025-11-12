@@ -44,16 +44,18 @@ class SettingsMenu:
             ("3", "Configure parallel downloads"),
             ("4", "Configure filename template"),
             ("5", "Configure Slack notifications"),
-            ("6", "Configure download timeout"),
-            ("7", "Configure alert thresholds"),
-            ("8", "Configure rate limiting"),
-            ("9", "Configure bandwidth limit"),
-            ("10", "Configure live streams"),
-            ("11", "Configure default quality"),
-            ("12", "Configure filename normalization"),
-            ("13", "Manage storage providers"),
-            ("14", "View system status"),
-            ("15", "Back to main menu")
+            ("6", "Configure email notifications"),  # NEW
+            ("7", "Configure download timeout"),
+            ("8", "Configure alert thresholds"),
+            ("9", "Configure rate limiting"),
+            ("10", "Configure bandwidth limit"),
+            ("11", "Configure live streams"),
+            ("12", "Configure default quality"),
+            ("13", "Configure filename normalization"),
+            ("14", "Manage storage providers"),
+            ("15", "View system status"),
+            ("16", "Seed database"),
+            ("17", "Back to main menu")
         ]
 
         option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])

@@ -63,10 +63,15 @@ class AppConfig:
     wait_for_scheduled_streams: bool = False
     max_stream_wait_minutes: int = 60
     
+    # Notifications - General
+    notifications_enabled: bool = False  # NEW - Master switch
+    
     # Notifications - Slack
+    slack_enabled: bool = False  # NEW
     slack_webhook_url: Optional[str] = None
     
     # Notifications - Email
+    email_enabled: bool = False  # NEW
     smtp_host: Optional[str] = None
     smtp_port: int = 587
     smtp_username: Optional[str] = None
@@ -74,7 +79,13 @@ class AppConfig:
     smtp_from_email: Optional[str] = None
     smtp_to_emails: List[str] = field(default_factory=list)
     smtp_use_tls: bool = True
-    email_notifications_enabled: bool = False
+    email_notifications_enabled: bool = False  # Deprecated - use email_enabled
+    
+    # Notification preferences - what to notify about
+    notify_on_download_complete: bool = True  # NEW
+    notify_on_queue_complete: bool = True  # NEW
+    notify_on_error: bool = True  # NEW
+    notify_on_threshold: bool = True  # NEW
     
     # Daily/weekly email settings
     send_daily_summary: bool = False

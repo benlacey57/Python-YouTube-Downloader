@@ -13,7 +13,8 @@ from managers.stats_manager import StatsManager
 from models.download_item import DownloadItem
 from models.queue import Queue
 from enums import DownloadStatus
-from notifiers.slack_notifier import SlackNotifier
+from notifiers.slack import SlackNotifier
+from notifiers.smtp import EmailNotifier
 from utils.rate_limiter import RateLimiter
 from utils.download_resume import DownloadResume
 from utils.keyboard_handler import keyboard_handler

@@ -8,7 +8,7 @@ from rich.prompt import Prompt, Confirm, IntPrompt
 from rich.panel import Panel
 
 # Manager imports
-from managers.config_manager import ConfigManager
+from managers.config_manager import ConfigManager, AppConfig  # Add AppConfig import
 from managers.queue_manager import QueueManager
 from managers.stats_manager import StatsManager
 from managers.proxy_manager import ProxyManager
@@ -18,7 +18,7 @@ from managers.monitor_manager import MonitorManager
 from downloaders.playlist import PlaylistDownloader
 
 # Notifier imports
-from notifiers.slack_notifier import SlackNotifier
+from notifiers.slack import SlackNotifier
 
 # UI imports
 from ui.menu import Menu
@@ -41,6 +41,7 @@ from enums import DownloadStatus
 console = Console()
 
 
+
 def main():
     """Main application loop"""
     try:
@@ -49,9 +50,8 @@ def main():
         # Initialize managers
         config_manager = ConfigManager()
         queue_manager = QueueManager()
-        stats_manager = StatsManager()  # Now works without parameters
+        stats_manager = StatsManager()
         proxy_manager = ProxyManager(config_manager.config.proxies)
-        slack_notifier = SlackNotifier(config_manager.config.slack_webhook_url)
         monitor_manager = MonitorManager()
         storage_manager = StorageManager()
         
@@ -70,6 +70,14 @@ def main():
                 to_emails=config_manager.config.smtp_to_emails,
                 use_tls=config_manager.config.smtp_use_tls
             )
+        
+        # Initialize downloader with config object (not config_manager)
+        downloader = PlaylistDownloader(
+            config_manager.config,  # Pass AppConfig instance
+            stats_manager,
+            slack_notifier,
+            email_notifier
+        )
         
         # Initialize downloader with both notifiers
         downloader = PlaylistDownloader(

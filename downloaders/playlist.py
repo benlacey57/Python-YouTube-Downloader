@@ -8,13 +8,13 @@ from downloaders.base import BaseDownloader
 from downloaders.video import VideoDownloader
 from downloaders.audio import AudioDownloader
 from downloaders.livestream import LiveStreamDownloader
-from managers.config_manager import AppConfig  # Changed from Config
+from managers.config_manager import AppConfig
 from managers.stats_manager import StatsManager
 from managers.queue_manager import QueueManager
+from managers.notification_manager import NotificationManager
 from models.queue import Queue
 from models.download_item import DownloadItem
 from enums import DownloadStatus
-from notifiers.slack_notifier import SlackNotifier
 from utils.keyboard_handler import keyboard_handler
 
 console = Console()
@@ -23,18 +23,15 @@ console = Console()
 class PlaylistDownloader(BaseDownloader):
     """Orchestrates playlist downloads using specialized downloaders"""
     
-    def __init__(self, config: AppConfig, stats_manager: StatsManager = None,  # Changed from Config
-                 slack_notifier: SlackNotifier = None, 
-                 email_notifier = None):
-        super().__init__(config, stats_manager, slack_notifier)
-        
-        self.email_notifier = email_notifier
+    def __init__(self, config: AppConfig, stats_manager: StatsManager = None,
+                 notification_manager: NotificationManager = None):
+        super().__init__(config, stats_manager, notification_manager)
         
         # Initialize specialized downloaders
-        self.video_downloader = VideoDownloader(config, stats_manager, slack_notifier)
-        self.audio_downloader = AudioDownloader(config, stats_manager, slack_notifier)
-        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, slack_notifier)
-        
+        self.video_downloader = VideoDownloader(config, stats_manager, notification_manager)
+        self.audio_downloader = AudioDownloader(config, stats_manager, notification_manager)
+        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, notification_manager)
+    
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
         """
         Download a single item using the appropriate downloader
@@ -117,6 +114,8 @@ class PlaylistDownloader(BaseDownloader):
                     # Check for cancellation
                     if keyboard_handler.is_cancelled():
                         console.print("\n[yellow]Download cancelled by user[/yellow]")
+                        # Record interruption for resume
+                        queue_manager.record_queue_interruption(queue.id)
                         break
                     
                     # Check for pause
@@ -137,32 +136,28 @@ class PlaylistDownloader(BaseDownloader):
                     
                     progress.update(task, advance=1)
             
-            # Mark queue as completed
-            from datetime import datetime
-            queue.completed_at = datetime.now().isoformat()
-            queue_manager.update_queue(queue)
-            
-            if self.stats_manager:
-                self.stats_manager.record_queue_completed()
-            
-            # Send completion notification
-            if self.slack_notifier and self.slack_notifier.is_configured():
-                completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
-                self.slack_notifier.notify_queue_completed(
-                    queue.playlist_title,
-                    completed,
-                    len(items)
-                )
-
-            if self.email_notifier and self.email_notifier.is_configured():
-                completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
-                self.email_notifier.notify_queue_completed(
-                    queue.playlist_title,
-                    completed,
-                    len(items)
-                )
-            
-            console.print(f"\n[bold green]✓ Queue completed: {queue.playlist_title}[/bold green]")
+            # Mark queue as completed if not cancelled
+            if not keyboard_handler.is_cancelled():
+                from datetime import datetime
+                queue.completed_at = datetime.now().isoformat()
+                queue_manager.update_queue(queue)
+                
+                # Clear resume data
+                queue_manager.clear_queue_resume(queue.id)
+                
+                if self.stats_manager:
+                    self.stats_manager.record_queue_completed()
+                
+                # Send completion notification
+                if self.notification_manager and self.notification_manager.has_any_notifier():
+                    completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+                    self.notification_manager.notify_queue_completed(
+                        queue.playlist_title,
+                        completed,
+                        len(items)
+                    )
+                
+                console.print(f"\n[bold green]✓ Queue completed: {queue.playlist_title}[/bold green]")
         
         finally:
             keyboard_handler.stop_listening()

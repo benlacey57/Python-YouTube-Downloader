@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Summary</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            border-bottom: 3px solid #FF5722;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            color: #FF5722;
+            font-size: 24px;
+        }
+        .header .date {
+            color: #999;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .highlight-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .highlight-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .highlight-card.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .highlight-card.success {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .highlight-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .highlight-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+        .section {
+            margin: 30px 0;
+        }
+        .section h2 {
+            font-size: 18px;
+            color: #555;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .metric-label {
+            color: #666;
+        }
+        .metric-value {
+            font-weight: bold;
+            color: #FF5722;
+        }
+        .top-downloads {
+            margin: 20px 0;
+        }
+        .download-item {
+            padding: 12px;
+            margin: 8px 0;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border-left: 3px solid #FF5722;
+        }
+        .download-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .download-meta {
+            font-size: 12px;
+            color: #999;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Daily Summary</h1>
+            <div class="date">{{ date }}</div>
+        </div>
+        
+        <div class="highlight-stats">
+            <div class="highlight-card primary">
+                <div class="highlight-label">Total Downloads</div>
+                <div class="highlight-value">{{ total_downloads }}</div>
+            </div>
+            <div class="highlight-card success">
+                <div class="highlight-label">Data Downloaded</div>
+                <div class="highlight-value">{{ total_size_gb | round(2) }} GB</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Statistics</h2>
+            <div class="metric-row">
+                <span class="metric-label">Successful Downloads</span>
+                <span class="metric-value">{{ successful_downloads }}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Failed Downloads</span>
+                <span class="metric-value">{{ failed_downloads }}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Success Rate</span>
+                <span class="metric-value">{{ success_rate | round(1) }}%</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Queues Completed</span>
+                <span class="metric-value">{{ queues_completed }}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Average File Size</span>
+                <span class="metric-value">{{ avg_file_size_mb | round(1) }} MB</span>
+            </div>
+        </div>
+        
+        {% if top_downloads %}
+        <div class="section">
+            <h2>Top Downloads</h2>
+            <div class="top-downloads">
+                {% for download in top_downloads %}
+                <div class="download-item">
+                    <div class="download-title">{{ download.title }}</div>
+                    <div class="download-meta">
+                        {{ download.size_mb | round(1) }} MB • {{ download.duration }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="footer">
+            <p>YouTube Playlist Downloader</p>
+            <p>Generated at {{ generation_time }}</p>
+        </div>
+    </div>
+</body>
+</html>

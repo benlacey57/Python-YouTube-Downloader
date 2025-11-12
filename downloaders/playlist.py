@@ -8,7 +8,7 @@ from downloaders.base import BaseDownloader
 from downloaders.video import VideoDownloader
 from downloaders.audio import AudioDownloader
 from downloaders.livestream import LiveStreamDownloader
-from managers.config_manager import AppConfig
+from managers.config_manager import ConfigManager
 from managers.stats_manager import StatsManager
 from managers.queue_manager import QueueManager
 from managers.notification_manager import NotificationManager
@@ -23,14 +23,23 @@ console = Console()
 class PlaylistDownloader(BaseDownloader):
     """Orchestrates playlist downloads using specialized downloaders"""
     
-    def __init__(self, config: AppConfig, stats_manager: StatsManager = None,
-                 notification_manager: NotificationManager = None):
-        super().__init__(config, stats_manager, notification_manager)
+    def __init__(self):
+        # Get managers internally
+        config_manager = ConfigManager()
+        self.stats_manager = StatsManager()
+        self.notification_manager = NotificationManager(config_manager.config)
+        
+        # Initialize base with config
+        super().__init__(
+            config_manager.config,
+            self.stats_manager,
+            self.notification_manager
+        )
         
         # Initialize specialized downloaders
-        self.video_downloader = VideoDownloader(config, stats_manager, notification_manager)
-        self.audio_downloader = AudioDownloader(config, stats_manager, notification_manager)
-        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, notification_manager)
+        self.video_downloader = VideoDownloader()
+        self.audio_downloader = AudioDownloader()
+        self.livestream_downloader = LiveStreamDownloader()
     
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
         """

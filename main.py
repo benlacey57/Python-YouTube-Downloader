@@ -832,7 +832,7 @@ def handle_settings(config_manager, proxy_manager, storage_manager, stats_manage
         elif choice == "5":
             config_manager.configure_slack()
         elif choice == "6":
-            config_manager.configure_timeout()
+            config_manager.configure_email_notifications()
         elif choice == "7":
             config_manager.configure_alert_thresholds()
         elif choice == "8":

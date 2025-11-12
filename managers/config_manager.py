@@ -40,6 +40,7 @@ class AppConfig:
     """Application configuration"""
     # Authentication
     cookies_file: Optional[str] = None
+    oauth_token: Optional[str] = None
     
     # Download settings
     max_workers: int = 3

@@ -4,6 +4,9 @@ from pathlib import Path
 from datetime import datetime
 
 from downloaders.base import BaseDownloader
+from managers.config_manager import ConfigManager
+from managers.stats_manager import StatsManager
+from managers.notification_manager import NotificationManager
 from models.download_item import DownloadItem
 from models.queue import Queue
 from enums import DownloadStatus
@@ -16,10 +19,22 @@ console = Console()
 
 class LiveStreamDownloader(BaseDownloader):
     """Handles live stream recording"""
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.live_stream_recorder = LiveStreamRecorder()
+    
+    def __init__(self):
+        # Get managers internally
+        config_manager = ConfigManager()
+        stats_manager = StatsManager()
+        notification_manager = NotificationManager(config_manager.config)
         
+        # Initialize base
+        super().__init__(
+            config_manager.config,
+            stats_manager,
+            notification_manager
+        )
+        
+        self.live_stream_recorder = LiveStreamRecorder()
+    
     def is_live_stream(self, info: dict) -> bool:
         """Check if content is a live stream"""
         return self.live_stream_recorder.is_live_stream(info)

@@ -153,6 +153,14 @@ class PlaylistDownloader(BaseDownloader):
                     completed,
                     len(items)
                 )
+
+            if self.email_notifier and self.email_notifier.is_configured():
+                completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+                self.email_notifier.notify_queue_completed(
+                    queue.playlist_title,
+                    completed,
+                    len(items)
+                )
             
             console.print(f"\n[bold green]✓ Queue completed: {queue.playlist_title}[/bold green]")
         

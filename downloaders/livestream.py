@@ -16,11 +16,10 @@ console = Console()
 
 class LiveStreamDownloader(BaseDownloader):
     """Handles live stream recording"""
-    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.live_stream_recorder = LiveStreamRecorder()
-    
+        
     def is_live_stream(self, info: dict) -> bool:
         """Check if content is a live stream"""
         return self.live_stream_recorder.is_live_stream(info)

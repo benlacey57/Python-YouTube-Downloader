@@ -16,8 +16,8 @@ class MonitoringMenu:
         """Display monitoring menu"""
         console.print("\n")
 
-        status = "Running" if monitor_manager.is_running else "Stopped"
-        channels = monitor_manager.get_all_channels()
+        status = "Running" if self.monitor_manager.is_running else "Stopped"
+        channels = self.monitor_manager.get_all_channels()
 
         status_panel = Panel(
             f"[bold]Status:[/bold] {status}\n"
@@ -129,7 +129,7 @@ class MonitoringMenu:
         download_order = MonitoringMenu._get_download_order()
 
         # Check if channel already exists
-        existing_channel = monitor_manager.get_channel_by_url(channel_url)
+        existing_channel = self.monitor_manager.get_channel_by_url(channel_url)
 
         if existing_channel:
             # Update existing channel
@@ -141,7 +141,7 @@ class MonitoringMenu:
             existing_channel.output_dir = output_dir
             existing_channel.filename_template = filename_template
             existing_channel.download_order = download_order
-            monitor_manager.update_channel(existing_channel)
+            self.monitor_manager.update_channel(existing_channel)
             console.print(f"\n[green]Updated monitoring for {existing_channel.title}[/green]")
         else:
             # Create new channel
@@ -157,13 +157,13 @@ class MonitoringMenu:
                 filename_template=filename_template,
                 download_order=download_order
             )
-            monitor_manager.add_channel(channel)
+            self.monitor_manager.add_channel(channel)
             console.print(f"\n[green]Added {channel.title} to monitoring[/green]")
 
     @staticmethod
     def remove_channel_from_monitoring(monitor_manager):
         """Remove a channel from monitoring"""
-        channels = monitor_manager.get_all_channels()
+        channels = self.monitor_manager.get_all_channels()
         monitored = [c for c in channels if c.is_monitored]
 
         if not monitored:
@@ -182,7 +182,7 @@ class MonitoringMenu:
         if selection > 0 and selection <= len(monitored):
             channel = monitored[selection - 1]
             channel.is_monitored = False
-            monitor_manager.update_channel(channel)
+            self.monitor_manager.update_channel(channel)
             console.print(f"[green]Removed {channel.title} from monitoring[/green]")
 
     @staticmethod

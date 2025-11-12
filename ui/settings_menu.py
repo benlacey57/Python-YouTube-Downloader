@@ -1,17 +1,18 @@
-"""Settings menu display"""
+"""Settings menu"""
 from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.prompt import Prompt
 
 console = Console()
 
 
 class SettingsMenu:
-    """Settings menu display and handling"""
-
-    @staticmethod
-    def display_settings_menu(config_manager) -> str:
+    """Settings configuration menu"""
+    
+    def __init__(self):
+        from managers.config_manager import ConfigManager
+        
+        self.config_manager = ConfigManager()
+    
+    def show(self):
         """Display settings menu with enhanced UI"""
         console.print("\n")
 

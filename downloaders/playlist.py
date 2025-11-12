@@ -24,13 +24,16 @@ class PlaylistDownloader(BaseDownloader):
     """Orchestrates playlist downloads using specialized downloaders"""
     
     def __init__(self, config: Config, stats_manager: StatsManager = None,
-                 slack_notifier: SlackNotifier = None):
+                 slack_notifier: SlackNotifier = None, 
+                 email_notifier = None):
         super().__init__(config, stats_manager, slack_notifier)
         
+        self.email_notifier = email_notifier
+        
         # Initialize specialized downloaders
-        self.video_downloader = VideoDownloader(config, stats_manager, slack_notifier)
-        self.audio_downloader = AudioDownloader(config, stats_manager, slack_notifier)
-        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, slack_notifier)
+        self.video_downloader = VideoDownloader(config, stats_manager, slack_notifier, email_notifier)
+        self.audio_downloader = AudioDownloader(config, stats_manager, slack_notifier, email_notifier)
+        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, slack_notifier, email_notifier)
     
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
         """

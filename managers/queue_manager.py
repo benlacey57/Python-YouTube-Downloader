@@ -1,8 +1,9 @@
-"""Queue management operations"""
+"""Queue manager with integrated resume functionality"""
 import sqlite3
-from pathlib import Path
 from typing import List, Optional
+from pathlib import Path
 from datetime import datetime
+import json
 
 from models.queue import Queue
 from models.download_item import DownloadItem
@@ -10,14 +11,19 @@ from enums import DownloadStatus
 
 
 class QueueManager:
-    """Manages download queues in database"""
+    """Manages download queues with resume support"""
     
-    def __init__(self, db_path: str = "downloads.db"):
+    def __init__(self, db_path: str = "data/downloads.db"):
         self.db_path = db_path
+        self.resume_file = Path("data/resume_info.json")
+        self.resume_file.parent.mkdir(parents=True, exist_ok=True)
         self._init_database()
+        self.resume_data = self._load_resume_data()
     
     def _init_database(self):
         """Initialize database tables"""
+        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+        
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             
@@ -30,28 +36,17 @@ class QueueManager:
                     format_type TEXT NOT NULL,
                     quality TEXT NOT NULL,
                     output_dir TEXT NOT NULL,
-                    download_order TEXT NOT NULL,
                     filename_template TEXT,
-                    created_at TEXT NOT NULL,
-                    completed_at TEXT,
+                    download_order TEXT DEFAULT 'newest_first',
                     storage_provider TEXT DEFAULT 'local',
                     storage_video_quality TEXT,
-                    storage_audio_quality TEXT
+                    storage_audio_quality TEXT,
+                    created_at TEXT NOT NULL,
+                    started_at TEXT,
+                    completed_at TEXT,
+                    status TEXT DEFAULT 'pending'
                 )
             """)
-            
-            # Check if storage columns exist, add them if not
-            cursor.execute("PRAGMA table_info(queues)")
-            columns = [column[1] for column in cursor.fetchall()]
-            
-            if 'storage_provider' not in columns:
-                cursor.execute("ALTER TABLE queues ADD COLUMN storage_provider TEXT DEFAULT 'local'")
-            
-            if 'storage_video_quality' not in columns:
-                cursor.execute("ALTER TABLE queues ADD COLUMN storage_video_quality TEXT")
-            
-            if 'storage_audio_quality' not in columns:
-                cursor.execute("ALTER TABLE queues ADD COLUMN storage_audio_quality TEXT")
             
             # Download items table
             cursor.execute("""
@@ -60,173 +55,196 @@ class QueueManager:
                     queue_id INTEGER NOT NULL,
                     url TEXT NOT NULL,
                     title TEXT NOT NULL,
-                    status TEXT NOT NULL,
+                    video_id TEXT,
+                    uploader TEXT,
+                    upload_date TEXT,
                     file_path TEXT,
                     file_size_bytes INTEGER,
                     file_hash TEXT,
+                    status TEXT DEFAULT 'pending',
+                    error TEXT,
                     download_started_at TEXT,
                     download_completed_at TEXT,
                     download_duration_seconds REAL,
-                    error TEXT,
-                    uploader TEXT,
-                    upload_date TEXT,
-                    video_id TEXT,
-                    FOREIGN KEY (queue_id) REFERENCES queues (id)
+                    FOREIGN KEY (queue_id) REFERENCES queues (id) ON DELETE CASCADE
                 )
             """)
             
             conn.commit()
     
-    def create_queue(self, queue: Queue) -> Queue:
-        """Create a new download queue"""
+    # Resume functionality integrated into QueueManager
+    
+    def _load_resume_data(self) -> dict:
+        """Load resume data from file"""
+        if self.resume_file.exists():
+            try:
+                with open(self.resume_file, 'r') as f:
+                    return json.load(f)
+            except:
+                return {}
+        return {}
+    
+    def _save_resume_data(self):
+        """Save resume data to file"""
+        try:
+            with open(self.resume_file, 'w') as f:
+                json.dump(self.resume_data, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Could not save resume data: {e}")
+    
+    def record_queue_interruption(self, queue_id: int):
+        """Record that a queue was interrupted"""
+        queue = self.get_queue(queue_id)
+        if not queue:
+            return
+        
+        pending_items = [
+            item for item in self.get_queue_items(queue_id)
+            if item.status == DownloadStatus.PENDING.value
+        ]
+        
+        self.resume_data[str(queue_id)] = {
+            'queue_id': queue_id,
+            'playlist_title': queue.playlist_title,
+            'pending_count': len(pending_items),
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        self._save_resume_data()
+    
+    def get_resumable_queues(self) -> List[dict]:
+        """Get list of queues that can be resumed"""
+        resumable = []
+        
+        for queue_id_str, info in self.resume_data.items():
+            queue_id = int(queue_id_str)
+            queue = self.get_queue(queue_id)
+            
+            if queue and info['pending_count'] > 0:
+                resumable.append({
+                    'queue_id': queue_id,
+                    'playlist_title': info['playlist_title'],
+                    'pending_count': info['pending_count'],
+                    'timestamp': info['timestamp']
+                })
+        
+        return resumable
+    
+    def clear_queue_resume(self, queue_id: int):
+        """Clear resume data for a queue"""
+        queue_id_str = str(queue_id)
+        if queue_id_str in self.resume_data:
+            del self.resume_data[queue_id_str]
+            self._save_resume_data()
+    
+    def clear_all_resume_data(self):
+        """Clear all resume data"""
+        self.resume_data = {}
+        self._save_resume_data()
+    
+    # Existing queue methods
+    
+    def create_queue(self, queue: Queue) -> int:
+        """Create a new queue"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            
             cursor.execute("""
                 INSERT INTO queues (
                     playlist_url, playlist_title, format_type, quality,
-                    output_dir, download_order, filename_template, created_at,
-                    storage_provider, storage_video_quality, storage_audio_quality
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    output_dir, filename_template, download_order,
+                    storage_provider, storage_video_quality, storage_audio_quality,
+                    created_at, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 queue.playlist_url,
                 queue.playlist_title,
                 queue.format_type,
                 queue.quality,
                 queue.output_dir,
-                queue.download_order,
                 queue.filename_template,
-                datetime.now().isoformat(),
+                queue.download_order,
                 queue.storage_provider,
                 queue.storage_video_quality,
-                queue.storage_audio_quality
+                queue.storage_audio_quality,
+                queue.created_at,
+                queue.status
             ))
-            
-            queue.id = cursor.lastrowid
             conn.commit()
-            
-            return queue
+            return cursor.lastrowid
     
     def get_queue(self, queue_id: int) -> Optional[Queue]:
         """Get queue by ID"""
         with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM queues WHERE id = ?", (queue_id,))
             row = cursor.fetchone()
             
             if row:
-                return Queue.from_row(row)
+                return Queue(
+                    id=row['id'],
+                    playlist_url=row['playlist_url'],
+                    playlist_title=row['playlist_title'],
+                    format_type=row['format_type'],
+                    quality=row['quality'],
+                    output_dir=row['output_dir'],
+                    filename_template=row['filename_template'],
+                    download_order=row['download_order'],
+                    storage_provider=row['storage_provider'],
+                    storage_video_quality=row['storage_video_quality'],
+                    storage_audio_quality=row['storage_audio_quality'],
+                    created_at=row['created_at'],
+                    started_at=row['started_at'],
+                    completed_at=row['completed_at'],
+                    status=row['status']
+                )
             return None
     
     def get_all_queues(self) -> List[Queue]:
         """Get all queues"""
         with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM queues ORDER BY created_at DESC")
             rows = cursor.fetchall()
             
-            return [Queue.from_row(row) for row in rows]
-    
-    def get_incomplete_queues(self) -> List[Queue]:
-        """Get queues that haven't been completed"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                SELECT * FROM queues 
-                WHERE completed_at IS NULL 
-                ORDER BY created_at DESC
-            """)
-            rows = cursor.fetchall()
+            queues = []
+            for row in rows:
+                queues.append(Queue(
+                    id=row['id'],
+                    playlist_url=row['playlist_url'],
+                    playlist_title=row['playlist_title'],
+                    format_type=row['format_type'],
+                    quality=row['quality'],
+                    output_dir=row['output_dir'],
+                    filename_template=row['filename_template'],
+                    download_order=row['download_order'],
+                    storage_provider=row['storage_provider'],
+                    storage_video_quality=row['storage_video_quality'],
+                    storage_audio_quality=row['storage_audio_quality'],
+                    created_at=row['created_at'],
+                    started_at=row['started_at'],
+                    completed_at=row['completed_at'],
+                    status=row['status']
+                ))
             
-            return [Queue.from_row(row) for row in rows]
+            return queues
     
     def update_queue(self, queue: Queue):
         """Update queue"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                UPDATE queues 
-                SET playlist_title = ?, format_type = ?, quality = ?,
-                    output_dir = ?, download_order = ?, filename_template = ?,
-                    completed_at = ?, storage_provider = ?,
-                    storage_video_quality = ?, storage_audio_quality = ?
+                UPDATE queues SET
+                    started_at = ?,
+                    completed_at = ?,
+                    status = ?
                 WHERE id = ?
             """, (
-                queue.playlist_title,
-                queue.format_type,
-                queue.quality,
-                queue.output_dir,
-                queue.download_order,
-                queue.filename_template,
+                queue.started_at,
                 queue.completed_at,
-                queue.storage_provider,
-                queue.storage_video_quality,
-                queue.storage_audio_quality,
+                queue.status,
                 queue.id
-            ))
-            conn.commit()
-    
-    def add_item_to_queue(self, item: DownloadItem) -> DownloadItem:
-        """Add download item to queue"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            
-            cursor.execute("""
-                INSERT INTO download_items (
-                    queue_id, url, title, status, uploader, upload_date, video_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                item.queue_id,
-                item.url,
-                item.title,
-                item.status,
-                item.uploader,
-                item.upload_date,
-                item.video_id
-            ))
-            
-            item.id = cursor.lastrowid
-            conn.commit()
-            
-            return item
-    
-    def get_queue_items(self, queue_id: int) -> List[DownloadItem]:
-        """Get all items for a queue"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                SELECT * FROM download_items 
-                WHERE queue_id = ?
-                ORDER BY id
-            """, (queue_id,))
-            rows = cursor.fetchall()
-            
-            return [DownloadItem.from_row(row) for row in rows]
-    
-    def update_item(self, item: DownloadItem):
-        """Update download item"""
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE download_items 
-                SET status = ?, file_path = ?, file_size_bytes = ?,
-                    file_hash = ?, download_started_at = ?,
-                    download_completed_at = ?, download_duration_seconds = ?,
-                    error = ?, uploader = ?, upload_date = ?, video_id = ?
-                WHERE id = ?
-            """, (
-                item.status,
-                item.file_path,
-                item.file_size_bytes,
-                item.file_hash,
-                item.download_started_at,
-                item.download_completed_at,
-                item.download_duration_seconds,
-                item.error,
-                item.uploader,
-                item.upload_date,
-                item.video_id,
-                item.id
             ))
             conn.commit()
     
@@ -234,11 +252,123 @@ class QueueManager:
         """Delete queue and all its items"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
-            
-            # Delete items
-            cursor.execute("DELETE FROM download_items WHERE queue_id = ?", (queue_id,))
-            
-            # Delete queue
             cursor.execute("DELETE FROM queues WHERE id = ?", (queue_id,))
-            
             conn.commit()
+        
+        # Clear resume data
+        self.clear_queue_resume(queue_id)
+    
+    def add_item(self, item: DownloadItem) -> int:
+        """Add download item to queue"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO download_items (
+                    queue_id, url, title, video_id, uploader, upload_date,
+                    file_path, file_size_bytes, file_hash, status, error,
+                    download_started_at, download_completed_at, download_duration_seconds
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                item.queue_id,
+                item.url,
+                item.title,
+                item.video_id,
+                item.uploader,
+                item.upload_date,
+                item.file_path,
+                item.file_size_bytes,
+                item.file_hash,
+                item.status,
+                item.error,
+                item.download_started_at,
+                item.download_completed_at,
+                item.download_duration_seconds
+            ))
+            conn.commit()
+            return cursor.lastrowid
+    
+    def get_queue_items(self, queue_id: int) -> List[DownloadItem]:
+        """Get all items in queue"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM download_items 
+                WHERE queue_id = ?
+                ORDER BY id ASC
+            """, (queue_id,))
+            rows = cursor.fetchall()
+            
+            items = []
+            for row in rows:
+                items.append(DownloadItem(
+                    id=row['id'],
+                    queue_id=row['queue_id'],
+                    url=row['url'],
+                    title=row['title'],
+                    video_id=row['video_id'],
+                    uploader=row['uploader'],
+                    upload_date=row['upload_date'],
+                    file_path=row['file_path'],
+                    file_size_bytes=row['file_size_bytes'],
+                    file_hash=row['file_hash'],
+                    status=row['status'],
+                    error=row['error'],
+                    download_started_at=row['download_started_at'],
+                    download_completed_at=row['download_completed_at'],
+                    download_duration_seconds=row['download_duration_seconds']
+                ))
+            
+            return items
+    
+    def update_item(self, item: DownloadItem):
+        """Update download item"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE download_items SET
+                    file_path = ?,
+                    file_size_bytes = ?,
+                    file_hash = ?,
+                    status = ?,
+                    error = ?,
+                    download_started_at = ?,
+                    download_completed_at = ?,
+                    download_duration_seconds = ?
+                WHERE id = ?
+            """, (
+                item.file_path,
+                item.file_size_bytes,
+                item.file_hash,
+                item.status,
+                item.error,
+                item.download_started_at,
+                item.download_completed_at,
+                item.download_duration_seconds,
+                item.id
+            ))
+            conn.commit()
+    
+    def get_queue_stats(self, queue_id: int) -> dict:
+        """Get statistics for a queue"""
+        items = self.get_queue_items(queue_id)
+        
+        total = len(items)
+        completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+        failed = sum(1 for item in items if item.status == DownloadStatus.FAILED.value)
+        pending = sum(1 for item in items if item.status == DownloadStatus.PENDING.value)
+        
+        total_size = sum(
+            item.file_size_bytes or 0 
+            for item in items 
+            if item.status == DownloadStatus.COMPLETED.value
+        )
+        
+        return {
+            'total': total,
+            'completed': completed,
+            'failed': failed,
+            'pending': pending,
+            'total_size_bytes': total_size,
+            'total_size_mb': total_size / (1024 * 1024)
+        }

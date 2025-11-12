@@ -1,3 +1,4 @@
+
 """Base downloader with shared functionality"""
 import yt_dlp
 import hashlib
@@ -7,7 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any
 from rich.console import Console
 
-from managers.config_manager import Config
+from managers.config_manager import AppConfig  # Changed from Config
 from managers.stats_manager import StatsManager
 from models.download_item import DownloadItem
 from models.queue import Queue
@@ -23,7 +24,7 @@ console = Console()
 class BaseDownloader(ABC):
     """Base class for all downloaders"""
     
-    def __init__(self, config: Config, stats_manager: StatsManager = None,
+    def __init__(self, config: AppConfig, stats_manager: StatsManager = None,  # Changed from Config
                  slack_notifier: SlackNotifier = None):
         self.config = config
         self.stats_manager = stats_manager

@@ -15,7 +15,7 @@ from managers.proxy_manager import ProxyManager
 from managers.monitor_manager import MonitorManager
 
 # Downloader imports
-from downloaders.playlist_downloader import PlaylistDownloader
+from downloaders.playlist import PlaylistDownloader
 
 # Notifier imports
 from notifiers.slack_notifier import SlackNotifier

@@ -1,18 +1,20 @@
-"""Storage management menu"""
+"""Storage menu"""
 from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.prompt import Prompt, Confirm, IntPrompt
-from pathlib import Path
 
 console = Console()
 
 
 class StorageMenu:
-    """Storage management menu"""
+    """Storage provider management menu"""
     
-    @staticmethod
-    def display_storage_menu(config_manager, storage_manager) -> str:
+    def __init__(self):
+        from managers.config_manager import ConfigManager
+        from utils.storage_providers import StorageManager
+        
+        self.config_manager = ConfigManager()
+        self.storage_manager = StorageManager()
+    
+    def show(self):
         """Display storage management menu"""
         console.print("\n")
         

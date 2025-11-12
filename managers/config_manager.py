@@ -41,6 +41,7 @@ class AppConfig:
     # Authentication
     cookies_file: Optional[str] = None
     oauth_token: Optional[str] = None
+    oauth_refresh_token: Optional[str] = None
     
     # Download settings
     max_workers: int = 3

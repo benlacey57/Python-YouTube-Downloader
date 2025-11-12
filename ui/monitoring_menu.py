@@ -1,20 +1,18 @@
-"""Monitoring menu display"""
+"""Monitoring menu"""
 from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.prompt import Prompt, Confirm, IntPrompt
-from datetime import datetime
-from pathlib import Path
 
 console = Console()
 
 
 class MonitoringMenu:
-    """Monitoring menu display and handling"""
-
-    @staticmethod
-    def display_monitoring_menu(monitor_manager, downloader, queue_manager, 
-                                config_manager, slack_notifier) -> str:
+    """Channel monitoring menu"""
+    
+    def __init__(self):
+        from managers.monitor_manager import MonitorManager
+        
+        self.monitor_manager = MonitorManager()
+    
+    def show(self):
         """Display monitoring menu"""
         console.print("\n")
 

@@ -16,7 +16,7 @@ console = Console()
 
 class AudioDownloader(BaseDownloader):
     """Handles audio/music downloads"""
-    
+
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
         """Download an audio item"""
         # Check for skip request

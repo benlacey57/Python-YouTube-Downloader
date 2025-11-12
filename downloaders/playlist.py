@@ -8,7 +8,7 @@ from downloaders.base import BaseDownloader
 from downloaders.video import VideoDownloader
 from downloaders.audio import AudioDownloader
 from downloaders.livestream import LiveStreamDownloader
-from managers.config_manager import Config
+from managers.config_manager import AppConfig  # Changed from Config
 from managers.stats_manager import StatsManager
 from managers.queue_manager import QueueManager
 from models.queue import Queue
@@ -23,7 +23,7 @@ console = Console()
 class PlaylistDownloader(BaseDownloader):
     """Orchestrates playlist downloads using specialized downloaders"""
     
-    def __init__(self, config: Config, stats_manager: StatsManager = None,
+    def __init__(self, config: AppConfig, stats_manager: StatsManager = None,  # Changed from Config
                  slack_notifier: SlackNotifier = None, 
                  email_notifier = None):
         super().__init__(config, stats_manager, slack_notifier)
@@ -31,10 +31,10 @@ class PlaylistDownloader(BaseDownloader):
         self.email_notifier = email_notifier
         
         # Initialize specialized downloaders
-        self.video_downloader = VideoDownloader(config, stats_manager, slack_notifier, email_notifier)
-        self.audio_downloader = AudioDownloader(config, stats_manager, slack_notifier, email_notifier)
-        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, slack_notifier, email_notifier)
-    
+        self.video_downloader = VideoDownloader(config, stats_manager, slack_notifier)
+        self.audio_downloader = AudioDownloader(config, stats_manager, slack_notifier)
+        self.livestream_downloader = LiveStreamDownloader(config, stats_manager, slack_notifier)
+        
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
         """
         Download a single item using the appropriate downloader

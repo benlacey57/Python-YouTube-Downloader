@@ -1,472 +1,561 @@
-"""Initial setup wizard"""
+"""Setup wizard for first-time configuration"""
 from rich.console import Console
-from rich.panel import Panel
 from rich.prompt import Prompt, Confirm, IntPrompt
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.panel import Panel
+from rich.table import Table
+
+from managers.config_manager import ConfigManager
 
 console = Console()
 
 
 class SetupWizard:
-    """Guides user through initial setup"""
+    """Interactive setup wizard"""
     
-    @staticmethod
-    def run(config_manager):
+    def __init__(self):
+        self.config_manager = ConfigManager()
+    
+    def run(self) -> bool:
         """Run the setup wizard"""
         console.clear()
         
-        welcome_panel = Panel(
-            "[bold cyan]Welcome to Playlist Downloader Pro![/bold cyan]\n\n"
-            "This wizard will help you configure the application.\n"
-            "You can change these settings later in the Settings menu.",
-            border_style="cyan",
-            padding=(1, 2)
+        header = Panel(
+            "[bold cyan]Setup Wizard[/bold cyan]\n"
+            "Quick configuration for YouTube Playlist Downloader",
+            border_style="cyan"
         )
-        console.print(welcome_panel)
+        console.print(header)
         
-        if not Confirm.ask("\nWould you like to run the setup wizard?", default=True):
-            config_manager.config.setup_completed = True
-            config_manager.save_config()
-            return
+        # Show default configuration summary
+        self._show_defaults_summary()
         
-        # Step 1: Authentication
-        SetupWizard._setup_authentication(config_manager)
+        console.print("\n[yellow]The application is ready to use with these defaults.[/yellow]")
         
-        # Step 2: Default Quality
-        SetupWizard._setup_quality(config_manager)
+        # Ask if user wants to customize
+        if not Confirm.ask("\nWould you like to customize these settings?", default=False):
+            # Mark setup as completed and return to main menu
+            self.config_manager.config.setup_completed = True
+            self.config_manager.save_config()
+            console.print("\n[green]✓ Setup completed with default settings[/green]")
+            input("\nPress Enter to continue...")
+            return True
         
-        # Step 3: Parallel Downloads
-        SetupWizard._setup_workers(config_manager)
-        
-        # Step 4: Rate Limiting
-        SetupWizard._setup_rate_limiting(config_manager)
-        
-        # Step 5: Storage
-        SetupWizard._setup_storage(config_manager)
-        
-        # Step 6: Notifications (optional)
-        SetupWizard._setup_notifications(config_manager)
+        # Show configuration sections menu
+        while True:
+            choice = self._show_sections_menu()
+            
+            if choice == "1":
+                self._configure_download_settings()
+            elif choice == "2":
+                self._configure_notifications()
+            elif choice == "3":
+                self._configure_rate_limiting()
+            elif choice == "4":
+                self._configure_quality_settings()
+            elif choice == "5":
+                self._configure_storage()
+            elif choice == "6":
+                # Show updated summary
+                console.clear()
+                console.print(Panel("[bold cyan]Updated Configuration Summary[/bold cyan]", border_style="cyan"))
+                self._show_defaults_summary()
+                input("\nPress Enter to continue...")
+            elif choice == "7":
+                # Finish setup
+                break
         
         # Mark setup as completed
-        config_manager.config.setup_completed = True
-        config_manager.save_config()
+        self.config_manager.config.setup_completed = True
+        self.config_manager.save_config()
         
-        # Show summary
-        SetupWizard._show_summary(config_manager)
+        console.print("\n[bold green]✓ Setup completed![/bold green]")
+        console.print("[dim]You can change these settings anytime from the Settings menu.[/dim]")
         
-        console.print("\n[green]✓ Setup completed successfully![/green]")
-        console.print("[cyan]You can now start downloading playlists.[/cyan]")
+        input("\nPress Enter to continue...")
+        return True
+    
+    def _show_defaults_summary(self):
+        """Show summary of default configuration"""
+        config = self.config_manager.config
+        
+        # Download Settings Table
+        download_table = Table(title="Download Settings", show_header=True, title_style="bold cyan")
+        download_table.add_column("Setting", style="cyan", width=30)
+        download_table.add_column("Value", style="green")
+        
+        download_table.add_row("Default Video Quality", config.default_video_quality)
+        download_table.add_row("Default Audio Quality", f"{config.default_audio_quality} kbps")
+        download_table.add_row("Parallel Downloads", str(config.max_workers))
+        download_table.add_row("Download Timeout", f"{config.download_timeout_seconds}s")
+        download_table.add_row("Filename Normalization", "✓ Enabled" if config.normalize_filenames else "✗ Disabled")
+        
+        console.print("\n")
+        console.print(download_table)
+        
+        # Notifications Table
+        notif_table = Table(title="Notifications", show_header=True, title_style="bold cyan")
+        notif_table.add_column("Setting", style="cyan", width=30)
+        notif_table.add_column("Value", style="green")
+        
+        notif_table.add_row("Notifications Enabled", "✓ Yes" if config.notifications_enabled else "✗ No")
+        notif_table.add_row("Slack", "✓ Configured" if config.slack_enabled else "✗ Not configured")
+        notif_table.add_row("Email", "✓ Configured" if config.email_enabled else "✗ Not configured")
+        notif_table.add_row("Daily Summary", "✓ Enabled" if config.send_daily_summary else "✗ Disabled")
+        notif_table.add_row("Weekly Stats", "✓ Enabled" if config.send_weekly_stats else "✗ Disabled")
+        
+        console.print("\n")
+        console.print(notif_table)
+        
+        # Rate Limiting Table
+        rate_table = Table(title="Rate Limiting", show_header=True, title_style="bold cyan")
+        rate_table.add_column("Setting", style="cyan", width=30)
+        rate_table.add_column("Value", style="green")
+        
+        rate_table.add_row("Max Downloads per Hour", str(config.max_downloads_per_hour))
+        rate_table.add_row("Min Delay", f"{config.min_delay_seconds}s")
+        rate_table.add_row("Max Delay", f"{config.max_delay_seconds}s")
+        
+        if config.bandwidth_limit_mbps:
+            rate_table.add_row("Bandwidth Limit", f"{config.bandwidth_limit_mbps} Mbps")
+        else:
+            rate_table.add_row("Bandwidth Limit", "Unlimited")
+        
+        console.print("\n")
+        console.print(rate_table)
+        
+        # Storage Table
+        storage_table = Table(title="Storage", show_header=True, title_style="bold cyan")
+        storage_table.add_column("Setting", style="cyan", width=30)
+        storage_table.add_column("Value", style="green")
+        
+        storage_table.add_row("Default Storage", config.default_storage.upper())
+        storage_table.add_row("Storage Providers", str(len(config.storage_providers)))
+        
+        console.print("\n")
+        console.print(storage_table)
+    
+    def _show_sections_menu(self) -> str:
+        """Show configuration sections menu"""
+        console.clear()
+        
+        header = Panel(
+            "[bold cyan]Configuration Sections[/bold cyan]\n"
+            "Select a section to configure",
+            border_style="cyan"
+        )
+        console.print(header)
+        
+        console.print("\n[cyan]Available Sections:[/cyan]")
+        console.print("  1. Download Settings")
+        console.print("  2. Notifications")
+        console.print("  3. Rate Limiting")
+        console.print("  4. Quality Settings")
+        console.print("  5. Storage Providers")
+        console.print("  6. View Current Configuration")
+        console.print("  7. Finish Setup")
+        
+        return Prompt.ask(
+            "\nSelect section",
+            choices=["1", "2", "3", "4", "5", "6", "7"],
+            default="7"
+        )
+    
+    def _configure_download_settings(self):
+        """Configure download settings"""
+        console.clear()
+        console.print(Panel("[bold cyan]Download Settings[/bold cyan]", border_style="cyan"))
+        
+        console.print("\n[yellow]Current Settings:[/yellow]")
+        console.print(f"  Max Workers: {self.config_manager.config.max_workers}")
+        console.print(f"  Timeout: {self.config_manager.config.download_timeout_seconds}s")
+        console.print(f"  Filename Normalization: {self.config_manager.config.normalize_filenames}")
+        
+        if not Confirm.ask("\nChange download settings?", default=False):
+            return
+        
+        self.config_manager.config.max_workers = IntPrompt.ask(
+            "\nMaximum parallel downloads",
+            default=self.config_manager.config.max_workers
+        )
+        
+        self.config_manager.config.download_timeout_seconds = IntPrompt.ask(
+            "Download timeout (seconds)",
+            default=self.config_manager.config.download_timeout_seconds
+        )
+        
+        self.config_manager.config.normalize_filenames = Confirm.ask(
+            "Normalize filenames? (removes special characters)",
+            default=self.config_manager.config.normalize_filenames
+        )
+        
+        self.config_manager.save_config()
+        console.print("\n[green]✓ Download settings updated[/green]")
         input("\nPress Enter to continue...")
     
-    @staticmethod
-    def _setup_authentication(config_manager):
-        """Setup authentication"""
-        console.print("\n[bold cyan]Step 1: Authentication[/bold cyan]")
-        console.print("\nFor age-restricted or private content, you need authentication.")
+    def _configure_notifications(self):
+        """Configure notifications"""
+        console.clear()
+        console.print(Panel("[bold cyan]Notifications[/bold cyan]", border_style="cyan"))
         
-        if Confirm.ask("Configure authentication now?", default=True):
-            console.print("\n[yellow]To export cookies:[/yellow]")
-            console.print("1. Install 'Get cookies.txt LOCALLY' browser extension")
-            console.print("2. Visit YouTube whilst logged in")
-            console.print("3. Export cookies to a file")
-            
-            cookies_file = Prompt.ask("\nCookies file path (leave blank to skip)", default="")
-            
-            if cookies_file:
-                from pathlib import Path
-                if Path(cookies_file).exists():
-                    config_manager.config.cookies_file = cookies_file
-                    console.print("[green]✓ Authentication configured[/green]")
-                else:
-                    console.print("[yellow]File not found, skipping authentication[/yellow]")
-            else:
-                console.print("[yellow]Skipping authentication[/yellow]")
+        console.print("\n[yellow]Current Settings:[/yellow]")
+        console.print(f"  Enabled: {self.config_manager.config.notifications_enabled}")
+        console.print(f"  Slack: {self.config_manager.config.slack_enabled}")
+        console.print(f"  Email: {self.config_manager.config.email_enabled}")
         
-        config_manager.save_config()
-    
-    @staticmethod
-    def _setup_quality(config_manager):
-        """Setup default quality"""
-        console.print("\n[bold cyan]Step 2: Default Quality Settings[/bold cyan]")
+        if not Confirm.ask("\nConfigure notifications?", default=False):
+            return
         
-        # Video quality
-        console.print("\n[cyan]Video Quality:[/cyan]")
-        console.print("  1. Best available")
-        console.print("  2. 1080p (Full HD)")
-        console.print("  3. 720p (HD) - Recommended")
-        console.print("  4. 480p (SD)")
-        console.print("  5. 360p (Low)")
-        
-        video_choice = Prompt.ask(
-            "Select default video quality",
-            choices=["1", "2", "3", "4", "5"],
-            default="3"
+        # Enable notifications
+        self.config_manager.config.notifications_enabled = Confirm.ask(
+            "\nEnable notifications?",
+            default=self.config_manager.config.notifications_enabled
         )
         
-        video_qualities = ["best", "1080p", "720p", "480p", "360p"]
-        config_manager.config.default_video_quality = video_qualities[int(video_choice) - 1]
+        if not self.config_manager.config.notifications_enabled:
+            self.config_manager.save_config()
+            console.print("\n[yellow]Notifications disabled[/yellow]")
+            input("\nPress Enter to continue...")
+            return
         
-        # Audio quality
-        console.print("\n[cyan]Audio Quality:[/cyan]")
-        console.print("  1. 320kbps (High)")
-        console.print("  2. 192kbps (Standard) - Recommended")
-        console.print("  3. 128kbps (Low)")
+        # Choose providers
+        console.print("\n[cyan]Which providers would you like to configure?[/cyan]")
+        console.print("  1. Email (SMTP)")
+        console.print("  2. Slack")
+        console.print("  3. Both")
+        console.print("  4. Skip")
         
-        audio_choice = Prompt.ask(
-            "Select default audio quality",
-            choices=["1", "2", "3"],
-            default="2"
-        )
+        choice = Prompt.ask("\nSelect option", choices=["1", "2", "3", "4"], default="4")
         
-        audio_qualities = ["320", "192", "128"]
-        config_manager.config.default_audio_quality = audio_qualities[int(audio_choice) - 1]
+        if choice in ["1", "3"]:
+            self._configure_email_provider()
         
-        console.print(f"\n[green]✓ Quality set to {config_manager.config.default_video_quality} / {config_manager.config.default_audio_quality}kbps[/green]")
-        config_manager.save_config()
-    
-    @staticmethod
-    def _setup_workers(config_manager):
-        """Setup parallel downloads"""
-        console.print("\n[bold cyan]Step 3: Parallel Downloads[/bold cyan]")
-        console.print("\nHow many videos should download simultaneously?")
-        console.print("  • 1-2: Slow connection")
-        console.print("  • 3-4: Balanced (Recommended)")
-        console.print("  • 5+: Fast connection")
+        if choice in ["2", "3"]:
+            self._configure_slack_provider()
         
-        workers = IntPrompt.ask(
-            "\nNumber of parallel downloads",
-            default=3
-        )
-        
-        config_manager.config.max_workers = max(1, min(10, workers))
-        console.print(f"[green]✓ Set to {config_manager.config.max_workers} parallel downloads[/green]")
-        config_manager.save_config()
-    
-    @staticmethod
-    def _setup_rate_limiting(config_manager):
-        """Setup rate limiting"""
-        console.print("\n[bold cyan]Step 4: Rate Limiting[/bold cyan]")
-        console.print("\nRate limiting helps avoid IP bans and rate limits.")
-        console.print("\nPresets:")
-        console.print("  1. Conservative (30/hour, 3-7s delay)")
-        console.print("  2. Moderate (50/hour, 2-5s delay) - Recommended")
-        console.print("  3. Aggressive (100/hour, 1-3s delay)")
-        console.print("  4. Custom")
-        
-        choice = Prompt.ask(
-            "Select preset",
-            choices=["1", "2", "3", "4"],
-            default="2"
-        )
-        
-        if choice == "1":
-            config_manager.config.max_downloads_per_hour = 30
-            config_manager.config.min_delay_seconds = 3.0
-            config_manager.config.max_delay_seconds = 7.0
-        elif choice == "2":
-            config_manager.config.max_downloads_per_hour = 50
-            config_manager.config.min_delay_seconds = 2.0
-            config_manager.config.max_delay_seconds = 5.0
-        elif choice == "3":
-            config_manager.config.max_downloads_per_hour = 100
-            config_manager.config.min_delay_seconds = 1.0
-            config_manager.config.max_delay_seconds = 3.0
-        else:
-            max_per_hour = IntPrompt.ask("Max downloads per hour", default=50)
-            min_delay = float(Prompt.ask("Min delay (seconds)", default="2"))
-            max_delay = float(Prompt.ask("Max delay (seconds)", default="5"))
+        if choice != "4":
+            # Configure what to notify about
+            console.print("\n[cyan]Notification Preferences:[/cyan]")
+            console.print("Choose which events should trigger notifications:\n")
             
-            config_manager.config.max_downloads_per_hour = max_per_hour
-            config_manager.config.min_delay_seconds = min_delay
-            config_manager.config.max_delay_seconds = max_delay
-        
-        console.print(f"[green]✓ Rate limiting configured[/green]")
-        config_manager.save_config()
-    
-    @staticmethod
-    def _setup_storage(config_manager):
-        """Setup storage"""
-        console.print("\n[bold cyan]Step 5: Storage Configuration[/bold cyan]")
-        console.print("\nWhere should downloads be stored?")
-        console.print("  1. Local storage only (default)")
-        console.print("  2. Configure remote storage (FTP/SFTP/Cloud)")
-        
-        choice = Prompt.ask("Select option", choices=["1", "2"], default="1")
-        
-        if choice == "2":
-            console.print("\n[cyan]Remote storage types:[/cyan]")
-            console.print("  1. FTP")
-            console.print("  2. SFTP")
-            console.print("  3. Google Drive")
-            console.print("  4. Dropbox")
-            console.print("  5. OneDrive")
-            console.print("  6. Skip for now")
-            
-            storage_choice = Prompt.ask(
-                "Select storage type",
-                choices=["1", "2", "3", "4", "5", "6"],
-                default="6"
+            self.config_manager.config.notify_on_download_complete = Confirm.ask(
+                "Notify on individual download complete?",
+                default=self.config_manager.config.notify_on_download_complete
             )
             
-            if storage_choice != "6":
-                from ui.storage_menu import StorageMenu
-                
-                if storage_choice == "1":
-                    StorageMenu.add_ftp_storage(config_manager)
-                elif storage_choice == "2":
-                    StorageMenu.add_sftp_storage(config_manager)
-                elif storage_choice == "3":
-                    StorageMenu.add_google_drive_storage(config_manager)
-                elif storage_choice == "4":
-                    StorageMenu.add_dropbox_storage(config_manager)
-                elif storage_choice == "5":
-                    StorageMenu.add_onedrive_storage(config_manager)
-        else:
-            console.print("[green]✓ Using local storage[/green]")
-    
-    @staticmethod
-    def _setup_notifications(config_manager):
-        """Setup notifications"""
-        console.print("\n[bold cyan]Step 6: Notifications (Optional)[/bold cyan]")
-        
-        if Confirm.ask("Configure Slack notifications?", default=False):
-            console.print("\nTo get a webhook URL:")
-            console.print("  1. Go to https://api.slack.com/apps")
-            console.print("  2. Create app and enable 'Incoming Webhooks'")
-            console.print("  3. Copy the webhook URL")
+            self.config_manager.config.notify_on_queue_complete = Confirm.ask(
+                "Notify on queue complete?",
+                default=self.config_manager.config.notify_on_queue_complete
+            )
             
-            webhook = Prompt.ask("\nSlack webhook URL (or leave blank to skip)", default="")
+            self.config_manager.config.notify_on_error = Confirm.ask(
+                "Notify on errors?",
+                default=self.config_manager.config.notify_on_error
+            )
             
-            if webhook:
-                config_manager.config.slack_webhook_url = webhook
-                console.print("[green]✓ Slack notifications configured[/green]")
+            self.config_manager.config.notify_on_threshold = Confirm.ask(
+                "Notify on size thresholds?",
+                default=self.config_manager.config.notify_on_threshold
+            )
         
-        config_manager.save_config()
+        self.config_manager.save_config()
+        console.print("\n[green]✓ Notifications configured[/green]")
+        input("\nPress Enter to continue...")
     
-    @staticmethod
-    def _show_summary(config_manager):
-        """Show configuration summary"""
-        from rich.table import Table
+    def _configure_email_provider(self):
+        """Configure email notifications"""
+        console.print("\n[bold yellow]Email (SMTP) Configuration[/bold yellow]")
         
-        console.print("\n")
+        console.print("\n[dim]Common providers:[/dim]")
+        console.print("  Gmail: smtp.gmail.com:587")
+        console.print("  Outlook: smtp-mail.outlook.com:587")
+        console.print("  Yahoo: smtp.mail.yahoo.com:587")
         
-        summary_panel = Panel(
-            "[bold]Setup Complete![/bold]\n\n"
-            "Here's your configuration:",
-            border_style="green"
+        self.config_manager.config.smtp_host = Prompt.ask(
+            "\nSMTP Host",
+            default=self.config_manager.config.smtp_host or ""
         )
-        console.print(summary_panel)
         
-        table = Table(show_header=False, box=None, padding=(0, 2))
-        table.add_column("Setting", style="cyan")
-        table.add_column("Value", style="white")
+        self.config_manager.config.smtp_port = IntPrompt.ask(
+            "SMTP Port",
+            default=self.config_manager.config.smtp_port
+        )
         
-        table.add_row("Authentication", "Configured" if config_manager.config.cookies_file else "Not configured")
-        table.add_row("Video Quality", config_manager.config.default_video_quality)
-        table.add_row("Audio Quality", f"{config_manager.config.default_audio_quality}kbps")
-        table.add_row("Parallel Downloads", str(config_manager.config.max_workers))
-        table.add_row("Rate Limit", f"{config_manager.config.max_downloads_per_hour}/hour")
-        table.add_row("Storage Providers", str(len(config_manager.config.storage_providers)))
-        table.add_row("Slack Notifications", "Enabled" if config_manager.config.slack_webhook_url else "Disabled")
+        self.config_manager.config.smtp_username = Prompt.ask(
+            "SMTP Username (email)",
+            default=self.config_manager.config.smtp_username or ""
+        )
         
-        console.print("\n")
-        console.print(table)
+        self.config_manager.config.smtp_password = Prompt.ask(
+            "SMTP Password",
+            password=True
+        )
+        
+        self.config_manager.config.smtp_from_email = Prompt.ask(
+            "From Email",
+            default=self.config_manager.config.smtp_username
+        )
+        
+        to_emails = Prompt.ask(
+            "To Email(s) (comma-separated)",
+            default=",".join(self.config_manager.config.smtp_to_emails) if self.config_manager.config.smtp_to_emails else ""
+        )
+        
+        self.config_manager.config.smtp_to_emails = [
+            email.strip() for email in to_emails.split(',')
+        ]
+        
+        self.config_manager.config.smtp_use_tls = Confirm.ask(
+            "Use TLS?",
+            default=self.config_manager.config.smtp_use_tls
+        )
+        
+        self.config_manager.config.email_enabled = True
+        
+        # Automated reports
+        console.print("\n[yellow]Automated Email Reports:[/yellow]")
+        self.config_manager.config.send_daily_summary = Confirm.ask(
+            "Send daily summary email?",
+            default=self.config_manager.config.send_daily_summary
+        )
+        
+        self.config_manager.config.send_weekly_stats = Confirm.ask(
+            "Send weekly statistics email?",
+            default=self.config_manager.config.send_weekly_stats
+        )
+        
+        if self.config_manager.config.send_daily_summary:
+            self.config_manager.config.daily_summary_time = Prompt.ask(
+                "Daily summary time (HH:MM)",
+                default=self.config_manager.config.daily_summary_time
+            )
+        
+        self.config_manager.save_config()
+        console.print("[green]✓ Email notifications configured[/green]")
+        
+        # Test email
+        if Confirm.ask("\nSend test email?", default=True):
+            from managers.notification_manager import NotificationManager
+            
+            notification_manager = NotificationManager(self.config_manager.config)
+            
+            if notification_manager.email and notification_manager.email.is_configured():
+                if notification_manager.email.send_notification(
+                    "Test Email",
+                    "This is a test email from YouTube Playlist Downloader"
+                ):
+                    console.print("[green]✓ Test email sent successfully[/green]")
+                else:
+                    console.print("[red]✗ Failed to send test email[/red]")
+
+    def _configure_slack_provider(self):
+        """Configure Slack notifications"""
+        console.print("\n[bold yellow]Slack Configuration[/bold yellow]")
+        
+        console.print("\n[dim]To get a webhook URL:[/dim]")
+        console.print("  1. Go to https://api.slack.com/apps")
+        console.print("  2. Create a new app or select existing")
+        console.print("  3. Enable Incoming Webhooks")
+        console.print("  4. Add webhook to workspace")
+        console.print("  5. Copy the webhook URL")
+        
+        webhook_url = Prompt.ask(
+            "\nSlack Webhook URL",
+            default=self.config_manager.config.slack_webhook_url or ""
+        )
+        
+        if webhook_url:
+            self.config_manager.config.slack_webhook_url = webhook_url
+            self.config_manager.config.slack_enabled = True
+            self.config_manager.save_config()
+            
+            console.print("[green]✓ Slack notifications configured[/green]")
+            
+            # Test Slack
+            if Confirm.ask("\nSend test notification?", default=True):
+                from managers.notification_manager import NotificationManager
+                
+                notification_manager = NotificationManager(self.config_manager.config)
+                
+                if notification_manager.slack and notification_manager.slack.is_configured():
+                    if notification_manager.slack.send_notification(
+                        "🧪 Test Notification",
+                        "This is a test notification from YouTube Playlist Downloader"
+                    ):
+                        console.print("[green]✓ Test notification sent successfully[/green]")
+                    else:
+                        console.print("[red]✗ Failed to send test notification[/red]")
+    
+    def _configure_rate_limiting(self):
+        """Configure rate limiting"""
+        console.clear()
+        console.print(Panel("[bold cyan]Rate Limiting[/bold cyan]", border_style="cyan"))
+        
+        console.print("\n[yellow]Current Settings:[/yellow]")
+        console.print(f"  Max Downloads/Hour: {self.config_manager.config.max_downloads_per_hour}")
+        console.print(f"  Min Delay: {self.config_manager.config.min_delay_seconds}s")
+        console.print(f"  Max Delay: {self.config_manager.config.max_delay_seconds}s")
+        console.print(f"  Bandwidth Limit: {self.config_manager.config.bandwidth_limit_mbps or 'Unlimited'}")
+        
+        if not Confirm.ask("\nChange rate limiting settings?", default=False):
+            return
+        
+        console.print("\n[dim]Rate limiting helps avoid being blocked by YouTube[/dim]")
+        
+        self.config_manager.config.max_downloads_per_hour = IntPrompt.ask(
+            "\nMaximum downloads per hour",
+            default=self.config_manager.config.max_downloads_per_hour
+        )
+        
+        self.config_manager.config.min_delay_seconds = float(Prompt.ask(
+            "Minimum delay between downloads (seconds)",
+            default=str(self.config_manager.config.min_delay_seconds)
+        ))
+        
+        self.config_manager.config.max_delay_seconds = float(Prompt.ask(
+            "Maximum delay between downloads (seconds)",
+            default=str(self.config_manager.config.max_delay_seconds)
+        ))
+        
+        if Confirm.ask("\nSet bandwidth limit?", default=False):
+            self.config_manager.config.bandwidth_limit_mbps = float(Prompt.ask(
+                "Bandwidth limit (Mbps)",
+                default=str(self.config_manager.config.bandwidth_limit_mbps or 5.0)
+            ))
+        else:
+            self.config_manager.config.bandwidth_limit_mbps = None
+        
+        self.config_manager.save_config()
+        console.print("\n[green]✓ Rate limiting configured[/green]")
+        input("\nPress Enter to continue...")
+    
+    def _configure_quality_settings(self):
+        """Configure quality settings"""
+        console.clear()
+        console.print(Panel("[bold cyan]Quality Settings[/bold cyan]", border_style="cyan"))
+        
+        console.print("\n[yellow]Current Settings:[/yellow]")
+        console.print(f"  Video Quality: {self.config_manager.config.default_video_quality}")
+        console.print(f"  Audio Quality: {self.config_manager.config.default_audio_quality} kbps")
+        
+        if not Confirm.ask("\nChange quality settings?", default=False):
+            return
+        
+        self.config_manager.config.default_video_quality = Prompt.ask(
+            "\nDefault video quality",
+            choices=["best", "1080p", "720p", "480p", "360p"],
+            default=self.config_manager.config.default_video_quality
+        )
+        
+        self.config_manager.config.default_audio_quality = Prompt.ask(
+            "Default audio quality (kbps)",
+            choices=["320", "256", "192", "128"],
+            default=self.config_manager.config.default_audio_quality
+        )
+        
+        self.config_manager.save_config()
+        console.print("\n[green]✓ Quality settings updated[/green]")
+        input("\nPress Enter to continue...")
+    
+    def _configure_storage(self):
+        """Configure storage"""
+        console.clear()
+        console.print(Panel("[bold cyan]Storage Providers[/bold cyan]", border_style="cyan"))
+        
+        console.print("\n[yellow]Current Settings:[/yellow]")
+        console.print(f"  Default Storage: {self.config_manager.config.default_storage.upper()}")
+        console.print(f"  Configured Providers: {len(self.config_manager.config.storage_providers)}")
+        
+        console.print("\n[dim]Storage providers can be configured later from the Settings menu[/dim]")
+        console.print("[dim]For now, downloads will be saved locally[/dim]")
+        
+        if Confirm.ask("\nConfigure cloud storage providers now?", default=False):
+            from ui.storage_menu import StorageMenu
+            storage_menu = StorageMenu()
+            storage_menu.show()
+        
+        input("\nPress Enter to continue...")
 
 
 class StatusPage:
-    """Display system status and connection information"""
+    """Display system status"""
     
-    @staticmethod
-    def display(config_manager, storage_manager, proxy_manager, stats_manager):
-        """Display comprehensive status page"""
-        from rich.table import Table
-        from rich.layout import Layout
-        from rich.panel import Panel
-        
+    def __init__(self):
+        self.config_manager = ConfigManager()
+    
+    def show(self):
+        """Show status page"""
         console.clear()
         
-        # Create layout
-        layout = Layout()
-        layout.split_column(
-            Layout(name="header", size=3),
-            Layout(name="body")
-        )
-        
-        layout["body"].split_row(
-            Layout(name="left"),
-            Layout(name="right")
-        )
-        
-        # Header
         header = Panel(
-            "[bold cyan]System Status Dashboard[/bold cyan]",
+            "[bold cyan]System Status[/bold cyan]",
             border_style="cyan"
         )
-        layout["header"].update(header)
+        console.print(header)
         
-        # Left panel - Configuration Status
-        config_table = Table(title="Configuration", show_header=True, box=None)
-        config_table.add_column("Setting", style="cyan")
-        config_table.add_column("Value", style="white")
+        # Configuration status
+        table = Table(title="Configuration", show_header=True)
+        table.add_column("Setting", style="cyan")
+        table.add_column("Status", style="green")
         
-        config_table.add_row("Setup Completed", "✓ Yes" if config_manager.config.setup_completed else "✗ No")
-        config_table.add_row("Authentication", "✓ Configured" if config_manager.config.cookies_file else "✗ Not configured")
-        config_table.add_row("Default Storage", config_manager.config.default_storage)
-        config_table.add_row("Video Quality", config_manager.config.default_video_quality)
-        config_table.add_row("Audio Quality", f"{config_manager.config.default_audio_quality}kbps")
-        config_table.add_row("Parallel Downloads", str(config_manager.config.max_workers))
-        config_table.add_row("Rate Limit", f"{config_manager.config.max_downloads_per_hour}/hour")
-        config_table.add_row("Bandwidth Limit", 
-                            f"{config_manager.config.bandwidth_limit_mbps} Mbps" 
-                            if config_manager.config.bandwidth_limit_mbps 
-                            else "Unlimited")
-        config_table.add_row("Filename Normalization", "✓ Enabled" if config_manager.config.normalize_filenames else "✗ Disabled")
+        table.add_row(
+            "Setup Completed",
+            "✓ Yes" if self.config_manager.config.setup_completed else "✗ No"
+        )
+        table.add_row(
+            "Default Video Quality",
+            self.config_manager.config.default_video_quality
+        )
+        table.add_row(
+            "Default Audio Quality",
+            f"{self.config_manager.config.default_audio_quality} kbps"
+        )
+        table.add_row(
+            "Max Workers",
+            str(self.config_manager.config.max_workers)
+        )
+        table.add_row(
+            "Rate Limit",
+            f"{self.config_manager.config.max_downloads_per_hour}/hour"
+        )
+        
+        console.print(table)
+        
+        # Notification status
+        notif_table = Table(title="Notifications", show_header=True)
+        notif_table.add_column("Provider", style="cyan")
+        notif_table.add_column("Status", style="green")
+        
+        notif_table.add_row(
+            "Notifications",
+            "✓ Enabled" if self.config_manager.config.notifications_enabled else "✗ Disabled"
+        )
+        notif_table.add_row(
+            "Slack",
+            "✓ Enabled" if self.config_manager.config.slack_enabled else "✗ Disabled"
+        )
+        notif_table.add_row(
+            "Email",
+            "✓ Enabled" if self.config_manager.config.email_enabled else "✗ Disabled"
+        )
+        
+        console.print("\n")
+        console.print(notif_table)
         
         # Storage status
-        storage_table = Table(title="Storage Providers", show_header=True, box=None)
-        storage_table.add_column("Name", style="cyan")
-        storage_table.add_column("Type", style="yellow")
-        storage_table.add_column("Status", style="white")
-        storage_table.add_column("Connection", style="green")
+        storage_table = Table(title="Storage", show_header=True)
+        storage_table.add_column("Provider", style="cyan")
+        storage_table.add_column("Status", style="green")
         
-        if config_manager.config.storage_providers:
-            from utils.storage_providers import (
-                FTPStorage, SFTPStorage, GoogleDriveStorage,
-                DropboxStorage, OneDriveStorage
-            )
-            
-            for name, config_dict in config_manager.config.storage_providers.items():
-                from managers.config_manager import StorageConfig
-                storage_config = StorageConfig.from_dict(config_dict)
-                
-                status = "✓ Enabled" if storage_config.enabled else "✗ Disabled"
-                
-                # Test connection
-                connection_status = "Unknown"
-                if storage_config.enabled:
-                    try:
-                        provider = None
-                        
-                        if storage_config.provider_type == "ftp":
-                            provider = FTPStorage(
-                                storage_config.host,
-                                storage_config.port,
-                                storage_config.username,
-                                storage_config.password,
-                                storage_config.base_path
-                            )
-                        elif storage_config.provider_type == "sftp":
-                            provider = SFTPStorage(
-                                storage_config.host,
-                                storage_config.port,
-                                storage_config.username,
-                                storage_config.password,
-                                storage_config.key_filename,
-                                storage_config.base_path
-                            )
-                        elif storage_config.provider_type == "gdrive":
-                            provider = GoogleDriveStorage(
-                                storage_config.credentials_file,
-                                storage_config.folder_id
-                            )
-                        elif storage_config.provider_type == "dropbox":
-                            provider = DropboxStorage(
-                                storage_config.access_token,
-                                storage_config.base_path
-                            )
-                        elif storage_config.provider_type == "onedrive":
-                            provider = OneDriveStorage(
-                                storage_config.client_id,
-                                storage_config.client_secret,
-                                storage_config.base_path
-                            )
-                        
-                        if provider and provider.connect():
-                            connection_status = "✓ Connected"
-                            provider.disconnect()
-                        else:
-                            connection_status = "✗ Failed"
-                    except:
-                        connection_status = "✗ Error"
-                
-                storage_table.add_row(
-                    name,
-                    storage_config.provider_type.upper(),
-                    status,
-                    connection_status
-                )
-        else:
-            storage_table.add_row("Local", "LOCAL", "✓ Enabled", "✓ Available")
+        storage_table.add_row(
+            "Default Storage",
+            self.config_manager.config.default_storage
+        )
         
-        # Proxy status
-        proxy_table = Table(title="Proxy Status", show_header=True, box=None)
-        proxy_table.add_column("Metric", style="cyan")
-        proxy_table.add_column("Value", style="white")
+        provider_count = len(self.config_manager.config.storage_providers)
+        storage_table.add_row(
+            "Configured Providers",
+            str(provider_count)
+        )
         
-        if proxy_manager and proxy_manager.proxies:
-            summary = proxy_manager.get_summary()
-            proxy_table.add_row("Total Proxies", str(summary['total_proxies']))
-            proxy_table.add_row("Working Proxies", str(summary['working_proxies']))
-            proxy_table.add_row("Failed Proxies", str(summary['failed_proxies']))
-            proxy_table.add_row("Success Rate", f"{summary['success_rate']:.1f}%")
-        else:
-            proxy_table.add_row("Status", "No proxies configured")
-        
-        # Statistics
-        stats_table = Table(title="Download Statistics", show_header=True, box=None)
-        stats_table.add_column("Metric", style="cyan")
-        stats_table.add_column("Today", style="green")
-        stats_table.add_column("Total", style="blue")
-        
-        if stats_manager:
-            today_stats = stats_manager.get_today_stats()
-            all_time_stats = stats_manager.get_all_time_stats()
-            
-            stats_table.add_row(
-                "Downloads",
-                str(today_stats.total_downloads),
-                str(all_time_stats.total_downloads)
-            )
-            stats_table.add_row(
-                "Successful",
-                str(today_stats.successful_downloads),
-                str(all_time_stats.successful_downloads)
-            )
-            stats_table.add_row(
-                "Failed",
-                str(today_stats.failed_downloads),
-                str(all_time_stats.failed_downloads)
-            )
-            
-            today_size_mb = today_stats.total_file_size_bytes / (1024 * 1024)
-            all_time_size_mb = all_time_stats.total_file_size_bytes / (1024 * 1024)
-            
-            stats_table.add_row(
-                "Data Downloaded",
-                f"{today_size_mb:.1f} MB",
-                f"{all_time_size_mb:.1f} MB"
-            )
-            stats_table.add_row(
-                "Queues Completed",
-                str(today_stats.queues_completed),
-                str(all_time_stats.queues_completed)
-            )
-        else:
-            stats_table.add_row("Status", "Not available", "")
-        
-        # Combine left panels
-        left_content = Table.grid(padding=1)
-        left_content.add_row(config_table)
-        left_content.add_row(proxy_table)
-        
-        # Combine right panels
-        right_content = Table.grid(padding=1)
-        right_content.add_row(storage_table)
-        right_content.add_row(stats_table)
-        
-        layout["left"].update(Panel(left_content, border_style="blue"))
-        layout["right"].update(Panel(right_content, border_style="green"))
-        
-        console.print(layout)
-        console.print("\n[dim]Press any key to return to menu...[/dim]")
-        input()
+        console.print("\n")
+        console.print(storage_table)

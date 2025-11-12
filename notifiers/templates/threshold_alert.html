@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Size Threshold Alert</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            border-bottom: 3px solid #FF9800;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            color: #FF9800;
+            font-size: 24px;
+        }
+        .alert-icon {
+            font-size: 48px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .threshold-display {
+            text-align: center;
+            padding: 30px;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #FFB74D 0%, #FF9800 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        .threshold-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .threshold-label {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+        .progress-section {
+            margin: 30px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF9800, #FFB74D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        .stat {
+            text-align: center;
+            padding: 15px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF9800;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Size Threshold Alert</h1>
+        </div>
+        
+        <div class="alert-icon">🚨</div>
+        
+        <div class="threshold-display">
+            <div class="threshold-label">Threshold Reached</div>
+            <div class="threshold-value">{{ threshold_mb }} MB</div>
+        </div>
+        
+        <div class="progress-section">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ percentage | round(0) }}%">
+                    {{ percentage | round(1) }}%
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">{{ total_mb | round(1) }}</div>
+                <div class="stat-label">MB Downloaded Today</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">{{ threshold_mb }}</div>
+                <div class="stat-label">Threshold</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>YouTube Playlist Downloader</p>
+            <p>Alert triggered at {{ timestamp }}</p>
+        </div>
+    </div>
+</body>
+</html>

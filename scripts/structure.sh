@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # --- Configuration and Defaults ---
-
 # Default output file name
-OUTPUT_FILE="FOLDER_STRUCTURE.txt"
+OUTPUT_FILE="../structure.txt"
 
 # Default directories/patterns to exclude
 EXCLUDES="--exclude=logs --exclude=__pycache__ --exclude=.git --exclude=*.pyc"
@@ -12,7 +11,7 @@ EXCLUDES="--exclude=logs --exclude=__pycache__ --exclude=.git --exclude=*.pyc"
 
 # Function to display help menu
 show_help() {
-    echo "Usage: ./list-structure.sh [OPTIONS]"
+    echo "Usage: ./structure.sh [OPTIONS]"
     echo ""
     echo "Generates a list of files and folders in the current directory, saving the output to a file."
     echo ""
@@ -24,7 +23,7 @@ show_help() {
     echo "  -h, --help            Show this help message"
     echo ""
     echo "Example:"
-    echo "  ./list-structure.sh --output project_layout.txt --exclude tests,venv"
+    echo "  ./structure.sh --output code_structure.txt --exclude tests,venv"
 }
 
 # Function to parse arguments
@@ -72,6 +71,7 @@ parse_args() {
 }
 
 # --- Main Execution ---
+cd ../
 
 # Set default command type
 COMMAND_TYPE="find"

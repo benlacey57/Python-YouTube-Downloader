@@ -1,6 +1,6 @@
 """Main menu"""
 from rich.console import Console
-from rich.prompt import Prompt, Confirm
+from rich.prompt import Prompt, Confirm, IntPrompt
 from rich.panel import Panel
 from rich.table import Table
 
@@ -135,7 +135,6 @@ class Menu:
         for idx, queue in enumerate(pending_queues, 1):
             console.print(f"  {idx}. {queue.playlist_title}")
         
-        from rich.prompt import IntPrompt
         choice = IntPrompt.ask(
             "\nSelect queue",
             choices=[str(i) for i in range(1, len(pending_queues) + 1)]
@@ -143,6 +142,8 @@ class Menu:
         
         selected_queue = pending_queues[choice - 1]
         self.downloader.download_queue(selected_queue, self.queue_manager)
+        
+        input("\nPress Enter to continue...")
     
     def _view_statistics(self):
         """View statistics"""

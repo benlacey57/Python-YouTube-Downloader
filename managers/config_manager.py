@@ -63,16 +63,28 @@ class AppConfig:
     auto_record_live_streams: bool = False
     wait_for_scheduled_streams: bool = False
     max_stream_wait_minutes: int = 60
+
+    # Database settings
+    database_type: str = "sqlite"  # 'sqlite' or 'mysql'
+    database_path: str = "data/downloader.db"  # For SQLite
+    database_host: str = "localhost"  # For MySQL
+    database_port: int = 3306  # For MySQL
+    database_name: str = "downloader"  # For MySQL
+    database_user: str = "root"  # For MySQL
+    database_password: str = ""  # For MySQL
+    
+    # Dry run mode
+    dry_run: bool = False
     
     # Notifications - General
-    notifications_enabled: bool = False  # NEW - Master switch
+    notifications_enabled: bool = False
     
     # Notifications - Slack
-    slack_enabled: bool = False  # NEW
+    slack_enabled: bool = False
     slack_webhook_url: Optional[str] = None
     
     # Notifications - Email
-    email_enabled: bool = False  # NEW
+    email_enabled: bool = False
     smtp_host: Optional[str] = None
     smtp_port: int = 587
     smtp_username: Optional[str] = None

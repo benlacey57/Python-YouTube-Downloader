@@ -3,13 +3,38 @@ import sqlite3
 from pathlib import Path
 from typing import Optional, List, Any, Tuple
 from rich.console import Console
+from database.base import DatabaseConnection
+from database import get_database_connection
 
 console = Console()
 
 
 class DatabaseManager:
     """Manages SQLite database operations"""
-
+    _instance: Optional[DatabaseConnection] = None
+    _config: dict = {}
+    
+    @classmethod
+    def initialize(cls, db_type: str = "sqlite", **kwargs):
+        """Initialize database connection"""
+        if cls._instance is None:
+            cls._config = {'db_type': db_type, **kwargs}
+            cls._instance = get_database_connection(db_type, **kwargs)
+    
+    @classmethod
+    def get_instance(cls) -> DatabaseConnection:
+        """Get database instance"""
+        if cls._instance is None:
+            # Default to SQLite
+            cls.initialize()
+        return cls._instance
+    
+    @classmethod
+    def reset(cls):
+        """Reset database connection (for testing)"""
+        cls._instance = None
+        cls._config = {}
+        
     def __init__(self, db_path: str = "playlist_downloader.db"):
         self.db_path = Path(db_path)
         self.connection: Optional[sqlite3.Connection] = None

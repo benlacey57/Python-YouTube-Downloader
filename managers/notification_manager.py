@@ -22,14 +22,18 @@ class NotificationManager:
     
     def _initialize_notifiers(self):
         """Initialize all configured notifiers"""
-        # Initialize Slack if configured
-        if self.config.slack_webhook_url:
+        # Check master switch
+        if not self.config.notifications_enabled:
+            return
+        
+        # Initialize Slack if enabled and configured
+        if self.config.slack_enabled and self.config.slack_webhook_url:
             self.slack = SlackNotifier(self.config.slack_webhook_url)
             if self.slack.is_configured():
                 console.print("[dim]✓ Slack notifications enabled[/dim]")
         
-        # Initialize Email if configured
-        if self.config.email_notifications_enabled:
+        # Initialize Email if enabled and configured
+        if self.config.email_enabled and self.config.smtp_host:
             self.email = EmailNotifier(
                 smtp_host=self.config.smtp_host,
                 smtp_port=self.config.smtp_port,
@@ -52,6 +56,10 @@ class NotificationManager:
     def notify_download_complete(self, title: str, file_size_mb: float, 
                                  duration_seconds: float) -> bool:
         """Notify all configured notifiers about download completion"""
+        # Check preference
+        if not self.config.notify_on_download_complete:
+            return False
+        
         results = []
         
         if self.slack and self.slack.is_configured():
@@ -69,6 +77,10 @@ class NotificationManager:
     def notify_queue_completed(self, playlist_title: str, 
                               successful: int, total: int) -> bool:
         """Notify all configured notifiers about queue completion"""
+        # Check preference
+        if not self.config.notify_on_queue_complete:
+            return False
+        
         results = []
         
         if self.slack and self.slack.is_configured():
@@ -85,6 +97,10 @@ class NotificationManager:
     
     def notify_size_threshold(self, threshold_mb: int, total_mb: float) -> bool:
         """Notify all configured notifiers about size threshold"""
+        # Check preference
+        if not self.config.notify_on_threshold:
+            return False
+        
         results = []
         
         if self.slack and self.slack.is_configured():
@@ -102,6 +118,10 @@ class NotificationManager:
     def notify_error(self, error_type: str, error_message: str, 
                     context: Optional[str] = None) -> bool:
         """Notify all configured notifiers about an error"""
+        # Check preference
+        if not self.config.notify_on_error:
+            return False
+        
         results = []
         
         if self.slack and self.slack.is_configured():
@@ -116,51 +136,71 @@ class NotificationManager:
         
         return any(results) if results else False
     
+    def notify_new_videos(self, channel_title: str, video_count: int) -> bool:
+        """Notify about new videos found in monitored channel"""
+        results = []
+        
+        message = f"Found {video_count} new video{'s' if video_count != 1 else ''} in {channel_title}"
+        
+        if self.slack and self.slack.is_configured():
+            results.append(self.slack.send_notification(
+                f"🆕 New Videos - {channel_title}",
+                message,
+                color="#2196F3"
+            ))
+        
+        if self.email and self.email.is_configured():
+            results.append(self.email.send_notification(
+                f"New Videos - {channel_title}",
+                message
+            ))
+        
+        return any(results) if results else False
+    
     def notify_monitoring_summary(self, channels_checked: int, 
-                                 new_videos: int) -> bool:
-        """Notify all configured notifiers about monitoring summary"""
+                                 total_new_videos: int) -> bool:
+        """Notify about monitoring check summary"""
         results = []
         
+        message = f"Checked {channels_checked} channel{'s' if channels_checked != 1 else ''}\n"
+        message += f"Found {total_new_videos} new video{'s' if total_new_videos != 1 else ''} total"
+        
         if self.slack and self.slack.is_configured():
-            results.append(self.slack.notify_monitoring_summary(
-                channels_checked, new_videos
+            color = "#4CAF50" if total_new_videos > 0 else "#9E9E9E"
+            results.append(self.slack.send_notification(
+                "📺 Monitoring Check Complete",
+                message,
+                color=color
             ))
         
         if self.email and self.email.is_configured():
-            results.append(self.email.notify_monitoring_summary(
-                channels_checked, new_videos
+            results.append(self.email.send_notification(
+                "Monitoring Check Complete",
+                message
             ))
         
         return any(results) if results else False
     
-    def notify_new_videos(self, channel_name: str, video_count: int) -> bool:
-        """Notify all configured notifiers about new videos"""
-        results = []
-        
-        if self.slack and self.slack.is_configured():
-            results.append(self.slack.notify_new_videos(
-                channel_name, video_count
-            ))
+    def send_daily_summary(self, stats: Dict[str, Any]) -> bool:
+        """Send daily summary email"""
+        if not self.config.send_daily_summary:
+            return False
         
         if self.email and self.email.is_configured():
-            results.append(self.email.notify_new_videos(
-                channel_name, video_count
-            ))
+            return self.email.send_daily_summary(stats)
         
-        return any(results) if results else False
-    
-    def notify_weekly_stats(self, stats_data: Dict[str, Any]) -> bool:
-        """Send weekly statistics (email only)"""
-        if self.email and self.email.is_configured():
-            return self.email.notify_weekly_stats(stats_data)
         return False
     
-    def notify_daily_summary(self, stats_data: Dict[str, Any]) -> bool:
-        """Send daily summary (email only)"""
+    def send_weekly_stats(self, stats: List[Dict[str, Any]]) -> bool:
+        """Send weekly statistics email"""
+        if not self.config.send_weekly_stats:
+            return False
+        
         if self.email and self.email.is_configured():
-            return self.email.notify_daily_summary(stats_data)
+            return self.email.send_weekly_stats(stats)
+        
         return False
-    
+        
     def reload_config(self, config: AppConfig):
         """Reload notifiers with new configuration"""
         self.config = config

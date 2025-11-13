@@ -1,45 +1,31 @@
-"""Channel model"""
-from dataclasses import dataclass, asdict
+"""Channel model for monitoring"""
+from dataclasses import dataclass
 from typing import Optional
+from datetime import datetime
 
 
 @dataclass
 class Channel:
-    """Represents a monitored channel"""
+    """Channel model"""
     id: Optional[int]
     url: str
     title: str
-    is_monitored: bool = True
-    check_interval_minutes: int = 60
-    last_checked: Optional[str] = None
+    description: Optional[str] = None
+    is_monitored: bool = False
+    check_interval_minutes: int = 1440  # 24 hours
+    last_checked_at: Optional[str] = None
     format_type: str = "video"
     quality: str = "720p"
     output_dir: str = "downloads"
-    filename_template: Optional[str] = None
-    download_order: str = "original"
+    filename_template: str = "{index:03d} - {title}"
+    download_order: str = "newest_first"
     enabled: bool = True
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
     
-    def to_dict(self):
-        return asdict(self)
-    
-    @classmethod
-    def from_dict(cls, data):
-        return cls(**data)
-    
-    @classmethod
-    def from_row(cls, row):
-        """Create Channel from database row"""
-        return cls(
-            id=row[0],
-            url=row[1],
-            title=row[2],
-            is_monitored=bool(row[3]),
-            check_interval_minutes=row[4],
-            last_checked=row[5],
-            format_type=row[6],
-            quality=row[7],
-            output_dir=row[8],
-            filename_template=row[9],
-            download_order=row[10],
-            enabled=bool(row[11])
-        )
+    def __post_init__(self):
+        """Set timestamps if not provided"""
+        if self.created_at is None:
+            self.created_at = datetime.now().isoformat()
+        if self.updated_at is None:
+            self.updated_at = datetime.now().isoformat()

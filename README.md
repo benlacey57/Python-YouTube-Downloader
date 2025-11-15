@@ -4,6 +4,8 @@ Advanced video/audio playlist management with monitoring, statistics, and Slack 
 
 **TODO: Add hooks at different places in the code so that we can have post_processing, post_download etc. This would be useful so our code can post completed download videos details to our media catalogue.**
 
+On complete any audio files would be put into /media/music/youtube/{playlist_name}/ everything else would be put into the /media/youtube library.
+
 ## Features
 
 - 📥 Download entire playlists (video or audio)

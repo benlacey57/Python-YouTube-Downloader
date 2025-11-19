@@ -18,6 +18,8 @@ console = Console()
 
 
 def main():
+    IN_COLAB = False
+    
     """Main application loop"""
     try:
         # Check if running in Colab

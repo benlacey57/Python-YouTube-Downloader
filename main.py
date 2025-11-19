@@ -20,6 +20,22 @@ console = Console()
 def main():
     """Main application loop"""
     try:
+        # Check if running in Colab
+        if IN_COLAB:
+            console.print("[yellow]⚠️  Running in Google Colab detected[/yellow]")
+            console.print()
+            console.print("Interactive menu is not available in Colab.")
+            console.print("Please use the [cyan]colab_setup.py[/cyan] module instead.")
+            console.print()
+            console.print("Quick start:")
+            console.print("  [dim]>>> from colab_setup import colab_help[/dim]")
+            console.print("  [dim]>>> colab_help()[/dim]")
+            console.print()
+            console.print("Or for one-command download:")
+            console.print("  [dim]>>> from colab_setup import colab_quick_download[/dim]")
+            console.print("  [dim]>>> colab_quick_download('https://youtube.com/playlist?list=...')[/dim]")
+            return
+        
         console.clear()
         
         # Initialize config manager

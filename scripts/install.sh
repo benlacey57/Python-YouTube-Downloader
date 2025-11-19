@@ -139,27 +139,43 @@ setup_scripts() {
     print_success "Scripts configured"
 }
 
+# Handle fresh install
+handle_fresh() {
+    if [[ " $@ " =~ " --fresh " ]]; then
+        print_warning "Fresh install requested - removing data directories"
+        rm -rf data/ logs/ downloads/ *.db config.json
+        print_success "Data directories cleared"
+    fi
+}
+
 # Main installation
 main() {
     print_header "YouTube Playlist Downloader - Installation"
+    
+    # Handle fresh install flag
+    handle_fresh "$@"
     
     check_python
     check_ffmpeg
     create_venv
     install_deps
-    create_dirs
-    create_seeds
-    setup_scripts
+    
+    # Run Python installation script
+    print_info "Running installation wizard..."
+    source venv/bin/activate
+    python3 ../install.py
     
     print_header "Installation Complete!"
     
     echo "Next steps:"
     echo ""
-    echo "  1. Activate virtual environment:"
-    echo "     source venv/bin/activate"
+    echo "  1. Run the application:"
+    echo "     ./run.sh"
+    echo "     or"
+    echo "     python main.py (with venv activated)"
     echo ""
-    echo "  2. Run the application:"
-    echo "     python main.py"
+    echo "  2. View database:"
+    echo "     ./db_viewer.py"
     echo ""
     echo "  3. Optional - Install cron jobs:"
     echo "     bash scripts/install_cron.sh"
@@ -169,4 +185,4 @@ main() {
 }
 
 # Run installation
-main
+main "$@"

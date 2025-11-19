@@ -43,6 +43,14 @@ class BaseDownloader(ABC):
             'extract_flat': False,
             'ignoreerrors': True,
             'no_color': True,
+            # Fix YouTube JavaScript runtime warnings
+            'extractor_args': {'youtube': {'player_client': ['default']}},
+            # Prevent .meta file downloads
+            'writethumbnail': False,
+            'writeinfojson': False,
+            'writedescription': False,
+            'writeannotations': False,
+            'writesubtitles': False,
         }
         
         # Add cookies if configured
@@ -64,6 +72,9 @@ class BaseDownloader(ABC):
         try:
             ydl_opts = self.get_base_ydl_opts()
             ydl_opts['extract_flat'] = 'in_playlist'
+            # Suppress output when fetching playlist info
+            ydl_opts['quiet'] = True
+            ydl_opts['no_warnings'] = True
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)

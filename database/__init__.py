@@ -1,7 +1,14 @@
 """Database module"""
 from database.base import DatabaseConnection
 from database.sqlite_connection import SQLiteConnection
-from database.mysql_connection import MySQLConnection
+
+# Try to import MySQL support (optional)
+try:
+    from database.mysql_connection import MySQLConnection
+    MYSQL_AVAILABLE = True
+except ImportError:
+    MYSQL_AVAILABLE = False
+    MySQLConnection = None
 
 
 def get_database_connection(db_type: str = "sqlite", **kwargs) -> DatabaseConnection:
@@ -19,6 +26,11 @@ def get_database_connection(db_type: str = "sqlite", **kwargs) -> DatabaseConnec
         db_path = kwargs.get('db_path', 'data/downloader.db')
         return SQLiteConnection(db_path)
     elif db_type == "mysql":
+        if not MYSQL_AVAILABLE:
+            raise ImportError(
+                "MySQL support not available. Install mysql-connector-python: "
+                "pip install mysql-connector-python"
+            )
         return MySQLConnection(
             host=kwargs.get('host', 'localhost'),
             port=kwargs.get('port', 3306),

@@ -65,21 +65,35 @@ class QueueBuilder:
             default="video"
         )
         
-        # Quality
-        console.print("\n[yellow]Step 3: Quality Settings[/yellow]")
+        # Format and Quality
+        console.print("\n[yellow]Step 3: Format & Quality Settings[/yellow]")
         
         if format_type == "video":
+            # Video format selection
+            video_formats = ["mp4", "mkv", "webm", "avi"]
+            file_format = Prompt.ask(
+                "Output format",
+                choices=video_formats,
+                default="mp4"
+            )
+            
             quality = Prompt.ask(
                 "Video quality",
                 choices=["best", "1080p", "720p", "480p", "360p"],
                 default=self.config_manager.config.default_video_quality
             )
         else:
-            quality = Prompt.ask(
-                "Audio quality (kbps)",
-                choices=["320", "256", "192", "128"],
-                default=self.config_manager.config.default_audio_quality
+            # Audio format selection
+            audio_formats = ["mp3", "m4a", "opus", "flac", "wav"]
+            file_format = Prompt.ask(
+                "Output format",
+                choices=audio_formats,
+                default="mp3"
             )
+            
+            # Use default audio quality from config, don't ask
+            quality = self.config_manager.config.default_audio_quality
+            console.print(f"[dim]Using default audio quality: {quality} kbps[/dim]")
         
         # Output directory
         console.print("\n[yellow]Step 4: Output Settings[/yellow]")
@@ -138,10 +152,17 @@ class QueueBuilder:
         
         console.print(f"\n[green]✓ Queue created: {playlist_title}[/green]")
         
-        # Add items to queue
+        # Add items to queue with batch filtering
         console.print("\n[dim]Adding videos to queue...[/dim]")
         
         entries = playlist_info.get('entries', [])
+        
+        # Apply batch filtering
+        if batch_start > 0 or batch_size < len(entries):
+            end_idx = min(batch_start + batch_size, len(entries))
+            entries = entries[batch_start:end_idx]
+            console.print(f"[dim]Processing batch: items {batch_start + 1} to {end_idx}[/dim]")
+        
         added_count = 0
         
         for entry in entries:
@@ -169,7 +190,7 @@ class QueueBuilder:
             self.queue_manager.add_item(item)
             added_count += 1
         
-        console.print(f"[green]✓ Added {added_count} videos to queue[/green]")
+        console.print(f"[green]✓ Added {added_count:,} videos to queue[/green]")
         
         # Ask to download now
         if Confirm.ask("\nDownload queue now?", default=False):

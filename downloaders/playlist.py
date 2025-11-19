@@ -28,6 +28,20 @@ class PlaylistDownloader(BaseDownloader):
         config_manager = ConfigManager()
         self.stats_manager = StatsManager()
         self.notification_manager = NotificationManager(config_manager.config)
+    
+    def _print_stats(self, stats: dict):
+        """Print download statistics"""
+        table = Table.grid(padding=(0, 2))
+        table.add_column(style="cyan", justify="right")
+        table.add_column(style="white")
+        
+        table.add_row("Total:", f"{stats['total']}")
+        table.add_row("Completed:", f"[green]{stats['completed']}[/green]")
+        table.add_row("Failed:", f"[red]{stats['failed']}[/red]")
+        table.add_row("Pending:", f"[yellow]{stats['pending']}[/yellow]")
+        
+        panel = Panel(table, title="[bold]Progress[/bold]", border_style="cyan", width=40)
+        console.print(panel)
         
         # Initialize base with config
         super().__init__(
@@ -129,7 +143,6 @@ class PlaylistDownloader(BaseDownloader):
                     
                     # Check for pause
                     while keyboard_handler.is_paused() and not keyboard_handler.is_cancelled():
-                        import time
                         time.sleep(0.5)
                     
                     progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
@@ -144,6 +157,20 @@ class PlaylistDownloader(BaseDownloader):
                         progress.console.print(f"[red]✗ Failed: {item.error}[/red]")
                     
                     progress.update(task, advance=1)
+                    
+                    # Add random wait time between downloads if no proxies configured
+                    if idx < len(pending_items):  # Don't wait after last item
+                        config_manager = ConfigManager()
+                        has_proxies = config_manager.config.proxies and len(config_manager.config.proxies) > 0
+                        
+                        if not has_proxies:
+                            # Random wait between min and max delay
+                            wait_time = random.uniform(
+                                config_manager.config.min_delay_seconds,
+                                config_manager.config.max_delay_seconds
+                            )
+                            progress.console.print(f"[dim]Waiting {wait_time:.1f}s before next download...[/dim]")
+                            time.sleep(wait_time)
             
             # Mark queue as completed if not cancelled
             if not keyboard_handler.is_cancelled():

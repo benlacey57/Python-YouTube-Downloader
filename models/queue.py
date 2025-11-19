@@ -14,8 +14,11 @@ class Queue:
     output_dir: str
     download_order: str  # 'original', 'newest_first', 'oldest_first'
     filename_template: Optional[str] = None
+    file_format: str = "mp4"  # Output format: mp4, mp3, mkv, etc.
     created_at: Optional[str] = None
+    started_at: Optional[str] = None
     completed_at: Optional[str] = None
+    status: str = "pending"
     
     # Storage settings
     storage_provider: str = "local"  # 'local' or name of configured storage
@@ -42,8 +45,10 @@ class Queue:
             download_order=row[6],
             filename_template=row[7],
             created_at=row[8],
-            completed_at=row[9],
-            storage_provider=row[10] if len(row) > 10 else "local",
-            storage_video_quality=row[11] if len(row) > 11 else None,
-            storage_audio_quality=row[12] if len(row) > 12 else None
+            started_at=row[9] if len(row) > 9 else None,
+            completed_at=row[10] if len(row) > 10 else None,
+            status=row[11] if len(row) > 11 else "pending",
+            storage_provider=row[12] if len(row) > 12 else "local",
+            storage_video_quality=row[13] if len(row) > 13 else None,
+            storage_audio_quality=row[14] if len(row) > 14 else None
         )

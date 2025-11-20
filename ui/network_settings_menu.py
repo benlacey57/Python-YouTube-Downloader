@@ -12,8 +12,8 @@ console = Console()
 class NetworkSettingsMenu:
     """Network & proxy configuration submenu"""
     
-    def __init__(self):
-        self.config_manager = ConfigManager()
+    def __init__(self, config_manager: ConfigManager = None):
+        self.config_manager = config_manager or ConfigManager()
     
     def show(self):
         """Show network settings menu"""
@@ -156,7 +156,7 @@ class NetworkSettingsMenu:
         console.print("\n[cyan]Testing Proxies...[/cyan]")
         
         import requests
-        test_url = "https://www.google.com"
+        test_url = "https://www.youtube.com"
         
         for idx, proxy in enumerate(config.proxies, 1):
             try:

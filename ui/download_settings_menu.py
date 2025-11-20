@@ -48,7 +48,7 @@ class DownloadSettingsMenu:
             elif choice == "3":
                 self.config_manager.configure_parallel_downloads()
             elif choice == "4":
-                self.config_manager.configure_download_timeout()
+                self.config_manager.configure_timeout()
             elif choice == "5":
                 self.config_manager.configure_filename_template()
             elif choice == "6":

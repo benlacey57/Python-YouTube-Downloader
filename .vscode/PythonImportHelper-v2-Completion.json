@@ -4257,7 +4257,7 @@
         "kind": 6,
         "importPath": "downloaders.playlist",
         "description": "downloaders.playlist",
-        "peekOfCode": "class PlaylistDownloader(BaseDownloader):\n    \"\"\"Orchestrates playlist downloads using specialized downloaders\"\"\"\n    def __init__(self):\n        # Get managers internally\n        config_manager = ConfigManager()\n        self.stats_manager = StatsManager()\n        self.notification_manager = NotificationManager(config_manager.config)\n    def _print_stats(self, stats: dict):\n        \"\"\"Print download statistics\"\"\"\n        table = Table.grid(padding=(0, 2))",
+        "peekOfCode": "class PlaylistDownloader(BaseDownloader):\n    \"\"\"Orchestrates playlist downloads using specialized downloaders\"\"\"\n    def __init__(self):\n        # Get managers internally\n        config_manager = ConfigManager()\n        self.stats_manager = StatsManager()\n        self.notification_manager = NotificationManager(config_manager.config)\n        # Initialize base with config\n        super().__init__(\n            config_manager.config,",
         "detail": "downloaders.playlist",
         "documentation": {}
     },
@@ -4266,7 +4266,7 @@
         "kind": 5,
         "importPath": "downloaders.playlist",
         "description": "downloaders.playlist",
-        "peekOfCode": "console = Console()\nclass PlaylistDownloader(BaseDownloader):\n    \"\"\"Orchestrates playlist downloads using specialized downloaders\"\"\"\n    def __init__(self):\n        # Get managers internally\n        config_manager = ConfigManager()\n        self.stats_manager = StatsManager()\n        self.notification_manager = NotificationManager(config_manager.config)\n    def _print_stats(self, stats: dict):\n        \"\"\"Print download statistics\"\"\"",
+        "peekOfCode": "console = Console()\nclass PlaylistDownloader(BaseDownloader):\n    \"\"\"Orchestrates playlist downloads using specialized downloaders\"\"\"\n    def __init__(self):\n        # Get managers internally\n        config_manager = ConfigManager()\n        self.stats_manager = StatsManager()\n        self.notification_manager = NotificationManager(config_manager.config)\n        # Initialize base with config\n        super().__init__(",
         "detail": "downloaders.playlist",
         "documentation": {}
     },
@@ -7263,7 +7263,7 @@
         "kind": 6,
         "importPath": "ui.network_settings_menu",
         "description": "ui.network_settings_menu",
-        "peekOfCode": "class NetworkSettingsMenu:\n    \"\"\"Network & proxy configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show network settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Network & Proxy Settings[/bold cyan]\",",
+        "peekOfCode": "class NetworkSettingsMenu:\n    \"\"\"Network & proxy configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show network settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Network & Proxy Settings[/bold cyan]\",",
         "detail": "ui.network_settings_menu",
         "documentation": {}
     },
@@ -7272,7 +7272,7 @@
         "kind": 5,
         "importPath": "ui.network_settings_menu",
         "description": "ui.network_settings_menu",
-        "peekOfCode": "console = Console()\nclass NetworkSettingsMenu:\n    \"\"\"Network & proxy configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show network settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "peekOfCode": "console = Console()\nclass NetworkSettingsMenu:\n    \"\"\"Network & proxy configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show network settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
         "detail": "ui.network_settings_menu",
         "documentation": {}
     },

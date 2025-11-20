@@ -31,6 +31,18 @@ class PlaylistDownloader(BaseDownloader):
         config_manager = ConfigManager()
         self.stats_manager = StatsManager()
         self.notification_manager = NotificationManager(config_manager.config)
+        
+        # Initialize base with config
+        super().__init__(
+            config_manager.config,
+            self.stats_manager,
+            self.notification_manager
+        )
+        
+        # Initialize specialized downloaders
+        self.video_downloader = VideoDownloader()
+        self.audio_downloader = AudioDownloader()
+        self.livestream_downloader = LiveStreamDownloader()
     
     def _print_stats(self, stats: dict):
         """Print download statistics"""
@@ -45,23 +57,17 @@ class PlaylistDownloader(BaseDownloader):
         
         panel = Panel(table, title="[bold]Progress[/bold]", border_style="cyan", width=40)
         console.print(panel)
-        
-        # Initialize base with config
-        super().__init__(
-            config_manager.config,
-            self.stats_manager,
-            self.notification_manager
-        )
-        
-        # Initialize specialized downloaders
-        self.video_downloader = VideoDownloader()
-        self.audio_downloader = AudioDownloader()
-        self.livestream_downloader = LiveStreamDownloader()
     
-    def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
+    def download_item(self, item: DownloadItem, queue: Queue, index: int = 0, proxy: str = None) -> DownloadItem:
         """
         Download a single item using the appropriate downloader
         This method delegates to specialized downloaders
+        
+        Args:
+            item: Download item to process
+            queue: Queue configuration
+            index: Item index in queue
+            proxy: Optional specific proxy to use for this download
         """
         # Check if it's a live stream first
         try:
@@ -73,7 +79,7 @@ class PlaylistDownloader(BaseDownloader):
                 
                 if self.livestream_downloader.is_live_stream(info):
                     if self.config.auto_record_live_streams:
-                        return self.livestream_downloader.download_item(item, queue, index)
+                        return self.livestream_downloader.download_item(item, queue, index, proxy=proxy)
                     else:
                         console.print(f"[yellow]Skipping live stream (auto-record disabled): {item.title}[/yellow]")
                         item.status = DownloadStatus.FAILED.value
@@ -84,9 +90,9 @@ class PlaylistDownloader(BaseDownloader):
         
         # Use appropriate downloader based on format
         if queue.format_type == "audio":
-            return self.audio_downloader.download_item(item, queue, index)
+            return self.audio_downloader.download_item(item, queue, index, proxy=proxy)
         else:
-            return self.video_downloader.download_item(item, queue, index)
+            return self.video_downloader.download_item(item, queue, index, proxy=proxy)
     
     def download_queue(self, queue: Queue, queue_manager: QueueManager):
         """Download all items in a queue"""
@@ -179,8 +185,8 @@ class PlaylistDownloader(BaseDownloader):
                     else:
                         progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
                     
-                    # Download the item
-                    item = self.download_item(item, queue, idx)
+                    # Download the item (pass proxy if rotation enabled)
+                    item = self.download_item(item, queue, idx, proxy=current_proxy)
                     queue_manager.update_item(item)
                     
                     if item.status == DownloadStatus.COMPLETED.value:

@@ -35,8 +35,12 @@ class BaseDownloader(ABC):
             max_delay_seconds=config.max_delay_seconds
         )
     
-    def get_base_ydl_opts(self) -> Dict[str, Any]:
-        """Get base yt-dlp options"""
+    def get_base_ydl_opts(self, proxy: Optional[str] = None) -> Dict[str, Any]:
+        """Get base yt-dlp options
+        
+        Args:
+            proxy: Optional specific proxy to use. If not provided, uses first from config.
+        """
         opts = {
             'quiet': False,
             'no_warnings': False,
@@ -58,12 +62,14 @@ class BaseDownloader(ABC):
             opts['cookiefile'] = self.config.cookies_file
         
         # Add proxy if configured
-        if self.config.proxies:
+        if proxy:
+            opts['proxy'] = proxy
+        elif self.config.proxies:
             opts['proxy'] = self.config.proxies[0]
         
-        # Add timeout
-        if self.config.download_timeout_seconds:
-            opts['socket_timeout'] = self.config.download_timeout_seconds
+        # Add timeout (convert minutes to seconds)
+        if self.config.download_timeout_minutes:
+            opts['socket_timeout'] = self.config.download_timeout_minutes * 60
         
         return opts
     

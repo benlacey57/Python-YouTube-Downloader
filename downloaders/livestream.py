@@ -39,8 +39,15 @@ class LiveStreamDownloader(BaseDownloader):
         """Check if content is a live stream"""
         return self.live_stream_recorder.is_live_stream(info)
     
-    def download_item(self, item: DownloadItem, queue: Queue, index: int = 0) -> DownloadItem:
-        """Download/record a live stream"""
+    def download_item(self, item: DownloadItem, queue: Queue, index: int = 0, proxy: str = None) -> DownloadItem:
+        """Download/record a live stream
+        
+        Args:
+            item: Download item to process
+            queue: Queue configuration
+            index: Item index in queue
+            proxy: Optional specific proxy to use for this download
+        """
         from utils.keyboard_handler import keyboard_handler
         if keyboard_handler.is_skip_requested():
             console.print(f"[cyan]Skipping: {item.title}[/cyan]")
@@ -71,7 +78,7 @@ class LiveStreamDownloader(BaseDownloader):
                 normalize=self.config.normalize_filenames
             )
         
-        ydl_opts = self.get_base_ydl_opts()
+        ydl_opts = self.get_base_ydl_opts(proxy=proxy)
         ydl_opts['outtmpl'] = f'{queue.output_dir}/{base_filename}.%(ext)s'
         
         # Get live stream recording options

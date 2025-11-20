@@ -1,8 +1,11 @@
 """Playlist downloader orchestrator"""
 from typing import Optional
+import time
+import random
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
+from rich.table import Table
 
 from downloaders.base import BaseDownloader
 from downloaders.video import VideoDownloader
@@ -89,11 +92,31 @@ class PlaylistDownloader(BaseDownloader):
         """Download all items in a queue"""
         console.clear()
         
+        # Get config for proxy settings
+        config_manager = ConfigManager()
+        has_proxies = config_manager.config.proxies and len(config_manager.config.proxies) > 0
+        rotation_enabled = config_manager.config.proxy_rotation_enabled and has_proxies
+        current_proxy = None
+        download_count = 0
+        
+        # Prepare proxy info for header
+        proxy_info = ""
+        if has_proxies:
+            if rotation_enabled:
+                proxy_info = f"[cyan]Proxy Rotation:[/cyan] Enabled (every {config_manager.config.proxy_rotation_frequency} downloads)"
+            else:
+                # Use first proxy if rotation disabled
+                current_proxy = config_manager.config.proxies[0]
+                proxy_info = f"[cyan]Proxy:[/cyan] {current_proxy}"
+        else:
+            proxy_info = "[yellow]⚠ No proxies configured[/yellow]"
+        
         header = Panel(
             f"[bold cyan]Downloading:[/bold cyan] {queue.playlist_title}\n"
             f"[cyan]Format:[/cyan] {queue.format_type} | "
             f"[cyan]Quality:[/cyan] {queue.quality} | "
-            f"[cyan]Storage:[/cyan] {queue.storage_provider}",
+            f"[cyan]Storage:[/cyan] {queue.storage_provider}\n"
+            f"{proxy_info}",
             border_style="cyan"
         )
         console.print(header)
@@ -145,7 +168,16 @@ class PlaylistDownloader(BaseDownloader):
                     while keyboard_handler.is_paused() and not keyboard_handler.is_cancelled():
                         time.sleep(0.5)
                     
-                    progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
+                    # Handle proxy rotation
+                    if rotation_enabled:
+                        # Rotate proxy based on frequency
+                        proxy_index = (download_count // config_manager.config.proxy_rotation_frequency) % len(config_manager.config.proxies)
+                        current_proxy = config_manager.config.proxies[proxy_index]
+                        download_count += 1
+                        progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
+                        progress.console.print(f"[dim]Using proxy: {current_proxy}[/dim]")
+                    else:
+                        progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
                     
                     # Download the item
                     item = self.download_item(item, queue, idx)
@@ -160,9 +192,6 @@ class PlaylistDownloader(BaseDownloader):
                     
                     # Add random wait time between downloads if no proxies configured
                     if idx < len(pending_items):  # Don't wait after last item
-                        config_manager = ConfigManager()
-                        has_proxies = config_manager.config.proxies and len(config_manager.config.proxies) > 0
-                        
                         if not has_proxies:
                             # Random wait between min and max delay
                             wait_time = random.uniform(

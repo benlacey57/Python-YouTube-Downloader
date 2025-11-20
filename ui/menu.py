@@ -150,3 +150,28 @@ class Menu:
         from ui.stats_viewer import StatsViewer
         viewer = StatsViewer()
         viewer.show()
+    
+    def _download_settings(self):
+        """Download settings submenu"""
+        from ui.download_settings_menu import DownloadSettingsMenu
+        menu = DownloadSettingsMenu()
+        menu.show()
+    
+    def _network_settings(self):
+        """Network & proxy settings submenu"""
+        from ui.network_settings_menu import NetworkSettingsMenu
+        menu = NetworkSettingsMenu()
+        menu.show()
+    
+    def _notification_settings(self):
+        """Notification settings submenu"""
+        from ui.notification_settings_menu import NotificationSettingsMenu
+        menu = NotificationSettingsMenu()
+        menu.show()
+    
+    def _system_info(self):
+        """Show system information"""
+        from ui.setup_wizard import StatusPage
+        status = StatusPage()
+        status.show()
+        input("\nPress Enter to continue...")

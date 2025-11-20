@@ -49,7 +49,7 @@ class AppConfig:
     default_audio_quality: str = "192"
     default_filename_template: str = "{index:03d} - {title}"
     normalize_filenames: bool = True
-    download_timeout_seconds: int = 300
+    download_timeout_minutes: int = 120
     
     # Rate limiting
     max_downloads_per_hour: int = 50
@@ -111,6 +111,8 @@ class AppConfig:
     
     # Proxies
     proxies: List[str] = field(default_factory=list)
+    proxy_rotation_enabled: bool = False
+    proxy_rotation_frequency: int = 10  # Change proxy every X downloads
     
     # Storage
     default_storage: str = "local"
@@ -133,6 +135,14 @@ class ConfigManager:
             try:
                 with open(self.config_file, 'r') as f:
                     data = json.load(f)
+                
+                # Migrate old field name to new one
+                if 'download_timeout_seconds' in data:
+                    # Convert seconds to minutes (default was 300 seconds = 5 minutes)
+                    data['download_timeout_minutes'] = data.pop('download_timeout_seconds') // 60
+                    if data['download_timeout_minutes'] < 30:
+                        data['download_timeout_minutes'] = 120  # Use safer default
+                
                 return AppConfig(**data)
             except Exception as e:
                 console.print(f"[yellow]Error loading config: {e}[/yellow]")
@@ -644,3 +654,17 @@ class ConfigManager:
         
         console.print(f"\n[green]✓ Live stream settings configured[/green]")
         self.save_config()
+    
+    def configure_parallel_downloads(self):
+        """Alias for configure_workers for menu compatibility"""
+        self.configure_workers()
+    
+    def manage_proxies(self):
+        """Manage proxy settings - delegates to network settings menu"""
+        from ui.network_settings_menu import NetworkSettingsMenu
+        network_menu = NetworkSettingsMenu(self)
+        network_menu.show()
+    
+    def configure_slack_webhook(self):
+        """Alias for configure_slack for menu compatibility"""
+        self.configure_slack()

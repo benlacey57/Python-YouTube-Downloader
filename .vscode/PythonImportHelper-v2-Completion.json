@@ -1699,6 +1699,30 @@
         "documentation": {}
     },
     {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
         "label": "StatsManager",
         "importPath": "managers.stats_manager",
         "description": "managers.stats_manager",
@@ -2411,6 +2435,30 @@
         "documentation": {}
     },
     {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
+        "documentation": {}
+    },
+    {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
+        "documentation": {}
+    },
+    {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
+        "documentation": {}
+    },
+    {
         "label": "hashlib",
         "kind": 6,
         "isExtraImport": true,
@@ -2457,6 +2505,24 @@
         "description": "utils.live_stream_recorder",
         "isExtraImport": true,
         "detail": "utils.live_stream_recorder",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
         "documentation": {}
     },
     {
@@ -2681,6 +2747,110 @@
         "description": "rich.panel",
         "isExtraImport": true,
         "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
         "documentation": {}
     },
     {
@@ -2909,6 +3079,14 @@
         "documentation": {}
     },
     {
+        "label": "Prompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
         "label": "Confirm",
         "importPath": "rich.prompt",
         "description": "rich.prompt",
@@ -2942,6 +3120,38 @@
     },
     {
         "label": "IntPrompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Prompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Confirm",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "IntPrompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Prompt",
         "importPath": "rich.prompt",
         "description": "rich.prompt",
         "isExtraImport": true,
@@ -3070,15 +3280,6 @@
         "documentation": {}
     },
     {
-        "label": "time",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "time",
-        "description": "time",
-        "detail": "time",
-        "documentation": {}
-    },
-    {
         "label": "Channel",
         "importPath": "models.channel",
         "description": "models.channel",
@@ -3140,15 +3341,6 @@
         "description": "notifiers.email",
         "isExtraImport": true,
         "detail": "notifiers.email",
-        "documentation": {}
-    },
-    {
-        "label": "random",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "random",
-        "description": "random",
-        "detail": "random",
         "documentation": {}
     },
     {
@@ -3894,70 +4086,6 @@
         "description": "rich.live",
         "isExtraImport": true,
         "detail": "rich.live",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
-        "documentation": {}
-    },
-    {
-        "label": "Table",
-        "importPath": "rich.table",
-        "description": "rich.table",
-        "isExtraImport": true,
-        "detail": "rich.table",
         "documentation": {}
     },
     {
@@ -7077,6 +7205,24 @@
         "documentation": {}
     },
     {
+        "label": "DownloadSettingsMenu",
+        "kind": 6,
+        "importPath": "ui.download_settings_menu",
+        "description": "ui.download_settings_menu",
+        "peekOfCode": "class DownloadSettingsMenu:\n    \"\"\"Download configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show download settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Download Settings[/bold cyan]\",",
+        "detail": "ui.download_settings_menu",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "ui.download_settings_menu",
+        "description": "ui.download_settings_menu",
+        "peekOfCode": "console = Console()\nclass DownloadSettingsMenu:\n    \"\"\"Download configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show download settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "detail": "ui.download_settings_menu",
+        "documentation": {}
+    },
+    {
         "label": "Menu",
         "kind": 6,
         "importPath": "ui.menu",
@@ -7110,6 +7256,42 @@
         "description": "ui.monitoring_menu",
         "peekOfCode": "console = Console()\nclass MonitoringMenu:\n    \"\"\"Channel monitoring menu\"\"\"\n    def __init__(self):\n        self.monitor_manager = MonitorManager()\n    def show(self):\n        \"\"\"Show monitoring menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
         "detail": "ui.monitoring_menu",
+        "documentation": {}
+    },
+    {
+        "label": "NetworkSettingsMenu",
+        "kind": 6,
+        "importPath": "ui.network_settings_menu",
+        "description": "ui.network_settings_menu",
+        "peekOfCode": "class NetworkSettingsMenu:\n    \"\"\"Network & proxy configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show network settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Network & Proxy Settings[/bold cyan]\",",
+        "detail": "ui.network_settings_menu",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "ui.network_settings_menu",
+        "description": "ui.network_settings_menu",
+        "peekOfCode": "console = Console()\nclass NetworkSettingsMenu:\n    \"\"\"Network & proxy configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show network settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "detail": "ui.network_settings_menu",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationSettingsMenu",
+        "kind": 6,
+        "importPath": "ui.notification_settings_menu",
+        "description": "ui.notification_settings_menu",
+        "peekOfCode": "class NotificationSettingsMenu:\n    \"\"\"Notification configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show notification settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Notification Settings[/bold cyan]\",",
+        "detail": "ui.notification_settings_menu",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "ui.notification_settings_menu",
+        "description": "ui.notification_settings_menu",
+        "peekOfCode": "console = Console()\nclass NotificationSettingsMenu:\n    \"\"\"Notification configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show notification settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "detail": "ui.notification_settings_menu",
         "documentation": {}
     },
     {
@@ -7819,7 +8001,7 @@
         "kind": 2,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "def main():\n    \"\"\"Main application loop\"\"\"\n    try:\n        # Check if running in Colab\n        if IN_COLAB:\n            console.print(\"[yellow]⚠️  Running in Google Colab detected[/yellow]\")\n            console.print()\n            console.print(\"Interactive menu is not available in Colab.\")\n            console.print(\"Please use the [cyan]colab_setup.py[/cyan] module instead.\")\n            console.print()",
+        "peekOfCode": "def main():\n    IN_COLAB = False\n    \"\"\"Main application loop\"\"\"\n    try:\n        # Check if running in Colab\n        if IN_COLAB:\n            console.print(\"[yellow]⚠️  Running in Google Colab detected[/yellow]\")\n            console.print()\n            console.print(\"Interactive menu is not available in Colab.\")\n            console.print(\"Please use the [cyan]colab_setup.py[/cyan] module instead.\")",
         "detail": "main",
         "documentation": {}
     },
@@ -7828,7 +8010,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "console = Console()\ndef main():\n    \"\"\"Main application loop\"\"\"\n    try:\n        # Check if running in Colab\n        if IN_COLAB:\n            console.print(\"[yellow]⚠️  Running in Google Colab detected[/yellow]\")\n            console.print()\n            console.print(\"Interactive menu is not available in Colab.\")\n            console.print(\"Please use the [cyan]colab_setup.py[/cyan] module instead.\")",
+        "peekOfCode": "console = Console()\ndef main():\n    IN_COLAB = False\n    \"\"\"Main application loop\"\"\"\n    try:\n        # Check if running in Colab\n        if IN_COLAB:\n            console.print(\"[yellow]⚠️  Running in Google Colab detected[/yellow]\")\n            console.print()\n            console.print(\"Interactive menu is not available in Colab.\")",
         "detail": "main",
         "documentation": {}
     },

@@ -42,19 +42,23 @@ class BaseDownloader(ABC):
             proxy: Optional specific proxy to use. If not provided, uses first from config.
         """
         opts = {
-            'quiet': False,
-            'no_warnings': False,
+            'quiet': True,  # Suppress most output
+            'no_warnings': True,  # Suppress warnings
+            'noprogress': False,  # Keep progress bar
             'extract_flat': False,
             'ignoreerrors': True,
             'no_color': True,
             # Fix YouTube JavaScript runtime warnings
-            'extractor_args': {'youtube': {'player_client': ['default']}},
+            'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
             # Prevent .meta file downloads
             'writethumbnail': False,
             'writeinfojson': False,
             'writedescription': False,
             'writeannotations': False,
             'writesubtitles': False,
+            'writeautomaticsub': False,
+            # Suppress console output
+            'logger': None,  # Disable logging
         }
         
         # Add cookies if configured

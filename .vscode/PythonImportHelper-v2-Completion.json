@@ -136,6 +136,22 @@
         "documentation": {}
     },
     {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Callable",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
         "label": "Any",
         "importPath": "typing",
         "description": "typing",
@@ -885,47 +901,6 @@
         "description": "contextlib",
         "isExtraImport": true,
         "detail": "contextlib",
-        "documentation": {}
-    },
-    {
-        "label": "mysql.connector",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "mysql.connector",
-        "description": "mysql.connector",
-        "detail": "mysql.connector",
-        "documentation": {}
-    },
-    {
-        "label": "Error",
-        "importPath": "mysql.connector",
-        "description": "mysql.connector",
-        "isExtraImport": true,
-        "detail": "mysql.connector",
-        "documentation": {}
-    },
-    {
-        "label": "DatabaseConnection",
-        "importPath": "database.base",
-        "description": "database.base",
-        "isExtraImport": true,
-        "detail": "database.base",
-        "documentation": {}
-    },
-    {
-        "label": "DatabaseConnection",
-        "importPath": "database.base",
-        "description": "database.base",
-        "isExtraImport": true,
-        "detail": "database.base",
-        "documentation": {}
-    },
-    {
-        "label": "DatabaseConnection",
-        "importPath": "database.base",
-        "description": "database.base",
-        "isExtraImport": true,
-        "detail": "database.base",
         "documentation": {}
     },
     {
@@ -1218,308 +1193,389 @@
         "documentation": {}
     },
     {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "date",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "date",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "mysql.connector",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "mysql.connector",
+        "description": "mysql.connector",
+        "detail": "mysql.connector",
+        "documentation": {}
+    },
+    {
+        "label": "Error",
+        "importPath": "mysql.connector",
+        "description": "mysql.connector",
+        "isExtraImport": true,
+        "detail": "mysql.connector",
+        "documentation": {}
+    },
+    {
+        "label": "DatabaseConnection",
+        "importPath": "database.base",
+        "description": "database.base",
+        "isExtraImport": true,
+        "detail": "database.base",
+        "documentation": {}
+    },
+    {
+        "label": "DatabaseConnection",
+        "importPath": "database.base",
+        "description": "database.base",
+        "isExtraImport": true,
+        "detail": "database.base",
+        "documentation": {}
+    },
+    {
+        "label": "DatabaseConnection",
+        "importPath": "database.base",
+        "description": "database.base",
+        "isExtraImport": true,
+        "detail": "database.base",
+        "documentation": {}
+    },
+    {
         "label": "yt_dlp",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "yt_dlp",
         "description": "yt_dlp",
         "detail": "yt_dlp",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "date",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "date",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timedelta",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
         "documentation": {}
     },
     {
@@ -1723,6 +1779,30 @@
         "documentation": {}
     },
     {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
         "label": "StatsManager",
         "importPath": "managers.stats_manager",
         "description": "managers.stats_manager",
@@ -1936,6 +2016,22 @@
         "description": "models.download_item",
         "isExtraImport": true,
         "detail": "models.download_item",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadItem",
+        "importPath": "models.download_item",
+        "description": "models.download_item",
+        "isExtraImport": true,
+        "detail": "models.download_item",
+        "documentation": {}
+    },
+    {
+        "label": "Queue",
+        "importPath": "models.queue",
+        "description": "models.queue",
+        "isExtraImport": true,
+        "detail": "models.queue",
         "documentation": {}
     },
     {
@@ -2075,6 +2171,14 @@
         "documentation": {}
     },
     {
+        "label": "DownloadStatus",
+        "importPath": "enums",
+        "description": "enums",
+        "isExtraImport": true,
+        "detail": "enums",
+        "documentation": {}
+    },
+    {
         "label": "FileRenamer",
         "importPath": "utils.file_renamer",
         "description": "utils.file_renamer",
@@ -2120,6 +2224,38 @@
         "description": "utils.metadata_handler",
         "isExtraImport": true,
         "detail": "utils.metadata_handler",
+        "documentation": {}
+    },
+    {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
+        "documentation": {}
+    },
+    {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
+        "documentation": {}
+    },
+    {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
+        "documentation": {}
+    },
+    {
+        "label": "Console",
+        "importPath": "rich.console",
+        "description": "rich.console",
+        "isExtraImport": true,
+        "detail": "rich.console",
         "documentation": {}
     },
     {
@@ -2774,6 +2910,38 @@
         "documentation": {}
     },
     {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
         "label": "Table",
         "importPath": "rich.table",
         "description": "rich.table",
@@ -3087,15 +3255,7 @@
         "documentation": {}
     },
     {
-        "label": "Confirm",
-        "importPath": "rich.prompt",
-        "description": "rich.prompt",
-        "isExtraImport": true,
-        "detail": "rich.prompt",
-        "documentation": {}
-    },
-    {
-        "label": "IntPrompt",
+        "label": "Prompt",
         "importPath": "rich.prompt",
         "description": "rich.prompt",
         "isExtraImport": true,
@@ -3144,6 +3304,38 @@
     },
     {
         "label": "IntPrompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Prompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Confirm",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "IntPrompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Prompt",
         "importPath": "rich.prompt",
         "description": "rich.prompt",
         "isExtraImport": true,
@@ -3328,6 +3520,14 @@
         "documentation": {}
     },
     {
+        "label": "Channel",
+        "importPath": "models.channel",
+        "description": "models.channel",
+        "isExtraImport": true,
+        "detail": "models.channel",
+        "documentation": {}
+    },
+    {
         "label": "SlackNotifier",
         "importPath": "notifiers.slack",
         "description": "notifiers.slack",
@@ -3341,6 +3541,14 @@
         "description": "notifiers.email",
         "isExtraImport": true,
         "detail": "notifiers.email",
+        "documentation": {}
+    },
+    {
+        "label": "DailyStats",
+        "importPath": "models.daily_stats",
+        "description": "models.daily_stats",
+        "isExtraImport": true,
+        "detail": "models.daily_stats",
         "documentation": {}
     },
     {
@@ -3790,6 +3998,30 @@
         "documentation": {}
     },
     {
+        "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "call",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
         "label": "patch",
         "importPath": "unittest.mock",
         "description": "unittest.mock",
@@ -3815,6 +4047,14 @@
     },
     {
         "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
         "importPath": "unittest.mock",
         "description": "unittest.mock",
         "isExtraImport": true,
@@ -3950,6 +4190,22 @@
         "documentation": {}
     },
     {
+        "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
         "label": "ThreadPoolExecutor",
         "importPath": "concurrent.futures",
         "description": "concurrent.futures",
@@ -3999,11 +4255,19 @@
         "documentation": {}
     },
     {
-        "label": "ProgressDisplay",
-        "importPath": "progress_display",
-        "description": "progress_display",
+        "label": "AdvancedSettingsSubmenu",
+        "importPath": "ui.advanced_settings_submenu",
+        "description": "ui.advanced_settings_submenu",
         "isExtraImport": true,
-        "detail": "progress_display",
+        "detail": "ui.advanced_settings_submenu",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadSettingsSubmenu",
+        "importPath": "ui.download_settings_submenu",
+        "description": "ui.download_settings_submenu",
+        "isExtraImport": true,
+        "detail": "ui.download_settings_submenu",
         "documentation": {}
     },
     {
@@ -4020,6 +4284,14 @@
         "description": "monitoring_menu",
         "isExtraImport": true,
         "detail": "monitoring_menu",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationsSubmenu",
+        "importPath": "ui.notifications_submenu",
+        "description": "ui.notifications_submenu",
+        "isExtraImport": true,
+        "detail": "ui.notifications_submenu",
         "documentation": {}
     },
     {
@@ -4181,6 +4453,33 @@
         "documentation": {}
     },
     {
+        "label": "Migration",
+        "kind": 6,
+        "importPath": "database.migrations",
+        "description": "database.migrations",
+        "peekOfCode": "class Migration:\n    \"\"\"Represents a single database migration\"\"\"\n    def __init__(self, version: int, description: str, up: Callable, down: Callable = None):\n        self.version = version\n        self.description = description\n        self.up = up\n        self.down = down\n    def apply(self, conn: sqlite3.Connection):\n        \"\"\"Apply the migration\"\"\"\n        self.up(conn)",
+        "detail": "database.migrations",
+        "documentation": {}
+    },
+    {
+        "label": "MigrationManager",
+        "kind": 6,
+        "importPath": "database.migrations",
+        "description": "database.migrations",
+        "peekOfCode": "class MigrationManager:\n    \"\"\"Manages database migrations\"\"\"\n    def __init__(self, db_path: str = \"downloads.db\"):\n        self.db_path = Path(db_path)\n        self.migrations: List[Migration] = []\n        self._register_migrations()\n    def _get_connection(self) -> sqlite3.Connection:\n        \"\"\"Get database connection\"\"\"\n        return sqlite3.connect(self.db_path)\n    def _ensure_migrations_table(self, conn: sqlite3.Connection):",
+        "detail": "database.migrations",
+        "documentation": {}
+    },
+    {
+        "label": "run_migrations",
+        "kind": 2,
+        "importPath": "database.migrations",
+        "description": "database.migrations",
+        "peekOfCode": "def run_migrations(db_path: str = \"downloads.db\") -> bool:\n    \"\"\"Convenience function to run all migrations\"\"\"\n    manager = MigrationManager(db_path)\n    return manager.migrate()\nif __name__ == \"__main__\":\n    # Run migrations when executed directly\n    print(\"=\" * 70)\n    print(\"  Database Migration Tool\")\n    print(\"=\" * 70)\n    print()",
+        "detail": "database.migrations",
+        "documentation": {}
+    },
+    {
         "label": "MySQLConnection",
         "kind": 6,
         "importPath": "database.mysql_connection",
@@ -4311,7 +4610,7 @@
         "kind": 6,
         "importPath": "managers.config_manager",
         "description": "managers.config_manager",
-        "peekOfCode": "class ConfigManager:\n    \"\"\"Manages application configuration\"\"\"\n    def __init__(self, config_file: str = \"downloader_config.json\"):\n        self.config_file = Path(config_file)\n        self.config = self.load_config()\n    def load_config(self) -> AppConfig:\n        \"\"\"Load configuration from file\"\"\"\n        if self.config_file.exists():\n            try:\n                with open(self.config_file, 'r') as f:",
+        "peekOfCode": "class ConfigManager:\n    \"\"\"Manages application configuration\"\"\"\n    def __init__(self, config_file: str = \"downloader_config.json\"):\n        self.config_file = Path(config_file)\n        self.config = self.load_config()\n    def load_config(self) -> AppConfig:\n        \"\"\"Load configuration from file and check for proxies.txt\"\"\"\n        app_config = AppConfig()\n        # 1. Load existing config file\n        if self.config_file.exists():",
         "detail": "managers.config_manager",
         "documentation": {}
     },
@@ -4383,7 +4682,7 @@
         "kind": 6,
         "importPath": "managers.proxy_manager",
         "description": "managers.proxy_manager",
-        "peekOfCode": "class ProxyManager:\n    \"\"\"Manages proxy rotation\"\"\"\n    def __init__(self):\n        # Get config internally\n        config_manager = ConfigManager()\n        self.proxies: List[str] = config_manager.config.proxies.copy()\n        self.current_index = 0\n    def get_next_proxy(self) -> Optional[str]:\n        \"\"\"Get next proxy in rotation\"\"\"\n        if not self.proxies:",
+        "peekOfCode": "class ProxyManager:\n    \"\"\"Manages proxy rotation\"\"\"\n    def __init__(self):\n        # Get config internally\n        config_manager = ConfigManager()\n        self.config = config_manager.config # Store config for rotation logic\n        self.proxies: List[str] = self.config.proxies.copy()\n        self.current_index = 0\n        self.download_counter = 0 # NEW: Counter for rotation frequency\n        if self.has_proxies() and self.config.proxy_rotation_enabled:",
         "detail": "managers.proxy_manager",
         "documentation": {}
     },
@@ -4392,7 +4691,7 @@
         "kind": 5,
         "importPath": "managers.proxy_manager",
         "description": "managers.proxy_manager",
-        "peekOfCode": "console = Console()\nclass ProxyManager:\n    \"\"\"Manages proxy rotation\"\"\"\n    def __init__(self):\n        # Get config internally\n        config_manager = ConfigManager()\n        self.proxies: List[str] = config_manager.config.proxies.copy()\n        self.current_index = 0\n    def get_next_proxy(self) -> Optional[str]:\n        \"\"\"Get next proxy in rotation\"\"\"",
+        "peekOfCode": "console = Console()\nclass ProxyManager:\n    \"\"\"Manages proxy rotation\"\"\"\n    def __init__(self):\n        # Get config internally\n        config_manager = ConfigManager()\n        self.config = config_manager.config # Store config for rotation logic\n        self.proxies: List[str] = self.config.proxies.copy()\n        self.current_index = 0\n        self.download_counter = 0 # NEW: Counter for rotation frequency",
         "detail": "managers.proxy_manager",
         "documentation": {}
     },
@@ -6107,93 +6406,39 @@
         "documentation": {}
     },
     {
-        "label": "mock_progress_class",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def mock_progress_class():\n    \"\"\"Mocks the rich.progress.Progress class.\"\"\"\n    mock_progress_instance = MagicMock()\n    # Mock methods of the instance\n    mock_progress_instance.start = MagicMock()\n    mock_progress_instance.stop = MagicMock()\n    mock_progress_instance.add_task = MagicMock(return_value=1) # Mock task ID\n    mock_progress_instance.update = MagicMock()\n    with patch(\"progress_display.Progress\", return_value=mock_progress_instance) as mock_class:\n        yield mock_progress_instance, mock_class",
-        "detail": "tests.unit.ui.progress_display",
+        "label": "TestAdvancedSettingsSubmenu",
+        "kind": 6,
+        "importPath": "tests.unit.ui.test_advanced_settings_submenu",
+        "description": "tests.unit.ui.test_advanced_settings_submenu",
+        "peekOfCode": "class TestAdvancedSettingsSubmenu:\n    \"\"\"Test suite for AdvancedSettingsSubmenu\"\"\"\n    @patch('ui.advanced_settings_submenu.Prompt.ask')\n    def test_configure_live_streams(self, mock_prompt, submenu):\n        \"\"\"Test live streams configuration option\"\"\"\n        mock_prompt.side_effect = [\"1\", \"0\"]\n        submenu.show()\n        submenu.config_manager.configure_live_streams.assert_called_once()\n    @patch('ui.advanced_settings_submenu.Prompt.ask')\n    @patch('ui.advanced_settings_submenu.input')",
+        "detail": "tests.unit.ui.test_advanced_settings_submenu",
         "documentation": {}
     },
     {
-        "label": "progress_display_instance",
+        "label": "submenu",
         "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def progress_display_instance():\n    \"\"\"Returns a fresh ProgressDisplay instance.\"\"\"\n    # Note: We need to ensure the Progress class mock is in place when this is instantiated\n    return ProgressDisplay()\n# --- Test Initialization and State Management ---\ndef test_init_sets_initial_state(progress_display_instance):\n    \"\"\"Test that __init__ correctly sets up initial state.\"\"\"\n    assert progress_display_instance.progress is None\n    assert progress_display_instance.task_id is None\ndef test_create_simple_progress_sets_state(progress_display_instance, mock_progress_class):",
-        "detail": "tests.unit.ui.progress_display",
+        "importPath": "tests.unit.ui.test_advanced_settings_submenu",
+        "description": "tests.unit.ui.test_advanced_settings_submenu",
+        "peekOfCode": "def submenu(mock_config_manager):\n    \"\"\"Create AdvancedSettingsSubmenu instance\"\"\"\n    with patch('ui.advanced_settings_submenu.console'):\n        return AdvancedSettingsSubmenu(mock_config_manager)\nclass TestAdvancedSettingsSubmenu:\n    \"\"\"Test suite for AdvancedSettingsSubmenu\"\"\"\n    @patch('ui.advanced_settings_submenu.Prompt.ask')\n    def test_configure_live_streams(self, mock_prompt, submenu):\n        \"\"\"Test live streams configuration option\"\"\"\n        mock_prompt.side_effect = [\"1\", \"0\"]",
+        "detail": "tests.unit.ui.test_advanced_settings_submenu",
         "documentation": {}
     },
     {
-        "label": "test_init_sets_initial_state",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_init_sets_initial_state(progress_display_instance):\n    \"\"\"Test that __init__ correctly sets up initial state.\"\"\"\n    assert progress_display_instance.progress is None\n    assert progress_display_instance.task_id is None\ndef test_create_simple_progress_sets_state(progress_display_instance, mock_progress_class):\n    \"\"\"Test that creating a progress bar starts the progress and sets task_id.\"\"\"\n    mock_instance, mock_class = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Task\", total=200)\n    # Assert state is set\n    assert progress_display_instance.progress == mock_instance",
-        "detail": "tests.unit.ui.progress_display",
+        "label": "TestDownloadSettingsSubmenu",
+        "kind": 6,
+        "importPath": "tests.unit.ui.test_download_settings_submenu",
+        "description": "tests.unit.ui.test_download_settings_submenu",
+        "peekOfCode": "class TestDownloadSettingsSubmenu:\n    \"\"\"Test suite for DownloadSettingsSubmenu\"\"\"\n    def test_init_with_config_manager(self, mock_config_manager):\n        \"\"\"Test initialization with provided config manager\"\"\"\n        with patch('ui.download_settings_submenu.console'):\n            submenu = DownloadSettingsSubmenu(mock_config_manager)\n            assert submenu.config_manager == mock_config_manager\n    def test_init_without_config_manager(self):\n        \"\"\"Test initialization creates ConfigManager if not provided\"\"\"\n        with patch('ui.download_settings_submenu.ConfigManager') as mock_cm_class, \\",
+        "detail": "tests.unit.ui.test_download_settings_submenu",
         "documentation": {}
     },
     {
-        "label": "test_create_simple_progress_sets_state",
+        "label": "submenu",
         "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_create_simple_progress_sets_state(progress_display_instance, mock_progress_class):\n    \"\"\"Test that creating a progress bar starts the progress and sets task_id.\"\"\"\n    mock_instance, mock_class = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Task\", total=200)\n    # Assert state is set\n    assert progress_display_instance.progress == mock_instance\n    assert progress_display_instance.task_id == 1\n    # Assert rich methods were called\n    mock_instance.start.assert_called_once()\n    mock_instance.add_task.assert_called_once()",
-        "detail": "tests.unit.ui.progress_display",
-        "documentation": {}
-    },
-    {
-        "label": "test_update_progress_updates_correctly",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_update_progress_updates_correctly(progress_display_instance, mock_progress_class):\n    \"\"\"Test that update_progress calls the mock rich update method.\"\"\"\n    mock_instance, _ = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Task\", total=100)\n    progress_display_instance.update_progress(50)\n    mock_instance.update.assert_called_with(1, completed=50)\ndef test_complete_progress_stops_progress_and_clears_state(progress_display_instance, mock_progress_class):\n    \"\"\"Test that completing the progress bar stops the rich object and resets state.\"\"\"\n    mock_instance, _ = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Task\", total=100)",
-        "detail": "tests.unit.ui.progress_display",
-        "documentation": {}
-    },
-    {
-        "label": "test_complete_progress_stops_progress_and_clears_state",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_complete_progress_stops_progress_and_clears_state(progress_display_instance, mock_progress_class):\n    \"\"\"Test that completing the progress bar stops the rich object and resets state.\"\"\"\n    mock_instance, _ = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Task\", total=100)\n    progress_display_instance.complete_progress()\n    mock_instance.stop.assert_called_once()\n    assert progress_display_instance.progress is None\n    assert progress_display_instance.task_id is None\n# --- Test yt-dlp Progress Hook ---\ndef test_yt_dlp_hook_updates_on_downloading_status(progress_display_instance, mock_progress_class):",
-        "detail": "tests.unit.ui.progress_display",
-        "documentation": {}
-    },
-    {
-        "label": "test_yt_dlp_hook_updates_on_downloading_status",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_yt_dlp_hook_updates_on_downloading_status(progress_display_instance, mock_progress_class):\n    \"\"\"Test that the hook calculates and updates percentage correctly.\"\"\"\n    mock_instance, _ = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Download\", total=100) # Total is arbitrary here, actual total is from hook data\n    hook = progress_display_instance.get_yt_dlp_progress_hook()\n    # Simulate a mid-download state\n    download_info = {\n        'status': 'downloading',\n        'downloaded_bytes': 50 * 1024 * 1024, # 50 MB\n        'total_bytes': 100 * 1024 * 1024,     # 100 MB",
-        "detail": "tests.unit.ui.progress_display",
-        "documentation": {}
-    },
-    {
-        "label": "test_yt_dlp_hook_updates_on_total_bytes_estimate",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_yt_dlp_hook_updates_on_total_bytes_estimate(progress_display_instance, mock_progress_class):\n    \"\"\"Test that the hook uses total_bytes_estimate if total_bytes is missing.\"\"\"\n    mock_instance, _ = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Download\", total=100)\n    hook = progress_display_instance.get_yt_dlp_progress_hook()\n    download_info = {\n        'status': 'downloading',\n        'downloaded_bytes': 20 * 1024,\n        'total_bytes_estimate': 80 * 1024,\n        'filename': 'video.mp4'",
-        "detail": "tests.unit.ui.progress_display",
-        "documentation": {}
-    },
-    {
-        "label": "test_yt_dlp_hook_updates_to_100_on_finished_status",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_yt_dlp_hook_updates_to_100_on_finished_status(progress_display_instance, mock_progress_class):\n    \"\"\"Test that the hook sets completed to 100% on 'finished' status.\"\"\"\n    mock_instance, _ = mock_progress_class\n    progress_display_instance.create_simple_progress(\"Test Download\", total=100)\n    hook = progress_display_instance.get_yt_dlp_progress_hook()\n    # Simulate finished state\n    download_info = {\n        'status': 'finished',\n        'downloaded_bytes': 1000,\n        'total_bytes': 1000,",
-        "detail": "tests.unit.ui.progress_display",
-        "documentation": {}
-    },
-    {
-        "label": "test_yt_dlp_hook_does_nothing_if_progress_is_none",
-        "kind": 2,
-        "importPath": "tests.unit.ui.progress_display",
-        "description": "tests.unit.ui.progress_display",
-        "peekOfCode": "def test_yt_dlp_hook_does_nothing_if_progress_is_none(progress_display_instance, mock_progress_class):\n    \"\"\"Test that the hook is safe to call even if progress bar is not active.\"\"\"\n    mock_instance, _ = mock_progress_class\n    # Do NOT call create_simple_progress\n    hook = progress_display_instance.get_yt_dlp_progress_hook()\n    download_info = {'status': 'downloading', 'downloaded_bytes': 50, 'total_bytes': 100}\n    hook(download_info)\n    mock_instance.update.assert_not_called()",
-        "detail": "tests.unit.ui.progress_display",
+        "importPath": "tests.unit.ui.test_download_settings_submenu",
+        "description": "tests.unit.ui.test_download_settings_submenu",
+        "peekOfCode": "def submenu(mock_config_manager):\n    \"\"\"Create DownloadSettingsSubmenu instance with mocked dependencies\"\"\"\n    with patch('ui.download_settings_submenu.console'):\n        return DownloadSettingsSubmenu(mock_config_manager)\nclass TestDownloadSettingsSubmenu:\n    \"\"\"Test suite for DownloadSettingsSubmenu\"\"\"\n    def test_init_with_config_manager(self, mock_config_manager):\n        \"\"\"Test initialization with provided config manager\"\"\"\n        with patch('ui.download_settings_submenu.console'):\n            submenu = DownloadSettingsSubmenu(mock_config_manager)",
+        "detail": "tests.unit.ui.test_download_settings_submenu",
         "documentation": {}
     },
     {
@@ -6347,6 +6592,24 @@
         "description": "tests.unit.ui.test_monitoring_menu",
         "peekOfCode": "def test_get_download_order_returns_correct_choice(mock_rich_io):\n    \"\"\"Test that download order prompt returns the correct value.\"\"\"\n    # User selects option 3 (newest_first)\n    mock_rich_io[\"prompt\"].return_value = \"3\"\n    result = MonitoringMenu._get_download_order()\n    assert result == \"newest_first\"\n    mock_rich_io[\"prompt\"].assert_called_once()",
         "detail": "tests.unit.ui.test_monitoring_menu",
+        "documentation": {}
+    },
+    {
+        "label": "TestNotificationsSubmenu",
+        "kind": 6,
+        "importPath": "tests.unit.ui.test_notifications_submenu",
+        "description": "tests.unit.ui.test_notifications_submenu",
+        "peekOfCode": "class TestNotificationsSubmenu:\n    \"\"\"Test suite for NotificationsSubmenu\"\"\"\n    @patch('ui.notifications_submenu.Prompt.ask')\n    def test_configure_slack(self, mock_prompt, submenu):\n        \"\"\"Test Slack configuration option\"\"\"\n        mock_prompt.side_effect = [\"1\", \"0\"]\n        submenu.show()\n        submenu.config_manager.configure_slack_webhook.assert_called_once()\n    @patch('ui.notifications_submenu.Prompt.ask')\n    def test_configure_email(self, mock_prompt, submenu):",
+        "detail": "tests.unit.ui.test_notifications_submenu",
+        "documentation": {}
+    },
+    {
+        "label": "submenu",
+        "kind": 2,
+        "importPath": "tests.unit.ui.test_notifications_submenu",
+        "description": "tests.unit.ui.test_notifications_submenu",
+        "peekOfCode": "def submenu(mock_config_manager):\n    \"\"\"Create NotificationsSubmenu instance\"\"\"\n    with patch('ui.notifications_submenu.console'):\n        return NotificationsSubmenu(mock_config_manager)\nclass TestNotificationsSubmenu:\n    \"\"\"Test suite for NotificationsSubmenu\"\"\"\n    @patch('ui.notifications_submenu.Prompt.ask')\n    def test_configure_slack(self, mock_prompt, submenu):\n        \"\"\"Test Slack configuration option\"\"\"\n        mock_prompt.side_effect = [\"1\", \"0\"]",
+        "detail": "tests.unit.ui.test_notifications_submenu",
         "documentation": {}
     },
     {
@@ -7106,6 +7369,159 @@
         "documentation": {}
     },
     {
+        "label": "mock_rich_console",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_rich_console():\n    \"\"\"Mock rich console globally to prevent output during tests\"\"\"\n    with patch('rich.console.Console'):\n        yield\n# ===== Configuration Fixtures =====\n@pytest.fixture\ndef mock_config():\n    \"\"\"Mock configuration object with default values\"\"\"\n    config = MagicMock()\n    config.proxies = [\"http://proxy1:8080\", \"http://proxy2:8080\"]",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_config",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_config():\n    \"\"\"Mock configuration object with default values\"\"\"\n    config = MagicMock()\n    config.proxies = [\"http://proxy1:8080\", \"http://proxy2:8080\"]\n    config.proxy_rotation_enabled = True\n    config.proxy_rotation_frequency = 5\n    config.cookies_file = \"/path/to/cookies.txt\"\n    config.download_timeout_minutes = 10\n    config.max_workers = 3\n    config.alert_thresholds_mb = [1024, 5120]",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_config_manager",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_config_manager(mock_config):\n    \"\"\"Mock ConfigManager with a config attribute\"\"\"\n    manager = MagicMock()\n    manager.config = mock_config\n    manager.save_config = MagicMock()\n    return manager\n# ===== Model Fixtures =====\n@pytest.fixture\ndef sample_queue():\n    \"\"\"Create a sample Queue object\"\"\"",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "sample_queue",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def sample_queue():\n    \"\"\"Create a sample Queue object\"\"\"\n    return Queue(\n        id=1,\n        playlist_url=\"https://example.com/playlist\",\n        playlist_title=\"Test Playlist\",\n        format_type=\"video\",\n        quality=\"720p\",\n        output_dir=\"/tmp/downloads\",\n        filename_template=\"{index:03d} - {title}\",",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "sample_download_item",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def sample_download_item():\n    \"\"\"Create a sample DownloadItem object\"\"\"\n    return DownloadItem(\n        id=1,\n        queue_id=1,\n        url=\"https://example.com/video\",\n        title=\"Test Video\",\n        video_id=\"test123\",\n        uploader=\"Test Uploader\",\n        upload_date=\"20250101\",",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "sample_channel",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def sample_channel():\n    \"\"\"Create a sample Channel object\"\"\"\n    return Channel(\n        id=1,\n        url=\"https://example.com/channel\",\n        title=\"Test Channel\",\n        is_monitored=True,\n        check_interval_minutes=60,\n        format_type=\"video\",\n        quality=\"720p\",",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "sample_daily_stats",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def sample_daily_stats():\n    \"\"\"Create a sample DailyStats object\"\"\"\n    return DailyStats(\n        id=1,\n        date=\"2025-11-21\",\n        total_downloads=10,\n        successful_downloads=8,\n        failed_downloads=2,\n        total_file_size_bytes=1073741824,  # 1 GB\n        average_download_speed_mbps=5.0,",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_stats_manager",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_stats_manager():\n    \"\"\"Mock StatsManager\"\"\"\n    manager = MagicMock()\n    manager.record_download = MagicMock()\n    manager.record_queue_completed = MagicMock()\n    manager.get_today_stats = MagicMock(return_value=DailyStats(\n        id=1,\n        date=datetime.now().strftime(\"%Y-%m-%d\"),\n        total_downloads=0,\n        successful_downloads=0,",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_queue_manager",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_queue_manager():\n    \"\"\"Mock QueueManager\"\"\"\n    manager = MagicMock()\n    manager.get_queue = MagicMock()\n    manager.get_all_queues = MagicMock(return_value=[])\n    manager.get_queue_items = MagicMock(return_value=[])\n    manager.update_item = MagicMock()\n    manager.update_queue = MagicMock()\n    manager.create_queue = MagicMock(return_value=1)\n    manager.add_item = MagicMock(return_value=1)",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_notification_manager",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_notification_manager():\n    \"\"\"Mock NotificationManager\"\"\"\n    manager = MagicMock()\n    manager.has_any_notifier = MagicMock(return_value=False)\n    manager.notify_queue_completed = MagicMock()\n    manager.notify_download_failed = MagicMock()\n    return manager\n@pytest.fixture\ndef mock_proxy_manager():\n    \"\"\"Mock ProxyManager\"\"\"",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_proxy_manager",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_proxy_manager():\n    \"\"\"Mock ProxyManager\"\"\"\n    manager = MagicMock()\n    manager.get_next_proxy = MagicMock(return_value=\"http://proxy:8080\")\n    manager.get_random_proxy = MagicMock(return_value=\"http://proxy:8080\")\n    manager.has_proxies = MagicMock(return_value=True)\n    manager.get_all_proxies = MagicMock(return_value=[\"http://proxy1:8080\", \"http://proxy2:8080\"])\n    return manager\n# ===== File System Fixtures =====\n@pytest.fixture",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "temp_test_dir",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def temp_test_dir(tmp_path):\n    \"\"\"Create a temporary directory for tests\"\"\"\n    test_dir = tmp_path / \"test_downloads\"\n    test_dir.mkdir()\n    return test_dir\n@pytest.fixture\ndef mock_file_operations():\n    \"\"\"Mock common file operations\"\"\"\n    with patch('pathlib.Path.exists', return_value=True), \\\n         patch('pathlib.Path.mkdir'), \\",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_file_operations",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_file_operations():\n    \"\"\"Mock common file operations\"\"\"\n    with patch('pathlib.Path.exists', return_value=True), \\\n         patch('pathlib.Path.mkdir'), \\\n         patch('pathlib.Path.unlink'), \\\n         patch('pathlib.Path.stat') as mock_stat:\n        mock_stat.return_value.st_size = 1024 * 1024  # 1 MB\n        yield\n# ===== YT-DLP Fixtures =====\n@pytest.fixture",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_yt_dlp",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_yt_dlp():\n    \"\"\"Mock yt_dlp module\"\"\"\n    with patch('yt_dlp.YoutubeDL') as mock_ydl:\n        mock_instance = MagicMock()\n        mock_ydl.return_value.__enter__.return_value = mock_instance\n        mock_instance.extract_info = MagicMock(return_value={\n            'id': 'test123',\n            'title': 'Test Video',\n            'uploader': 'Test Uploader',\n            'upload_date': '20250101',",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_requests",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_requests():\n    \"\"\"Mock requests library\"\"\"\n    with patch('requests.get') as mock_get, \\\n         patch('requests.post') as mock_post:\n        mock_response = MagicMock()\n        mock_response.status_code = 200\n        mock_response.json = MagicMock(return_value={})\n        mock_response.text = \"OK\"\n        mock_get.return_value = mock_response\n        mock_post.return_value = mock_response",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_datetime",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_datetime():\n    \"\"\"Mock datetime for consistent time-based tests\"\"\"\n    fixed_time = datetime(2025, 11, 21, 12, 0, 0)\n    with patch('datetime.datetime') as mock_dt:\n        mock_dt.now.return_value = fixed_time\n        mock_dt.side_effect = lambda *args, **kwargs: datetime(*args, **kwargs)\n        yield mock_dt",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "project_root",
+        "kind": 5,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "project_root = Path(__file__).parent.parent\nsys.path.insert(0, str(project_root))\n# Import project modules\nfrom models.queue import Queue\nfrom models.download_item import DownloadItem\nfrom models.channel import Channel\nfrom models.daily_stats import DailyStats\nfrom enums import DownloadStatus\n# ===== Mock Rich Console =====\n@pytest.fixture(scope=\"session\", autouse=True)",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
         "label": "setup_environment",
         "kind": 2,
         "importPath": "tests.run",
@@ -7187,6 +7603,24 @@
         "documentation": {}
     },
     {
+        "label": "AdvancedSettingsSubmenu",
+        "kind": 6,
+        "importPath": "ui.advanced_settings_submenu",
+        "description": "ui.advanced_settings_submenu",
+        "peekOfCode": "class AdvancedSettingsSubmenu:\n    \"\"\"Advanced configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show advanced settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Advanced Settings[/bold cyan]\",",
+        "detail": "ui.advanced_settings_submenu",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "ui.advanced_settings_submenu",
+        "description": "ui.advanced_settings_submenu",
+        "peekOfCode": "console = Console()\nclass AdvancedSettingsSubmenu:\n    \"\"\"Advanced configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show advanced settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "detail": "ui.advanced_settings_submenu",
+        "documentation": {}
+    },
+    {
         "label": "DownloadProgressDisplay",
         "kind": 6,
         "importPath": "ui.download_progress",
@@ -7220,6 +7654,24 @@
         "description": "ui.download_settings_menu",
         "peekOfCode": "console = Console()\nclass DownloadSettingsMenu:\n    \"\"\"Download configuration submenu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show download settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
         "detail": "ui.download_settings_menu",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadSettingsSubmenu",
+        "kind": 6,
+        "importPath": "ui.download_settings_submenu",
+        "description": "ui.download_settings_submenu",
+        "peekOfCode": "class DownloadSettingsSubmenu:\n    \"\"\"Download configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show download settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Download Settings[/bold cyan]\",",
+        "detail": "ui.download_settings_submenu",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "ui.download_settings_submenu",
+        "description": "ui.download_settings_submenu",
+        "peekOfCode": "console = Console()\nclass DownloadSettingsSubmenu:\n    \"\"\"Download configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show download settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "detail": "ui.download_settings_submenu",
         "documentation": {}
     },
     {
@@ -7295,6 +7747,24 @@
         "documentation": {}
     },
     {
+        "label": "NotificationsSubmenu",
+        "kind": 6,
+        "importPath": "ui.notifications_submenu",
+        "description": "ui.notifications_submenu",
+        "peekOfCode": "class NotificationsSubmenu:\n    \"\"\"Notifications configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show notifications settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Notification Settings[/bold cyan]\",",
+        "detail": "ui.notifications_submenu",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "ui.notifications_submenu",
+        "description": "ui.notifications_submenu",
+        "peekOfCode": "console = Console()\nclass NotificationsSubmenu:\n    \"\"\"Notifications configuration submenu\"\"\"\n    def __init__(self, config_manager: ConfigManager = None):\n        self.config_manager = config_manager or ConfigManager()\n    def show(self):\n        \"\"\"Show notifications settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
+        "detail": "ui.notifications_submenu",
+        "documentation": {}
+    },
+    {
         "label": "ProgressDisplay",
         "kind": 6,
         "importPath": "ui.progress_display",
@@ -7344,7 +7814,7 @@
         "kind": 6,
         "importPath": "ui.settings_menu",
         "description": "ui.settings_menu",
-        "peekOfCode": "class SettingsMenu:\n    \"\"\"Settings configuration menu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show settings menu\"\"\"\n        while True:\n            console.clear()\n            from rich.panel import Panel\n            header = Panel(",
+        "peekOfCode": "class SettingsMenu:\n    \"\"\"Settings configuration menu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(\n                \"[bold cyan]Settings[/bold cyan]\",",
         "detail": "ui.settings_menu",
         "documentation": {}
     },
@@ -7353,7 +7823,7 @@
         "kind": 5,
         "importPath": "ui.settings_menu",
         "description": "ui.settings_menu",
-        "peekOfCode": "console = Console()\nclass SettingsMenu:\n    \"\"\"Settings configuration menu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show settings menu\"\"\"\n        while True:\n            console.clear()\n            from rich.panel import Panel",
+        "peekOfCode": "console = Console()\nclass SettingsMenu:\n    \"\"\"Settings configuration menu\"\"\"\n    def __init__(self):\n        self.config_manager = ConfigManager()\n    def show(self):\n        \"\"\"Show settings menu\"\"\"\n        while True:\n            console.clear()\n            header = Panel(",
         "detail": "ui.settings_menu",
         "documentation": {}
     },
@@ -7920,7 +8390,25 @@
         "kind": 2,
         "importPath": "install",
         "description": "install",
-        "peekOfCode": "def check_python_version():\n    \"\"\"Check if Python version is adequate\"\"\"\n    if sys.version_info < (3, 8):\n        print(\"❌ Python 3.8 or higher is required!\")\n        print(f\"   Current version: {sys.version}\")\n        sys.exit(1)\n    print(f\"✓ Python version: {sys.version.split()[0]}\")\ndef install_dependencies():\n    \"\"\"Install required packages\"\"\"\n    print_section(\"Installing Required Packages\")",
+        "peekOfCode": "def check_python_version():\n    \"\"\"Check if Python version is adequate\"\"\"\n    if sys.version_info < (3, 8):\n        print(\"❌ Python 3.8 or higher is required!\")\n        print(f\"   Current version: {sys.version}\")\n        sys.exit(1)\n    print(f\"✓ Python version: {sys.version.split()[0]}\")\ndef check_system_dependencies():\n    \"\"\"Check for required system dependencies\"\"\"\n    print(\"\\nChecking system dependencies...\")",
+        "detail": "install",
+        "documentation": {}
+    },
+    {
+        "label": "check_system_dependencies",
+        "kind": 2,
+        "importPath": "install",
+        "description": "install",
+        "peekOfCode": "def check_system_dependencies():\n    \"\"\"Check for required system dependencies\"\"\"\n    print(\"\\nChecking system dependencies...\")\n    # Check for ffmpeg (recommended for yt-dlp)\n    try:\n        result = subprocess.run(\n            [\"ffmpeg\", \"-version\"],\n            capture_output=True,\n            text=True\n        )",
+        "detail": "install",
+        "documentation": {}
+    },
+    {
+        "label": "create_virtual_environment",
+        "kind": 2,
+        "importPath": "install",
+        "description": "install",
+        "peekOfCode": "def create_virtual_environment():\n    \"\"\"Create virtual environment if it doesn't exist\"\"\"\n    venv_dir = Path(\"venv\")\n    if venv_dir.exists():\n        print(\"✓ Virtual environment already exists\")\n        return True\n    print(\"Creating virtual environment...\")\n    try:\n        subprocess.check_call([sys.executable, \"-m\", \"venv\", \"venv\"])\n        print(\"✓ Virtual environment created\\n\")",
         "detail": "install",
         "documentation": {}
     },
@@ -7929,7 +8417,7 @@
         "kind": 2,
         "importPath": "install",
         "description": "install",
-        "peekOfCode": "def install_dependencies():\n    \"\"\"Install required packages\"\"\"\n    print_section(\"Installing Required Packages\")\n    requirements_file = Path(__file__).parent / \"requirements.txt\"\n    requirements_dev_file = Path(__file__).parent / \"requirements-dev.txt\"\n    if not requirements_file.exists():\n        print(\"❌ requirements.txt not found!\")\n        sys.exit(1)\n    print(\"Installing core dependencies from requirements.txt...\")\n    try:",
+        "peekOfCode": "def install_dependencies():\n    \"\"\"Install required packages\"\"\"\n    print_section(\"Installing Required Packages\")\n    requirements_file = Path(__file__).parent / \"requirements.txt\"\n    requirements_dev_file = Path(__file__).parent / \"requirements-dev.txt\"\n    if not requirements_file.exists():\n        print(\"❌ requirements.txt not found!\")\n        sys.exit(1)\n    # Determine pip executable (use venv if it exists)\n    venv_pip = Path(\"venv/bin/pip\")",
         "detail": "install",
         "documentation": {}
     },
@@ -7947,7 +8435,7 @@
         "kind": 2,
         "importPath": "install",
         "description": "install",
-        "peekOfCode": "def initialize_database():\n    \"\"\"Initialize database and test connection\"\"\"\n    print_section(\"Database Initialization\")\n    from database import get_database_connection\n    from managers.database_manager import DatabaseManager\n    print(\"Creating database connection...\")\n    try:\n        db = get_database_connection(db_type=\"sqlite\", db_path=\"downloads.db\")\n        print(\"✓ Database connection established\")\n        print(\"\\nInitializing database schema...\")",
+        "peekOfCode": "def initialize_database():\n    \"\"\"Initialize database and test connection\"\"\"\n    print_section(\"Database Initialization\")\n    from database import get_database_connection\n    from database.migrations import run_migrations\n    from managers.database_manager import DatabaseManager\n    print(\"Creating database connection...\")\n    try:\n        db = get_database_connection(db_type=\"sqlite\", db_path=\"downloads.db\")\n        print(\"✓ Database connection established\")",
         "detail": "install",
         "documentation": {}
     },
@@ -7983,7 +8471,7 @@
         "kind": 2,
         "importPath": "install",
         "description": "install",
-        "peekOfCode": "def main():\n    \"\"\"Main installation process\"\"\"\n    try:\n        print_banner()\n        # Check Python version\n        print_section(\"System Requirements Check\")\n        check_python_version()\n        # Check system dependencies\n        check_system_dependencies()\n        # Install dependencies",
+        "peekOfCode": "def main():\n    \"\"\"Main installation process\"\"\"\n    try:\n        # Check for --fresh flag\n        fresh_install = \"--fresh\" in sys.argv\n        print_banner()\n        if fresh_install:\n            print(\"🔄 Fresh install mode: Will remove existing data directories\\n\")\n            from rich.prompt import Confirm\n            if Confirm.ask(\"⚠️  This will delete existing data, logs, and databases. Continue?\", default=False):",
         "detail": "install",
         "documentation": {}
     },
@@ -7994,6 +8482,24 @@
         "description": "install",
         "peekOfCode": "BANNER = \"\"\"\n╔═══════════════════════════════════════════════════════════════════════════╗\n║                                                                           ║\n║              YouTube Playlist Downloader - Installation                  ║\n║                                                                           ║\n║              Advanced download management system                         ║\n║                                                                           ║\n╚═══════════════════════════════════════════════════════════════════════════╝\n\"\"\"\ndef print_banner():",
         "detail": "install",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "load_proxies",
+        "description": "load_proxies",
+        "peekOfCode": "def main():\n    config_file = Path('downloader_config.json')\n    proxies_file = Path('proxies.txt')\n    # Check if proxies.txt exists\n    if not proxies_file.exists():\n        console.print(\"[red]✗ proxies.txt not found[/red]\")\n        console.print(\"[dim]Create a proxies.txt file with one proxy per line[/dim]\")\n        return False\n    # Load proxies from file\n    try:",
+        "detail": "load_proxies",
+        "documentation": {}
+    },
+    {
+        "label": "console",
+        "kind": 5,
+        "importPath": "load_proxies",
+        "description": "load_proxies",
+        "peekOfCode": "console = Console()\ndef main():\n    config_file = Path('downloader_config.json')\n    proxies_file = Path('proxies.txt')\n    # Check if proxies.txt exists\n    if not proxies_file.exists():\n        console.print(\"[red]✗ proxies.txt not found[/red]\")\n        console.print(\"[dim]Create a proxies.txt file with one proxy per line[/dim]\")\n        return False\n    # Load proxies from file",
+        "detail": "load_proxies",
         "documentation": {}
     },
     {

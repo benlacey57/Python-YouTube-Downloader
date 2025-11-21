@@ -151,19 +151,10 @@ class ConfigManager:
                 console.print(f"[yellow]Error loading config: {e}[/yellow]")
                 console.print("[yellow]Using default configuration[/yellow]")
         
-        # 2. Check and load proxies.txt from project root
-        # Assuming ConfigManager is in 'managers/' and config_file is in 'managers/downloader_config.json'
-        # project_root is two levels up from self.config_file if the ConfigManager is instantiated with relative path inside a manager dir.
-        # We'll rely on checking the parent of the parent of the config file path, falling back to the current parent if not in a nested directory.
-        
-        # Determine the directory where the config file is expected to be loaded (relative path)
-        config_dir = Path.cwd() / self.config_file.parent
-        # The proxies.txt is expected in the directory *above* config_dir (the project root)
-        project_root = config_dir.parent
-        proxies_file = project_root / "proxies.txt"
+        # 2. Always check and load proxies.txt if it exists (takes precedence over config)
+        proxies_file = Path("proxies.txt")
 
         if proxies_file.exists():
-            console.print(f"[cyan]Found {proxies_file.name}. Loading proxies...[/cyan]")
             try:
                 with open(proxies_file, 'r') as f:
                     # Read lines, strip whitespace, and filter out empty lines/comments
@@ -171,11 +162,13 @@ class ConfigManager:
                     
                     if proxies:
                         app_config.proxies = proxies
-                        app_config.proxy_rotation_enabled = True
-                        console.print(f"[green]✓ Loaded {len(proxies)} proxies from proxies.txt[/green]")
-                        console.print("[green]✓ Proxy rotation automatically enabled.[/green]")
+                        if not app_config.proxy_rotation_enabled:
+                            app_config.proxy_rotation_enabled = True
+                        # Save to config so it persists
+                        # (will be saved when config is next saved)
                     else:
-                        console.print("[yellow]proxies.txt is empty, skipping proxy configuration.[/yellow]")
+                        # Empty file, clear proxies
+                        app_config.proxies = []
 
             except Exception as e:
                 console.print(f"[red]Error loading proxies.txt: {e}[/red]")

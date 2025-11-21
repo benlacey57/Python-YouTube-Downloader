@@ -31,8 +31,12 @@ class Menu:
         while True:
             console.clear()
             
+            # Get proxy count
+            proxy_count = len(self.config_manager.config.proxies) if self.config_manager.config.proxies else 0
+            proxy_text = f" | Proxies: {proxy_count}" if proxy_count > 0 else ""
+            
             header = Panel(
-                "[bold cyan]YouTube Playlist Downloader[/bold cyan]\n"
+                f"[bold cyan]YouTube Playlist Downloader[/bold cyan]{proxy_text}\n"
                 "Advanced download management system",
                 border_style="cyan"
             )
@@ -64,20 +68,22 @@ class Menu:
             elif choice == "3":
                 self._download_queue()
             elif choice == "4":
-                self._view_statistics()
+                self._resume_queue()
             elif choice == "5":
+                self._view_statistics()
+            elif choice == "6":
                 from ui.monitoring_menu import MonitoringMenu
                 monitoring_menu = MonitoringMenu()
                 monitoring_menu.show()
-            elif choice == "6":
+            elif choice == "7":
                 from ui.storage_menu import StorageMenu
                 storage_menu = StorageMenu()
                 storage_menu.show()
-            elif choice == "7":
+            elif choice == "8":
                 from ui.settings_menu import SettingsMenu
                 settings_menu = SettingsMenu()
                 settings_menu.show()
-            elif choice == "8":
+            elif choice == "9":
                 if Confirm.ask("\n[yellow]Exit application?[/yellow]", default=False):
                     console.print("\n[green]Goodbye![/green]")
                     break
@@ -141,7 +147,49 @@ class Menu:
         )
         
         selected_queue = pending_queues[choice - 1]
-        self.downloader.download_queue(selected_queue, self.queue_manager)
+        
+        # Ask if user wants to download all or just pending
+        download_all = Confirm.ask(
+            "\n[yellow]Download all items (ignoring past download logs)?[/yellow]",
+            default=False
+        )
+        
+        self.downloader.download_queue(selected_queue, self.queue_manager, download_all=download_all)
+        
+        input("\nPress Enter to continue...")
+    
+    def _resume_queue(self):
+        """Resume an interrupted queue"""
+        # Get resumable queues
+        resumable = self.queue_manager.get_resumable_queues()
+        
+        if not resumable:
+            console.print("[yellow]No resumable queues found[/yellow]")
+            console.print("\n[dim]Tip: Interrupted downloads are automatically marked for resume[/dim]")
+            input("\nPress Enter to continue...")
+            return
+        
+        console.print("\n[cyan]Resumable Queues:[/cyan]")
+        for idx, info in enumerate(resumable, 1):
+            console.print(f"  {idx}. {info['playlist_title']} ({info['pending_count']} items pending)")
+        
+        choice = IntPrompt.ask(
+            "\nSelect queue to resume",
+            choices=[str(i) for i in range(1, len(resumable) + 1)]
+        )
+        
+        selected_info = resumable[choice - 1]
+        selected_queue = self.queue_manager.get_queue(selected_info['queue_id'])
+        
+        if not selected_queue:
+            console.print("[red]Error: Queue not found[/red]")
+            input("\nPress Enter to continue...")
+            return
+        
+        console.print(f"\n[green]Resuming: {selected_queue.playlist_title}[/green]")
+        console.print(f"[dim]{selected_info['pending_count']} items remaining[/dim]")
+        
+        self.downloader.download_queue(selected_queue, self.queue_manager, download_all=False)
         
         input("\nPress Enter to continue...")
     

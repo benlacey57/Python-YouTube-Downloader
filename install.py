@@ -40,6 +40,60 @@ def check_python_version():
     print(f"✓ Python version: {sys.version.split()[0]}")
 
 
+def check_system_dependencies():
+    """Check for required system dependencies"""
+    print("\nChecking system dependencies...")
+    
+    # Check for ffmpeg (recommended for yt-dlp)
+    try:
+        result = subprocess.run(
+            ["ffmpeg", "-version"],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            version_line = result.stdout.split('\n')[0]
+            print(f"✓ ffmpeg installed: {version_line.split()[2] if len(version_line.split()) > 2 else 'version found'}")
+        else:
+            print("⚠ Warning: ffmpeg not found (recommended for best quality)")
+    except FileNotFoundError:
+        print("⚠ Warning: ffmpeg not found (recommended for best quality)")
+        print("  Install with: sudo apt-get install ffmpeg (Ubuntu/Debian)")
+        print("              or: brew install ffmpeg (macOS)")
+    
+    # Check for git (optional, for version control)
+    try:
+        result = subprocess.run(
+            ["git", "--version"],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            print(f"✓ git installed: {result.stdout.strip()}")
+    except FileNotFoundError:
+        print("⊙ git not found (optional)")
+    
+    time.sleep(0.5)
+
+
+def create_virtual_environment():
+    """Create virtual environment if it doesn't exist"""
+    venv_dir = Path("venv")
+    
+    if venv_dir.exists():
+        print("✓ Virtual environment already exists")
+        return True
+    
+    print("Creating virtual environment...")
+    try:
+        subprocess.check_call([sys.executable, "-m", "venv", "venv"])
+        print("✓ Virtual environment created\n")
+        return True
+    except subprocess.CalledProcessError:
+        print("❌ Failed to create virtual environment")
+        return False
+
+
 def install_dependencies():
     """Install required packages"""
     print_section("Installing Required Packages")
@@ -51,10 +105,14 @@ def install_dependencies():
         print("❌ requirements.txt not found!")
         sys.exit(1)
     
+    # Determine pip executable (use venv if it exists)
+    venv_pip = Path("venv/bin/pip")
+    pip_executable = str(venv_pip) if venv_pip.exists() else "pip3"
+    
     print("Installing core dependencies from requirements.txt...")
     try:
         subprocess.check_call([
-            sys.executable, "-m", "pip", "install", "-r", str(requirements_file)
+            pip_executable, "install", "-r", str(requirements_file)
         ])
         print("✓ Core dependencies installed\n")
     except subprocess.CalledProcessError:
@@ -65,7 +123,7 @@ def install_dependencies():
         print("Installing development dependencies from requirements-dev.txt...")
         try:
             subprocess.check_call([
-                sys.executable, "-m", "pip", "install", "-r", str(requirements_dev_file)
+                pip_executable, "install", "-r", str(requirements_dev_file)
             ])
             print("✓ Development dependencies installed\n")
         except subprocess.CalledProcessError:
@@ -150,6 +208,7 @@ def initialize_database():
     print_section("Database Initialization")
     
     from database import get_database_connection
+    from database.migrations import run_migrations
     from managers.database_manager import DatabaseManager
     
     print("Creating database connection...")
@@ -158,16 +217,27 @@ def initialize_database():
         print("✓ Database connection established")
         
         print("\nInitializing database schema...")
+        # Create base tables if they don't exist
         db_manager = DatabaseManager()
+        print("✓ Base schema initialized")
         
-        # Test connection
-        print("✓ Database schema initialized")
-        print(f"✓ Database file: downloads.db")
+        # Run migrations to update schema to latest version
+        print("\nRunning database migrations...")
+        if run_migrations("downloads.db"):
+            print("✓ Database migrations completed")
+        else:
+            print("⚠️  Some migrations may have failed")
+        
+        print(f"\n✓ Database file: downloads.db")
         
         time.sleep(0.5)
         return True
     except Exception as e:
         print(f"❌ Database initialization failed: {e}")
+        import traceback
+        traceback.print_exc()
+        print("\nℹ️  Tip: Try running with --fresh flag to remove all old data:")
+        print("   python3 install.py --fresh")
         return False
 
 
@@ -227,7 +297,34 @@ def run_setup_wizard():
 def main():
     """Main installation process"""
     try:
+        # Check for --fresh flag
+        fresh_install = "--fresh" in sys.argv
+        
         print_banner()
+        
+        if fresh_install:
+            print("🔄 Fresh install mode: Will remove existing data directories\n")
+            from rich.prompt import Confirm
+            if Confirm.ask("⚠️  This will delete existing data, logs, and databases. Continue?", default=False):
+                print("\nRemoving existing data...")
+                import shutil
+                
+                # Remove data directories
+                for dir_path in ["data", "logs", "downloads.db", "stats.db", "config.json", "downloader_config.json"]:
+                    path = Path(dir_path)
+                    if path.exists():
+                        if path.is_dir():
+                            shutil.rmtree(path)
+                            print(f"  ✓ Removed {dir_path}/")
+                        else:
+                            path.unlink()
+                            print(f"  ✓ Removed {dir_path}")
+                    else:
+                        print(f"  ⊛ {dir_path} not found")
+                print("")
+            else:
+                print("\n⊛ Fresh install cancelled")
+                sys.exit(0)
         
         # Check Python version
         print_section("System Requirements Check")
@@ -235,6 +332,12 @@ def main():
         
         # Check system dependencies
         check_system_dependencies()
+        
+        # Create virtual environment
+        print_section("Virtual Environment Setup")
+        if not create_virtual_environment():
+            print("\n❌ Installation failed due to venv creation error")
+            sys.exit(1)
         
         # Install dependencies
         install_dependencies()

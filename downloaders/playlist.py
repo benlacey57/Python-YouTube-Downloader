@@ -94,8 +94,14 @@ class PlaylistDownloader(BaseDownloader):
         else:
             return self.video_downloader.download_item(item, queue, index, proxy=proxy)
     
-    def download_queue(self, queue: Queue, queue_manager: QueueManager):
-        """Download all items in a queue"""
+    def download_queue(self, queue: Queue, queue_manager: QueueManager, download_all: bool = False):
+        """Download all items in a queue
+        
+        Args:
+            queue: Queue to download
+            queue_manager: Queue manager instance
+            download_all: If True, download all items regardless of status
+        """
         console.clear()
         
         # Get config for proxy settings
@@ -117,12 +123,15 @@ class PlaylistDownloader(BaseDownloader):
         else:
             proxy_info = "[yellow]⚠ No proxies configured[/yellow]"
         
+        mode_info = "[yellow]Mode: Download All (ignoring past logs)[/yellow]" if download_all else "[cyan]Mode: Pending items only[/cyan]"
+        
         header = Panel(
             f"[bold cyan]Downloading:[/bold cyan] {queue.playlist_title}\n"
             f"[cyan]Format:[/cyan] {queue.format_type} | "
             f"[cyan]Quality:[/cyan] {queue.quality} | "
             f"[cyan]Storage:[/cyan] {queue.storage_provider}\n"
-            f"{proxy_info}",
+            f"{proxy_info}\n"
+            f"{mode_info}",
             border_style="cyan"
         )
         console.print(header)
@@ -139,14 +148,24 @@ class PlaylistDownloader(BaseDownloader):
             elif queue.download_order == 'oldest_first':
                 items = sorted(items, key=lambda x: x.upload_date or '')
             
-            # Filter pending items
-            pending_items = [
-                item for item in items
-                if item.status == DownloadStatus.PENDING.value
-            ]
+            # Filter items based on download_all flag
+            if download_all:
+                # Reset all items to pending for redownload
+                pending_items = items
+                for item in pending_items:
+                    item.status = DownloadStatus.PENDING.value
+                    item.error = None
+                    queue_manager.update_item(item)
+                console.print(f"[yellow]Redownloading all {len(pending_items)} items...[/yellow]\n")
+            else:
+                # Only pending items
+                pending_items = [
+                    item for item in items
+                    if item.status == DownloadStatus.PENDING.value
+                ]
             
             if not pending_items:
-                console.print("[yellow]No pending items to download[/yellow]")
+                console.print("[yellow]No items to download[/yellow]")
                 return
             
             with Progress(
@@ -174,16 +193,21 @@ class PlaylistDownloader(BaseDownloader):
                     while keyboard_handler.is_paused() and not keyboard_handler.is_cancelled():
                         time.sleep(0.5)
                     
-                    # Handle proxy rotation
+                    # Handle proxy rotation/selection
                     if rotation_enabled:
                         # Rotate proxy based on frequency
                         proxy_index = (download_count // config_manager.config.proxy_rotation_frequency) % len(config_manager.config.proxies)
                         current_proxy = config_manager.config.proxies[proxy_index]
                         download_count += 1
-                        progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
-                        progress.console.print(f"[dim]Using proxy: {current_proxy}[/dim]")
+                        progress.console.print(f"\n[cyan]► [{idx}/{len(pending_items)}] {item.title}[/cyan]")
+                        progress.console.print(f"[blue]↪ Proxy:[/blue] {current_proxy}")
+                    elif has_proxies and current_proxy:
+                        # Fixed proxy mode
+                        progress.console.print(f"\n[cyan]► [{idx}/{len(pending_items)}] {item.title}[/cyan]")
+                        progress.console.print(f"[blue]↪ Proxy:[/blue] {current_proxy}")
                     else:
-                        progress.console.print(f"\n[cyan][{idx}/{len(pending_items)}] {item.title}[/cyan]")
+                        # No proxies
+                        progress.console.print(f"\n[cyan]► [{idx}/{len(pending_items)}] {item.title}[/cyan]")
                     
                     # Download the item (pass proxy if rotation enabled)
                     item = self.download_item(item, queue, idx, proxy=current_proxy)

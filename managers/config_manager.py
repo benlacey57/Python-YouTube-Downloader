@@ -130,25 +130,55 @@ class ConfigManager:
         self.config = self.load_config()
     
     def load_config(self) -> AppConfig:
-        """Load configuration from file"""
+        """Load configuration from file and check for proxies.txt"""
+        app_config = AppConfig()
+
+        # 1. Load existing config file
         if self.config_file.exists():
             try:
                 with open(self.config_file, 'r') as f:
                     data = json.load(f)
-                
+
                 # Migrate old field name to new one
                 if 'download_timeout_seconds' in data:
                     # Convert seconds to minutes (default was 300 seconds = 5 minutes)
                     data['download_timeout_minutes'] = data.pop('download_timeout_seconds') // 60
                     if data['download_timeout_minutes'] < 30:
                         data['download_timeout_minutes'] = 120  # Use safer default
-                
-                return AppConfig(**data)
+
+                app_config = AppConfig(**data)
             except Exception as e:
                 console.print(f"[yellow]Error loading config: {e}[/yellow]")
                 console.print("[yellow]Using default configuration[/yellow]")
-                return AppConfig()
-        return AppConfig()
+        
+        # 2. Check and load proxies.txt from project root
+        # Assuming ConfigManager is in 'managers/' and config_file is in 'managers/downloader_config.json'
+        # project_root is two levels up from self.config_file if the ConfigManager is instantiated with relative path inside a manager dir.
+        # We'll rely on checking the parent of the parent of the config file path, falling back to the current parent if not in a nested directory.
+        
+        # Determine the directory where the config file is expected to be loaded (relative path)
+        config_dir = Path.cwd() / self.config_file.parent
+        # The proxies.txt is expected in the directory *above* config_dir (the project root)
+        project_root = config_dir.parent
+        proxies_file = project_root / "proxies.txt"
+
+        if proxies_file.exists():
+            console.print(f"[cyan]Found {proxies_file.name}. Loading proxies...[/cyan]")
+            try:
+                with open(proxies_file, 'r') as f:
+                    # Read lines, strip whitespace, and filter out empty lines/comments
+                    proxies = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+                
+                if proxies:
+                    app_config.proxies = proxies
+                    console.print(f"[green]✓ Loaded {len(proxies)} proxies from proxies.txt[/green]")
+                else:
+                    console.print("[yellow]proxies.txt is empty, skipping proxy configuration.[/yellow]")
+
+            except Exception as e:
+                console.print(f"[red]Error loading proxies.txt: {e}[/red]")
+
+        return app_config
     
     def save_config(self):
         """Save configuration to file"""
@@ -316,18 +346,23 @@ class ConfigManager:
     
         # Test email
         if Confirm.ask("\nSend test email?", default=True):
-            from managers.notification_manager import NotificationManager
-        
-            notification_manager = NotificationManager(self.config)
-        
-            if notification_manager.email and notification_manager.email.is_configured():
-                if notification_manager.email.send_notification(
-                        "Test YouTube Downloader Email",
-                        "This is a test email from YouTube Playlist Downloader"
-                    ):
-                    console.print("[green]✓ Test email sent successfully[/green]")
-                else:
-                    console.print("[red]✗ Failed to send test email[/red]")
+            # This import needs to be here to avoid circular dependency unless NotificationManager is fully mocked/configured.
+            # Assuming NotificationManager is available in the real environment.
+            try:
+                from managers.notification_manager import NotificationManager
+            
+                notification_manager = NotificationManager(self.config)
+            
+                if notification_manager.email and notification_manager.email.is_configured():
+                    if notification_manager.email.send_notification(
+                            "Test YouTube Downloader Email",
+                            "This is a test email from YouTube Playlist Downloader"
+                        ):
+                        console.print("[green]✓ Test email sent successfully[/green]")
+                    else:
+                        console.print("[red]✗ Failed to send test email[/red]")
+            except ImportError:
+                console.print("[yellow]Skipping test email: NotificationManager not found[/yellow]")
                 
     def configure_filename_normalization(self):
         """Configure filename normalization"""
@@ -626,6 +661,7 @@ class ConfigManager:
         
         self.save_config()
     
+    
     def configure_live_streams(self):
         """Configure live stream settings"""
         console.print("\n[cyan]Live Stream Configuration[/cyan]")
@@ -664,6 +700,7 @@ class ConfigManager:
         from ui.network_settings_menu import NetworkSettingsMenu
         network_menu = NetworkSettingsMenu(self)
         network_menu.show()
+        console.print("[yellow]Proxy management UI placeholder executed[/yellow]")
     
     def configure_slack_webhook(self):
         """Alias for configure_slack for menu compatibility"""

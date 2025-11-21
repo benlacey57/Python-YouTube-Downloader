@@ -63,3 +63,4 @@ class ProxyManager:
         self.proxies = config_manager.config.proxies.copy()
         self.current_index = 0
         console.print(f"[green]✓ Reloaded {len(self.proxies)} proxies from config[/green]")
+        

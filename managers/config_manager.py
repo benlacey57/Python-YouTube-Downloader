@@ -168,16 +168,18 @@ class ConfigManager:
                 with open(proxies_file, 'r') as f:
                     # Read lines, strip whitespace, and filter out empty lines/comments
                     proxies = [line.strip() for line in f if line.strip() and not line.startswith('#')]
-                
-                if proxies:
-                    app_config.proxies = proxies
-                    console.print(f"[green]✓ Loaded {len(proxies)} proxies from proxies.txt[/green]")
-                else:
-                    console.print("[yellow]proxies.txt is empty, skipping proxy configuration.[/yellow]")
+                    
+                    if proxies:
+                        app_config.proxies = proxies
+                        app_config.proxy_rotation_enabled = True
+                        console.print(f"[green]✓ Loaded {len(proxies)} proxies from proxies.txt[/green]")
+                        console.print("[green]✓ Proxy rotation automatically enabled.[/green]")
+                    else:
+                        console.print("[yellow]proxies.txt is empty, skipping proxy configuration.[/yellow]")
 
             except Exception as e:
                 console.print(f"[red]Error loading proxies.txt: {e}[/red]")
-
+        
         return app_config
     
     def save_config(self):

@@ -49,16 +49,17 @@ class Menu:
             console.print("  1. Add new download queue")
             console.print("  2. View queues")
             console.print("  3. Download queue")
-            console.print("  4. View statistics")
-            console.print("  5. Channel monitoring")
-            console.print("  6. Storage management")
-            console.print("  7. Settings")
-            console.print("  8. Exit")
+            console.print("  4. Resume queue")
+            console.print("  5. View statistics")
+            console.print("  6. Channel monitoring")
+            console.print("  7. Storage management")
+            console.print("  8. Settings")
+            console.print("  0. Exit")
             
             choice = Prompt.ask(
                 "\nSelect option",
-                choices=["1", "2", "3", "4", "5", "6", "7", "8"],
-                default="8"
+                choices=["1", "2", "3", "4", "5", "6", "7", "8", "0"],
+                default="0"
             )
             
             if choice == "1":
@@ -83,7 +84,7 @@ class Menu:
                 from ui.settings_menu import SettingsMenu
                 settings_menu = SettingsMenu()
                 settings_menu.show()
-            elif choice == "9":
+            elif choice == "0":
                 if Confirm.ask("\n[yellow]Exit application?[/yellow]", default=False):
                     console.print("\n[green]Goodbye![/green]")
                     break

@@ -1217,6 +1217,46 @@
         "documentation": {}
     },
     {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
         "label": "datetime",
         "importPath": "datetime",
         "description": "datetime",
@@ -1369,7 +1409,39 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
         "importPath": "datetime",
         "description": "datetime",
         "isExtraImport": true,
@@ -1611,35 +1683,11 @@
         "documentation": {}
     },
     {
-        "label": "ConfigManager",
-        "importPath": "managers.config_manager",
-        "description": "managers.config_manager",
+        "label": "BaseDownloader",
+        "importPath": "downloaders.base",
+        "description": "downloaders.base",
         "isExtraImport": true,
-        "detail": "managers.config_manager",
-        "documentation": {}
-    },
-    {
-        "label": "AppConfig",
-        "importPath": "managers.config_manager",
-        "description": "managers.config_manager",
-        "isExtraImport": true,
-        "detail": "managers.config_manager",
-        "documentation": {}
-    },
-    {
-        "label": "ConfigManager",
-        "importPath": "managers.config_manager",
-        "description": "managers.config_manager",
-        "isExtraImport": true,
-        "detail": "managers.config_manager",
-        "documentation": {}
-    },
-    {
-        "label": "ConfigManager",
-        "importPath": "managers.config_manager",
-        "description": "managers.config_manager",
-        "isExtraImport": true,
-        "detail": "managers.config_manager",
+        "detail": "downloaders.base",
         "documentation": {}
     },
     {
@@ -1683,7 +1731,47 @@
         "documentation": {}
     },
     {
+        "label": "AppConfig",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
         "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "ConfigManager",
+        "importPath": "managers.config_manager",
+        "description": "managers.config_manager",
+        "isExtraImport": true,
+        "detail": "managers.config_manager",
+        "documentation": {}
+    },
+    {
+        "label": "AppConfig",
         "importPath": "managers.config_manager",
         "description": "managers.config_manager",
         "isExtraImport": true,
@@ -1883,6 +1971,22 @@
         "documentation": {}
     },
     {
+        "label": "StatsManager",
+        "importPath": "managers.stats_manager",
+        "description": "managers.stats_manager",
+        "isExtraImport": true,
+        "detail": "managers.stats_manager",
+        "documentation": {}
+    },
+    {
+        "label": "NotificationManager",
+        "importPath": "managers.notification_manager",
+        "description": "managers.notification_manager",
+        "isExtraImport": true,
+        "detail": "managers.notification_manager",
+        "documentation": {}
+    },
+    {
         "label": "NotificationManager",
         "importPath": "managers.notification_manager",
         "description": "managers.notification_manager",
@@ -2027,11 +2131,35 @@
         "documentation": {}
     },
     {
-        "label": "Queue",
-        "importPath": "models.queue",
-        "description": "models.queue",
+        "label": "DownloadItem",
+        "importPath": "models.download_item",
+        "description": "models.download_item",
         "isExtraImport": true,
-        "detail": "models.queue",
+        "detail": "models.download_item",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadItem",
+        "importPath": "models.download_item",
+        "description": "models.download_item",
+        "isExtraImport": true,
+        "detail": "models.download_item",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadItem",
+        "importPath": "models.download_item",
+        "description": "models.download_item",
+        "isExtraImport": true,
+        "detail": "models.download_item",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadItem",
+        "importPath": "models.download_item",
+        "description": "models.download_item",
+        "isExtraImport": true,
+        "detail": "models.download_item",
         "documentation": {}
     },
     {
@@ -2096,6 +2224,78 @@
         "description": "models.queue",
         "isExtraImport": true,
         "detail": "models.queue",
+        "documentation": {}
+    },
+    {
+        "label": "Queue",
+        "importPath": "models.queue",
+        "description": "models.queue",
+        "isExtraImport": true,
+        "detail": "models.queue",
+        "documentation": {}
+    },
+    {
+        "label": "Queue",
+        "importPath": "models.queue",
+        "description": "models.queue",
+        "isExtraImport": true,
+        "detail": "models.queue",
+        "documentation": {}
+    },
+    {
+        "label": "Queue",
+        "importPath": "models.queue",
+        "description": "models.queue",
+        "isExtraImport": true,
+        "detail": "models.queue",
+        "documentation": {}
+    },
+    {
+        "label": "Queue",
+        "importPath": "models.queue",
+        "description": "models.queue",
+        "isExtraImport": true,
+        "detail": "models.queue",
+        "documentation": {}
+    },
+    {
+        "label": "Queue",
+        "importPath": "models.queue",
+        "description": "models.queue",
+        "isExtraImport": true,
+        "detail": "models.queue",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadStatus",
+        "importPath": "enums",
+        "description": "enums",
+        "isExtraImport": true,
+        "detail": "enums",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadStatus",
+        "importPath": "enums",
+        "description": "enums",
+        "isExtraImport": true,
+        "detail": "enums",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadStatus",
+        "importPath": "enums",
+        "description": "enums",
+        "isExtraImport": true,
+        "detail": "enums",
+        "documentation": {}
+    },
+    {
+        "label": "DownloadStatus",
+        "importPath": "enums",
+        "description": "enums",
+        "isExtraImport": true,
+        "detail": "enums",
         "documentation": {}
     },
     {
@@ -2670,22 +2870,6 @@
         "documentation": {}
     },
     {
-        "label": "SpinnerColumn",
-        "importPath": "rich.progress",
-        "description": "rich.progress",
-        "isExtraImport": true,
-        "detail": "rich.progress",
-        "documentation": {}
-    },
-    {
-        "label": "TextColumn",
-        "importPath": "rich.progress",
-        "description": "rich.progress",
-        "isExtraImport": true,
-        "detail": "rich.progress",
-        "documentation": {}
-    },
-    {
         "label": "BarColumn",
         "importPath": "rich.progress",
         "description": "rich.progress",
@@ -2695,6 +2879,14 @@
     },
     {
         "label": "TaskProgressColumn",
+        "importPath": "rich.progress",
+        "description": "rich.progress",
+        "isExtraImport": true,
+        "detail": "rich.progress",
+        "documentation": {}
+    },
+    {
+        "label": "TimeRemainingColumn",
         "importPath": "rich.progress",
         "description": "rich.progress",
         "isExtraImport": true,
@@ -2942,6 +3134,22 @@
         "documentation": {}
     },
     {
+        "label": "Panel",
+        "importPath": "rich.panel",
+        "description": "rich.panel",
+        "isExtraImport": true,
+        "detail": "rich.panel",
+        "documentation": {}
+    },
+    {
+        "label": "Table",
+        "importPath": "rich.table",
+        "description": "rich.table",
+        "isExtraImport": true,
+        "detail": "rich.table",
+        "documentation": {}
+    },
+    {
         "label": "Table",
         "importPath": "rich.table",
         "description": "rich.table",
@@ -3030,6 +3238,22 @@
         "documentation": {}
     },
     {
+        "label": "VideoDownloader",
+        "importPath": "downloaders.video",
+        "description": "downloaders.video",
+        "isExtraImport": true,
+        "detail": "downloaders.video",
+        "documentation": {}
+    },
+    {
+        "label": "AudioDownloader",
+        "importPath": "downloaders.audio",
+        "description": "downloaders.audio",
+        "isExtraImport": true,
+        "detail": "downloaders.audio",
+        "documentation": {}
+    },
+    {
         "label": "AudioDownloader",
         "importPath": "downloaders.audio",
         "description": "downloaders.audio",
@@ -3043,6 +3267,14 @@
         "description": "downloaders.livestream",
         "isExtraImport": true,
         "detail": "downloaders.livestream",
+        "documentation": {}
+    },
+    {
+        "label": "QueueManager",
+        "importPath": "managers.queue_manager",
+        "description": "managers.queue_manager",
+        "isExtraImport": true,
+        "detail": "managers.queue_manager",
         "documentation": {}
     },
     {
@@ -3439,6 +3671,30 @@
         "documentation": {}
     },
     {
+        "label": "Prompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "Confirm",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
+        "label": "IntPrompt",
+        "importPath": "rich.prompt",
+        "description": "rich.prompt",
+        "isExtraImport": true,
+        "detail": "rich.prompt",
+        "documentation": {}
+    },
+    {
         "label": "Confirm",
         "importPath": "rich.prompt",
         "description": "rich.prompt",
@@ -3773,12 +4029,69 @@
         "documentation": {}
     },
     {
+        "label": "tempfile",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tempfile",
+        "description": "tempfile",
+        "detail": "tempfile",
+        "documentation": {}
+    },
+    {
         "label": "shutil",
         "kind": 6,
         "isExtraImport": true,
         "importPath": "shutil",
         "description": "shutil",
         "detail": "shutil",
+        "documentation": {}
+    },
+    {
+        "label": "Mock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "Mock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
         "documentation": {}
     },
     {
@@ -3807,6 +4120,30 @@
     },
     {
         "label": "mock_open",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "Mock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "MagicMock",
         "importPath": "unittest.mock",
         "description": "unittest.mock",
         "isExtraImport": true,
@@ -4894,6 +5231,105 @@
         "documentation": {}
     },
     {
+        "label": "TestAudioDownloader",
+        "kind": 6,
+        "importPath": "tests.unit.downloaders.test_audio_downloader",
+        "description": "tests.unit.downloaders.test_audio_downloader",
+        "peekOfCode": "class TestAudioDownloader:\n    \"\"\"Test AudioDownloader functionality\"\"\"\n    @patch('downloaders.audio.ConfigManager')\n    @patch('downloaders.audio.StatsManager')\n    @patch('downloaders.audio.NotificationManager')\n    def test_init(self, mock_notif, mock_stats, mock_config):\n        \"\"\"Test AudioDownloader initialization\"\"\"\n        downloader = AudioDownloader()\n        assert downloader is not None\n        assert downloader.rate_limiter is not None",
+        "detail": "tests.unit.downloaders.test_audio_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "temp_dir",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_audio_downloader",
+        "description": "tests.unit.downloaders.test_audio_downloader",
+        "peekOfCode": "def temp_dir():\n    \"\"\"Create temporary directory\"\"\"\n    temp = tempfile.mkdtemp()\n    yield temp\n    shutil.rmtree(temp)\n@pytest.fixture\ndef sample_queue(temp_dir):\n    \"\"\"Create sample audio queue\"\"\"\n    return Queue(\n        id=1,",
+        "detail": "tests.unit.downloaders.test_audio_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "sample_queue",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_audio_downloader",
+        "description": "tests.unit.downloaders.test_audio_downloader",
+        "peekOfCode": "def sample_queue(temp_dir):\n    \"\"\"Create sample audio queue\"\"\"\n    return Queue(\n        id=1,\n        playlist_url=\"https://www.youtube.com/playlist?list=TEST\",\n        playlist_title=\"Test Playlist\",\n        format_type=\"audio\",\n        quality=\"192\",\n        output_dir=temp_dir,\n        filename_template=\"{index:03d} - {title}\",",
+        "detail": "tests.unit.downloaders.test_audio_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "sample_item",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_audio_downloader",
+        "description": "tests.unit.downloaders.test_audio_downloader",
+        "peekOfCode": "def sample_item():\n    \"\"\"Create sample download item\"\"\"\n    return DownloadItem(\n        id=1,\n        queue_id=1,\n        url=\"https://www.youtube.com/watch?v=TEST123\",\n        title=\"Test Song\",\n        video_id=\"TEST123\",\n        uploader=\"Test Artist\",\n        upload_date=\"20230101\",",
+        "detail": "tests.unit.downloaders.test_audio_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "TestableDownloader",
+        "kind": 6,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "class TestableDownloader(BaseDownloader):\n    \"\"\"Concrete implementation of BaseDownloader for testing\"\"\"\n    def download_item(self, item, queue, index=0):\n        return item\n@pytest.fixture\ndef mock_config():\n    \"\"\"Create mock configuration\"\"\"\n    config = AppConfig()\n    config.max_downloads_per_hour = 50\n    config.min_delay_seconds = 1.0",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "TestBaseDownloader",
+        "kind": 6,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "class TestBaseDownloader:\n    \"\"\"Test BaseDownloader functionality\"\"\"\n    def test_init_creates_rate_limiter(self, base_downloader):\n        \"\"\"Test that initialization creates rate limiter\"\"\"\n        assert base_downloader.rate_limiter is not None\n        assert base_downloader.rate_limiter.max_downloads_per_hour == 50\n    def test_get_base_ydl_opts_basic(self, base_downloader):\n        \"\"\"Test basic yt-dlp options generation\"\"\"\n        opts = base_downloader.get_base_ydl_opts()\n        assert opts['quiet'] is True",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "mock_config",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "def mock_config():\n    \"\"\"Create mock configuration\"\"\"\n    config = AppConfig()\n    config.max_downloads_per_hour = 50\n    config.min_delay_seconds = 1.0\n    config.max_delay_seconds = 2.0\n    config.cookies_file = None\n    config.proxies = []\n    config.download_timeout_minutes = 120\n    config.normalize_filenames = True",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "mock_stats_manager",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "def mock_stats_manager():\n    \"\"\"Create mock stats manager\"\"\"\n    return Mock(spec=StatsManager)\n@pytest.fixture\ndef mock_notification_manager():\n    \"\"\"Create mock notification manager\"\"\"\n    manager = Mock(spec=NotificationManager)\n    manager.has_any_notifier.return_value = True\n    return manager\n@pytest.fixture",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "mock_notification_manager",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "def mock_notification_manager():\n    \"\"\"Create mock notification manager\"\"\"\n    manager = Mock(spec=NotificationManager)\n    manager.has_any_notifier.return_value = True\n    return manager\n@pytest.fixture\ndef base_downloader(mock_config, mock_stats_manager, mock_notification_manager):\n    \"\"\"Create base downloader instance\"\"\"\n    return TestableDownloader(\n        mock_config,",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "base_downloader",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "def base_downloader(mock_config, mock_stats_manager, mock_notification_manager):\n    \"\"\"Create base downloader instance\"\"\"\n    return TestableDownloader(\n        mock_config,\n        mock_stats_manager,\n        mock_notification_manager\n    )\n@pytest.fixture\ndef sample_item():\n    \"\"\"Create sample download item\"\"\"",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "sample_item",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_base_downloader",
+        "description": "tests.unit.downloaders.test_base_downloader",
+        "peekOfCode": "def sample_item():\n    \"\"\"Create sample download item\"\"\"\n    return DownloadItem(\n        id=1,\n        queue_id=1,\n        url=\"https://www.youtube.com/watch?v=TEST123\",\n        title=\"Test Video\",\n        video_id=\"TEST123\",\n        uploader=\"Test Channel\",\n        upload_date=\"20230101\",",
+        "detail": "tests.unit.downloaders.test_base_downloader",
+        "documentation": {}
+    },
+    {
         "label": "mock_config",
         "kind": 2,
         "importPath": "tests.unit.downloaders.test_playlist_downloader",
@@ -5098,6 +5534,42 @@
         "description": "tests.unit.downloaders.test_playlist_downloader",
         "peekOfCode": "mock_yt_dlp.utils.ExtractorError = Exception\n# Patch the import before importing PlaylistDownloader\nwith patch.dict('sys.modules', {'yt_dlp': mock_yt_dlp}):\n    from managers.queue_manager import QueueManager\n    from managers.stats_manager import StatsManager\n    from managers.proxy_manager import ProxyManager\n    from notifiers.slack_notifier import SlackNotifier\n    from utils.file_renamer import FileRenamer\n    from models.download_item import DownloadItem\n    from models.queue import Queue",
         "detail": "tests.unit.downloaders.test_playlist_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "TestVideoDownloader",
+        "kind": 6,
+        "importPath": "tests.unit.downloaders.test_video_downloader",
+        "description": "tests.unit.downloaders.test_video_downloader",
+        "peekOfCode": "class TestVideoDownloader:\n    \"\"\"Test VideoDownloader functionality\"\"\"\n    @patch('downloaders.video.ConfigManager')\n    @patch('downloaders.video.StatsManager')\n    @patch('downloaders.video.NotificationManager')\n    def test_init(self, mock_notif, mock_stats, mock_config):\n        \"\"\"Test VideoDownloader initialization\"\"\"\n        downloader = VideoDownloader()\n        assert downloader is not None\n        assert downloader.rate_limiter is not None",
+        "detail": "tests.unit.downloaders.test_video_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "temp_dir",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_video_downloader",
+        "description": "tests.unit.downloaders.test_video_downloader",
+        "peekOfCode": "def temp_dir():\n    \"\"\"Create temporary directory\"\"\"\n    temp = tempfile.mkdtemp()\n    yield temp\n    shutil.rmtree(temp)\n@pytest.fixture\ndef sample_queue(temp_dir):\n    \"\"\"Create sample queue\"\"\"\n    return Queue(\n        id=1,",
+        "detail": "tests.unit.downloaders.test_video_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "sample_queue",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_video_downloader",
+        "description": "tests.unit.downloaders.test_video_downloader",
+        "peekOfCode": "def sample_queue(temp_dir):\n    \"\"\"Create sample queue\"\"\"\n    return Queue(\n        id=1,\n        playlist_url=\"https://www.youtube.com/playlist?list=TEST\",\n        playlist_title=\"Test Playlist\",\n        format_type=\"video\",\n        quality=\"720p\",\n        output_dir=temp_dir,\n        filename_template=\"{index:03d} - {title}\",",
+        "detail": "tests.unit.downloaders.test_video_downloader",
+        "documentation": {}
+    },
+    {
+        "label": "sample_item",
+        "kind": 2,
+        "importPath": "tests.unit.downloaders.test_video_downloader",
+        "description": "tests.unit.downloaders.test_video_downloader",
+        "peekOfCode": "def sample_item():\n    \"\"\"Create sample download item\"\"\"\n    return DownloadItem(\n        id=1,\n        queue_id=1,\n        url=\"https://www.youtube.com/watch?v=TEST123\",\n        title=\"Test Video\",\n        video_id=\"TEST123\",\n        uploader=\"Test Channel\",\n        upload_date=\"20230101\",",
+        "detail": "tests.unit.downloaders.test_video_downloader",
         "documentation": {}
     },
     {
@@ -5908,6 +6380,51 @@
         "description": "tests.unit.managers.test_proxy_manager",
         "peekOfCode": "def test_save_proxies_to_csv_file(initialized_manager, mock_path_exists):\n    mock_path_exists.side_effect = lambda x: x == Path(\"proxies.csv\")\n    initialized_manager.proxies = [\"http://a:1\", \"https://b:2\", \"socks5://c:3\"]\n    m = mock_open()\n    with patch(\"builtins.open\", m):\n        initialized_manager._save_proxies_to_file()\n    m.assert_called_once_with(Path(\"proxies.csv\"), 'w', encoding='utf-8', newline='')\n    # Check what was written to the file (requires checking the CSV writer)\n    handle = m()\n    written_data = \"\".join(c for c in handle.write.call_args_list[0][0][0] if c != '\\r').split('\\n')",
         "detail": "tests.unit.managers.test_proxy_manager",
+        "documentation": {}
+    },
+    {
+        "label": "TestQueueManager",
+        "kind": 6,
+        "importPath": "tests.unit.managers.test_queue_manager",
+        "description": "tests.unit.managers.test_queue_manager",
+        "peekOfCode": "class TestQueueManager:\n    \"\"\"Test QueueManager functionality\"\"\"\n    def test_init_creates_database(self, temp_db):\n        \"\"\"Test database initialization\"\"\"\n        manager = QueueManager(db_path=temp_db)\n        assert Path(temp_db).exists()\n    def test_create_queue_success(self, queue_manager, sample_queue):\n        \"\"\"Test creating a queue\"\"\"\n        queue_id = queue_manager.create_queue(sample_queue)\n        assert queue_id > 0",
+        "detail": "tests.unit.managers.test_queue_manager",
+        "documentation": {}
+    },
+    {
+        "label": "temp_db",
+        "kind": 2,
+        "importPath": "tests.unit.managers.test_queue_manager",
+        "description": "tests.unit.managers.test_queue_manager",
+        "peekOfCode": "def temp_db():\n    \"\"\"Create temporary database for testing\"\"\"\n    temp_dir = tempfile.mkdtemp()\n    db_path = Path(temp_dir) / \"test.db\"\n    yield str(db_path)\n    shutil.rmtree(temp_dir)\n@pytest.fixture\ndef queue_manager(temp_db):\n    \"\"\"Create QueueManager with temp database\"\"\"\n    return QueueManager(db_path=temp_db)",
+        "detail": "tests.unit.managers.test_queue_manager",
+        "documentation": {}
+    },
+    {
+        "label": "queue_manager",
+        "kind": 2,
+        "importPath": "tests.unit.managers.test_queue_manager",
+        "description": "tests.unit.managers.test_queue_manager",
+        "peekOfCode": "def queue_manager(temp_db):\n    \"\"\"Create QueueManager with temp database\"\"\"\n    return QueueManager(db_path=temp_db)\n@pytest.fixture\ndef sample_queue():\n    \"\"\"Create sample queue for testing\"\"\"\n    return Queue(\n        id=None,\n        playlist_url=\"https://www.youtube.com/playlist?list=TEST123\",\n        playlist_title=\"Test Playlist\",",
+        "detail": "tests.unit.managers.test_queue_manager",
+        "documentation": {}
+    },
+    {
+        "label": "sample_queue",
+        "kind": 2,
+        "importPath": "tests.unit.managers.test_queue_manager",
+        "description": "tests.unit.managers.test_queue_manager",
+        "peekOfCode": "def sample_queue():\n    \"\"\"Create sample queue for testing\"\"\"\n    return Queue(\n        id=None,\n        playlist_url=\"https://www.youtube.com/playlist?list=TEST123\",\n        playlist_title=\"Test Playlist\",\n        format_type=\"video\",\n        quality=\"720p\",\n        output_dir=\"downloads/test\",\n        filename_template=\"{index:03d} - {title}\",",
+        "detail": "tests.unit.managers.test_queue_manager",
+        "documentation": {}
+    },
+    {
+        "label": "sample_item",
+        "kind": 2,
+        "importPath": "tests.unit.managers.test_queue_manager",
+        "description": "tests.unit.managers.test_queue_manager",
+        "peekOfCode": "def sample_item():\n    \"\"\"Create sample download item\"\"\"\n    return DownloadItem(\n        id=None,\n        queue_id=1,\n        url=\"https://www.youtube.com/watch?v=TEST123\",\n        title=\"Test Video\",\n        video_id=\"TEST123\",\n        uploader=\"Test Channel\",\n        upload_date=\"20230101\",",
+        "detail": "tests.unit.managers.test_queue_manager",
         "documentation": {}
     },
     {

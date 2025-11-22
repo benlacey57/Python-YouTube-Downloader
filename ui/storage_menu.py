@@ -1,5 +1,9 @@
 """Storage menu"""
+from pathlib import Path
 from rich.console import Console
+from rich.prompt import Prompt, Confirm, IntPrompt
+from rich.panel import Panel
+from rich.table import Table
 
 console = Console()
 
@@ -19,18 +23,18 @@ class StorageMenu:
         console.print("\n")
         
         # Current default storage
-        default_storage = config_manager.config.default_storage
+        default_storage = self.config_manager.config.default_storage
         
         status_panel = Panel(
             f"[bold]Default Storage:[/bold] {default_storage}\n"
-            f"[cyan]Configured Providers:[/cyan] {len(config_manager.config.storage_providers)}",
+            f"[cyan]Configured Providers:[/cyan] {len(self.config_manager.config.storage_providers)}",
             title="[bold]Storage Configuration[/bold]",
             border_style="cyan"
         )
         console.print(status_panel)
         
         # List storage providers
-        if config_manager.config.storage_providers:
+        if self.config_manager.config.storage_providers:
             storage_table = Table(title="Storage Providers", show_header=True)
             storage_table.add_column("Name", style="cyan")
             storage_table.add_column("Type", style="yellow")
@@ -38,7 +42,7 @@ class StorageMenu:
             storage_table.add_column("Video Quality", style="magenta")
             storage_table.add_column("Audio Quality", style="blue")
             
-            for name, config_dict in config_manager.config.storage_providers.items():
+            for name, config_dict in self.config_manager.config.storage_providers.items():
                 from managers.config_manager import StorageConfig
                 storage_config = StorageConfig.from_dict(config_dict)
                 
@@ -62,7 +66,7 @@ class StorageMenu:
             ("7", "Remove storage provider"),
             ("8", "Set default storage"),
             ("9", "Test storage connections"),
-            ("10", "Back to main menu")
+            ("0", "Back to main menu")
         ]
         
         option_text = "\n".join([f"  {num}. {desc}" for num, desc in options])
@@ -71,7 +75,7 @@ class StorageMenu:
         choice = Prompt.ask(
             "[bold cyan]Select an option[/bold cyan]",
             choices=[num for num, _ in options],
-            default="10"
+            default="0"
         )
         
         return choice

@@ -73,12 +73,12 @@ class QueueViewer:
             console.print("  1. View queue details")
             console.print("  2. Download queue")
             console.print("  3. Delete queue")
-            console.print("  4. Back to main menu")
+            console.print("  0. Back to main menu")
             
             choice = Prompt.ask(
                 "\nSelect option",
-                choices=["1", "2", "3", "4"],
-                default="4"
+                choices=["1", "2", "3", "0"],
+                default="0"
             )
             
             if choice == "1":
@@ -87,7 +87,7 @@ class QueueViewer:
                 self._download_queue(queues)
             elif choice == "3":
                 self._delete_queue(queues)
-            elif choice == "4":
+            elif choice == "0":
                 break
     
     def _view_queue_details(self, queues):

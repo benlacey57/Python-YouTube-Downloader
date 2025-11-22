@@ -127,6 +127,26 @@ class QueueBuilder:
             default="local"
         )
         
+        # Batch settings (optional)
+        console.print("\n[yellow]Step 6: Batch Settings (Optional)[/yellow]")
+        console.print(f"[dim]Total videos in playlist: {video_count}[/dim]")
+        
+        use_batch = Confirm.ask("Download only a subset of videos?", default=False)
+        
+        if use_batch:
+            batch_start = IntPrompt.ask(
+                "Start from video number",
+                default=1
+            ) - 1  # Convert to 0-based index
+            
+            batch_size = IntPrompt.ask(
+                "Number of videos to download",
+                default=min(10, video_count)
+            )
+        else:
+            batch_start = 0
+            batch_size = video_count
+        
         # Create queue
         queue = Queue(
             id=None,

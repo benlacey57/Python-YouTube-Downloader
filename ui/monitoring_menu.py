@@ -37,12 +37,12 @@ class MonitoringMenu:
             console.print("  5. Enable/Disable channel")
             console.print("  6. Check channel now")
             console.print("  7. Check all channels")
-            console.print("  8. Back to main menu")
+            console.print("  0. Back to main menu")
             
             choice = Prompt.ask(
                 "\nSelect option",
-                choices=["1", "2", "3", "4", "5", "6", "7", "8"],
-                default="8"
+                choices=["1", "2", "3", "4", "5", "6", "7", "0"],
+                default="0"
             )
             
             if choice == "1":
@@ -59,7 +59,7 @@ class MonitoringMenu:
                 self._check_channel()
             elif choice == "7":
                 self._check_all_channels()
-            elif choice == "8":
+            elif choice == "0":
                 break
     
     def _view_channels(self):

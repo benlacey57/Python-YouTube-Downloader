@@ -3,7 +3,7 @@ from typing import Optional
 import time
 import random
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+from rich.progress import Progress, BarColumn, TaskProgressColumn, TimeRemainingColumn
 from rich.panel import Panel
 from rich.table import Table
 
@@ -168,18 +168,21 @@ class PlaylistDownloader(BaseDownloader):
                 console.print("[yellow]No items to download[/yellow]")
                 return
             
+            # Create a single full-width progress bar
             with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                BarColumn(),
+                BarColumn(bar_width=None),  # Full width
                 TaskProgressColumn(),
-                console=console
+                TimeRemainingColumn(),
+                console=console,
+                expand=True
             ) as progress:
                 
-                task = progress.add_task(
-                    "Downloading...",
+                overall_task = progress.add_task(
+                    f"[cyan]Overall Progress",
                     total=len(pending_items)
                 )
+                
+                console.print()  # Add spacing
                 
                 for idx, item in enumerate(pending_items, 1):
                     # Check for cancellation
@@ -194,31 +197,38 @@ class PlaylistDownloader(BaseDownloader):
                         time.sleep(0.5)
                     
                     # Handle proxy rotation/selection
+                    proxy_display = ""
                     if rotation_enabled:
                         # Rotate proxy based on frequency
                         proxy_index = (download_count // config_manager.config.proxy_rotation_frequency) % len(config_manager.config.proxies)
                         current_proxy = config_manager.config.proxies[proxy_index]
                         download_count += 1
-                        progress.console.print(f"\n[cyan]► [{idx}/{len(pending_items)}] {item.title}[/cyan]")
-                        progress.console.print(f"[blue]↪ Proxy:[/blue] {current_proxy}")
+                        proxy_display = f" [blue]| Proxy:[/blue] {current_proxy}"
                     elif has_proxies and current_proxy:
                         # Fixed proxy mode
-                        progress.console.print(f"\n[cyan]► [{idx}/{len(pending_items)}] {item.title}[/cyan]")
-                        progress.console.print(f"[blue]↪ Proxy:[/blue] {current_proxy}")
-                    else:
-                        # No proxies
-                        progress.console.print(f"\n[cyan]► [{idx}/{len(pending_items)}] {item.title}[/cyan]")
+                        proxy_display = f" [blue]| Proxy:[/blue] {current_proxy}"
+                    
+                    # Show current item on one line with proxy
+                    console.print(f"[cyan]► [{idx}/{len(pending_items)}][/cyan] {item.title[:80]}{proxy_display}")
                     
                     # Download the item (pass proxy if rotation enabled)
                     item = self.download_item(item, queue, idx, proxy=current_proxy)
                     queue_manager.update_item(item)
                     
+                    # Show result with file size if available
                     if item.status == DownloadStatus.COMPLETED.value:
-                        progress.console.print(f"[green]✓ Downloaded successfully[/green]")
+                        size_str = ""
+                        if item.file_size_bytes:
+                            size_mb = item.file_size_bytes / (1024 * 1024)
+                            if size_mb >= 1024:
+                                size_str = f" ({size_mb/1024:.2f} GB)"
+                            else:
+                                size_str = f" ({size_mb:.1f} MB)"
+                        console.print(f"  [green]✓ Downloaded successfully{size_str}[/green]")
                     elif item.status == DownloadStatus.FAILED.value:
-                        progress.console.print(f"[red]✗ Failed: {item.error}[/red]")
+                        console.print(f"  [red]✗ Failed: {item.error}[/red]")
                     
-                    progress.update(task, advance=1)
+                    progress.update(overall_task, advance=1)
                     
                     # Add random wait time between downloads if no proxies configured
                     if idx < len(pending_items):  # Don't wait after last item
@@ -228,8 +238,9 @@ class PlaylistDownloader(BaseDownloader):
                                 config_manager.config.min_delay_seconds,
                                 config_manager.config.max_delay_seconds
                             )
-                            progress.console.print(f"[dim]Waiting {wait_time:.1f}s before next download...[/dim]")
+                            console.print(f"  [dim]Waiting {wait_time:.1f}s...[/dim]")
                             time.sleep(wait_time)
+                        console.print()  # Add spacing between items
             
             # Mark queue as completed if not cancelled
             if not keyboard_handler.is_cancelled():

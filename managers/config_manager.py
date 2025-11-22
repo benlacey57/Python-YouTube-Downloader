@@ -700,3 +700,69 @@ class ConfigManager:
     def configure_slack_webhook(self):
         """Alias for configure_slack for menu compatibility"""
         self.configure_slack()
+    
+    def migrate_config(self):
+        """Migrate configuration to latest format"""
+        console.print("\n[cyan]Configuration Migration[/cyan]")
+        console.print("\nChecking for outdated configuration settings...")
+        
+        changes_made = False
+        
+        # Check for old field names or deprecated settings
+        if hasattr(self.config, 'download_timeout_seconds'):
+            self.config.download_timeout_minutes = self.config.download_timeout_seconds // 60
+            delattr(self.config, 'download_timeout_seconds')
+            changes_made = True
+            console.print("[green]✓ Migrated timeout from seconds to minutes[/green]")
+        
+        # Ensure setup_completed exists
+        if not hasattr(self.config, 'setup_completed'):
+            self.config.setup_completed = False
+            changes_made = True
+            console.print("[green]✓ Added setup_completed field[/green]")
+        
+        # Ensure notification preferences exist
+        if not hasattr(self.config, 'notify_on_download_complete'):
+            self.config.notify_on_download_complete = True
+            self.config.notify_on_queue_complete = True
+            self.config.notify_on_error = True
+            self.config.notify_on_threshold = True
+            changes_made = True
+            console.print("[green]✓ Added notification preferences[/green]")
+        
+        if changes_made:
+            self.save_config()
+            console.print("\n[green]Configuration migration completed![/green]")
+        else:
+            console.print("\n[yellow]Configuration is already up to date[/yellow]")
+    
+    def reset_config(self):
+        """Reset configuration to defaults"""
+        console.print("\n[yellow]Reset Configuration[/yellow]")
+        console.print("\n[red]WARNING: This will reset ALL settings to defaults![/red]")
+        console.print("[red]Your proxies, storage providers, and notification settings will be lost.[/red]")
+        
+        if not Confirm.ask("\nAre you sure you want to reset?", default=False):
+            console.print("[yellow]Reset cancelled[/yellow]")
+            return
+        
+        if not Confirm.ask("\n[red]Really reset? This cannot be undone![/red]", default=False):
+            console.print("[yellow]Reset cancelled[/yellow]")
+            return
+        
+        # Backup current config
+        backup_file = self.config_file.with_suffix('.backup.json')
+        try:
+            if self.config_file.exists():
+                import shutil
+                shutil.copy(self.config_file, backup_file)
+                console.print(f"[green]✓ Backup saved to {backup_file}[/green]")
+        except Exception as e:
+            console.print(f"[yellow]Warning: Could not create backup: {e}[/yellow]")
+        
+        # Reset to defaults
+        self.config = AppConfig()
+        self.save_config()
+        
+        console.print("\n[green]✓ Configuration reset to defaults[/green]")
+        console.print(f"[dim]Backup available at: {backup_file}[/dim]")

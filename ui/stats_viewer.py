@@ -33,12 +33,12 @@ class StatsViewer:
             console.print("  2. Weekly statistics")
             console.print("  3. All-time statistics")
             console.print("  4. Date range statistics")
-            console.print("  5. Back to main menu")
+            console.print("  0. Back to main menu")
             
             choice = Prompt.ask(
                 "\nSelect option",
-                choices=["1", "2", "3", "4", "5"],
-                default="5"
+                choices=["1", "2", "3", "4", "0"],
+                default="0"
             )
             
             if choice == "1":
@@ -49,7 +49,7 @@ class StatsViewer:
                 self._show_all_time_stats()
             elif choice == "4":
                 self._show_date_range_stats()
-            elif choice == "5":
+            elif choice == "0":
                 break
     
     def _show_today_stats(self):

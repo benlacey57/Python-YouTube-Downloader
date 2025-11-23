@@ -6,27 +6,22 @@ from rich.console import Console
 from rich.progress import Progress, BarColumn, TaskProgressColumn, TimeRemainingColumn
 from rich.panel import Panel
 from rich.table import Table
-from rich.live import Live # <-- ADDED FOR PERSISTENT STATUS PANEL
+from rich.live import Live          # <-- For persistent status panel
 import yt_dlp
-import logging # <-- ADDED FOR ERROR LOGGING
+import logging                      # <-- For centralized error logging
+
+from downloaders.base import BaseDownloader
+from downloaders.video import VideoDownloader
+from downloaders.audio import AudioDownloader
+from downloaders.livestream import LiveStreamDownloader
+from managers.config_manager import ConfigManager
+from managers.stats_manager import StatsManager
+from managers.queue_manager import QueueManager
+from managers.notification_manager import NotificationManager
+from models.queue import Queue
+from models.download_item import DownloadItem
 from enums import DownloadStatus
-
-from downloaders.base import BaseDownloader
-from managers.config_manager import ConfigManager
-from managers.stats_manager import StatsManager
-from managers.notification_manager import NotificationManager
-from models.download_item import DownloadItem # <-- ADDED
-from models.queue import Queue # <-- ADDED
-from enums import DownloadStatus # <-- ADDED
-from utils.file_renamer import FileRenamer # <-- ADDED
-from utils.metadata_handler import MetadataHandler
 from utils.keyboard_handler import keyboard_handler
-
-from downloaders.base import BaseDownloader
-from managers.config_manager import ConfigManager
-from managers.stats_manager import StatsManager
-from managers.notification_manager import NotificationManager
-from managers.queue_manager import QueueManager # <-- ADDED
 
 console = Console()
 

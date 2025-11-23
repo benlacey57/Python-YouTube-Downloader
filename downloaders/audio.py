@@ -6,7 +6,13 @@ import logging # <-- ADDED IMPORT
 from typing import Optional # <-- ADDED IMPORT
 
 from downloaders.base import BaseDownloader
-# ... other imports
+from managers.config_manager import ConfigManager
+from managers.stats_manager import StatsManager
+from managers.notification_manager import NotificationManager
+from models.download_item import DownloadItem # <-- ADDED
+from models.queue import Queue # <-- ADDED
+from enums import DownloadStatus # <-- ADDED
+from utils.file_renamer import FileRenamer # <-- ADDED
 from utils.metadata_handler import MetadataHandler
 from rich.console import Console
 

@@ -6,23 +6,23 @@ FROM debian:bullseye-slim
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install necessary dependencies:
-# 1. build-essential: Required for compiling some Python packages
-# 2. python3, python3-pip: Python interpreter and package manager
-# 3. ffmpeg: Crucial for yt-dlp to handle audio extraction and video merging
-# 4. git: Essential for dev container setup
-# 5. libsqlite3-dev: Needed for the SQLite database manager
-# 6. libssl-dev & libffi-dev: Added for robust compilation of Python packages with C extensions (e.g., networking/security)
+# Install core system dependencies in layers
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
-    python3 \
-    python3-pip \
-    ffmpeg \
     git \
     libsqlite3-dev \
     libssl-dev \
     libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python and core development tools, including python3-venv
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Update pip

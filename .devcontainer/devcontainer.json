@@ -1,7 +1,7 @@
 {
     "name": "Python Environment",
     "build": {
-        "dockerfile": "Dockerfile",
+        "dockerfile": "../Dockerfile",
         "context": ".."
     },
     "runArgs": ["-v", "/var/run/docker.sock:/var/run/docker.sock"],
@@ -9,8 +9,8 @@
     "mounts": [
         "source=${localWorkspaceFolder},target=/usr/src/app,type=bind,consistency=cached"
     ],
-    "postCreateCommand": "python3 install.py",
-    "postStartCommand": "clear && python3 main.py", 
+    "postCreateCommand": "bash ./.devcontainer/post_create.sh",
+    "postStartCommand": "clear && ./.venv/bin/python main.py", 
     "customizations": {
         "vscode": {
             "extensions": [

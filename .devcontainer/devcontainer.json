@@ -9,7 +9,8 @@
     "mounts": [
         "source=${localWorkspaceFolder},target=/usr/src/app,type=bind,consistency=cached"
     ],
-    "postCreateCommand": "pip3 install black flake8 mypy safety",
+    "postCreateCommand": "make setup",
+    "postStartCommand": "make run",
     "customizations": {
         "vscode": {
             "extensions": [

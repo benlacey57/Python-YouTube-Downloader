@@ -11,7 +11,7 @@ from rich.prompt import Confirm
 console = Console()
 
 # --- CONSTANTS ---
-APP_BANNER_TITLE = "The Download Manager"
+APP_BANNER_TITLE = "Youtube Download Manager"
 APP_BANNER_SUBTITLE = "Advanced download management system"
 CONFIG_FILE = Path("downloader_config.json")
 

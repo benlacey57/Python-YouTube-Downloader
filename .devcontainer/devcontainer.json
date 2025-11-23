@@ -1,7 +1,7 @@
 {
     "name": "Python Environment",
     "build": {
-        "dockerfile": "../Dockerfile",
+        "dockerfile": "Dockerfile",
         "context": ".."
     },
     "runArgs": ["-v", "/var/run/docker.sock:/var/run/docker.sock"],
@@ -10,7 +10,7 @@
         "source=${localWorkspaceFolder},target=/usr/src/app,type=bind,consistency=cached"
     ],
     "postCreateCommand": "bash ./.devcontainer/post_create.sh",
-    "postStartCommand": "clear && ./.venv/bin/python main.py", 
+    "postStartCommand": "clear && ./venv/bin/python main.py", 
     "customizations": {
         "vscode": {
             "extensions": [

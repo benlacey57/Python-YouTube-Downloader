@@ -6,7 +6,9 @@ from rich.console import Console
 from rich.progress import Progress, BarColumn, TaskProgressColumn, TimeRemainingColumn
 from rich.panel import Panel
 from rich.table import Table
-from rich.live import Live # <-- New Import
+from rich.live import Live # <-- ADDED FOR PERSISTENT STATUS PANEL
+import yt_dlp
+import logging # <-- ADDED FOR ERROR LOGGING
 
 from downloaders.base import BaseDownloader
 from downloaders.video import VideoDownloader
@@ -23,8 +25,17 @@ from utils.keyboard_handler import keyboard_handler
 
 console = Console()
 
+# --- GLOBAL ERROR LOGGING SETUP ---
+# Configure logging to write to errors.log file
+logging.basicConfig(
+    filename='errors.log', 
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+# -----------------------------------
 
-# --- NEW STATUS PANEL CLASS ---
+# --- STATUS PANEL CLASS (FOR PERSISTENT DISPLAY) ---
 class StatusPanel:
     """Manages a persistent status panel for the download process."""
     def __init__(self, queue: Queue, download_all: bool, has_proxies: bool, rotation_enabled: bool, current_proxy: Optional[str] = None):
@@ -45,7 +56,9 @@ class StatusPanel:
             elif self.current_proxy:
                 return f"[cyan]Proxy:[/cyan] {self.current_proxy}"
             else:
-                 return f"[cyan]Proxy:[/cyan] {self.config_manager.config.proxies[0]}" # Fallback to first if fixed mode
+                 # Fallback to first if fixed mode
+                 proxy = self.config_manager.config.proxies[0] if self.config_manager.config.proxies else "N/A"
+                 return f"[cyan]Proxy:[/cyan] {proxy}" 
         else:
             return "[yellow]⚠ No proxies configured[/yellow]"
     
@@ -68,7 +81,8 @@ class StatusPanel:
             f"--- [bold white]Current Status:[/bold white] {self.status_line}"
         )
         
-        shortcuts = "[bold yellow]Shortcuts:[/bold yellow] [bold]P[/bold] Pause/Resume | [bold]Q[/bold] Quit/Cancel"
+        # This is the permanently visible panel row for shortcuts
+        shortcuts = "[bold yellow]Shortcuts:[/bold yellow] [bold]P[/bold] Pause/Resume | [bold]Q[/bold] Quit/Cancel | [bold]S[/bold] Skip Current"
         
         # Using a table to combine the header and shortcuts into one panel
         table = Table.grid(padding=(0, 0))
@@ -77,8 +91,7 @@ class StatusPanel:
         table.add_row(shortcuts)
         
         return Panel(table, border_style="cyan")
-# --- END NEW STATUS PANEL CLASS ---
-
+# -------------------------------------------------------------
 
 class PlaylistDownloader(BaseDownloader):
     """Orchestrates playlist downloads using specialized downloaders"""
@@ -115,25 +128,27 @@ class PlaylistDownloader(BaseDownloader):
         panel = Panel(table, title="[bold]Progress[/bold]", border_style="cyan", width=40)
         console.print(panel)
     
+    def _log_error(self, e: Exception, context: str = ""):
+        """Helper to log errors to the file."""
+        logger.error(f"Error in PlaylistDownloader (Context: {context}): {e}", exc_info=True)
+
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0, proxy: str = None) -> DownloadItem:
         """
         Download a single item using the appropriate downloader
         This method delegates to specialized downloaders
-        
-        Args:
-            item: Download item to process
-            queue: Queue configuration
-            index: Item index in queue
-            proxy: Optional specific proxy to use for this download
         """
         # Check if it's a live stream first
         try:
-            import yt_dlp
             ydl_opts = self.get_base_ydl_opts()
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(item.url, download=False)
-                
+                try:
+                    info = ydl.extract_info(item.url, download=False)
+                except Exception as e:
+                    # Log failure during info extraction but try proceeding with normal download
+                    self._log_error(e, context=f"Info extraction for {item.title}")
+                    return self.video_downloader.download_item(item, queue, index, proxy=proxy)
+
                 if self.livestream_downloader.is_live_stream(info):
                     if self.config.auto_record_live_streams:
                         return self.livestream_downloader.download_item(item, queue, index, proxy=proxy)
@@ -142,9 +157,11 @@ class PlaylistDownloader(BaseDownloader):
                         item.status = DownloadStatus.FAILED.value
                         item.error = "Live stream - auto-record disabled"
                         return item
-        except:
-            pass  # If we can't check, proceed with normal download
-        
+        except Exception as e:
+            # Catch errors in the live stream check itself (e.g. yt_dlp import fails or network issues)
+            self._log_error(e, context="General Live Stream Check")
+            # Proceed with normal download logic if the check fails
+            
         # Use appropriate downloader based on format
         if queue.format_type == "audio":
             return self.audio_downloader.download_item(item, queue, index, proxy=proxy)
@@ -152,13 +169,7 @@ class PlaylistDownloader(BaseDownloader):
             return self.video_downloader.download_item(item, queue, index, proxy=proxy)
     
     def download_queue(self, queue: Queue, queue_manager: QueueManager, download_all: bool = False):
-        """Download all items in a queue
-        
-        Args:
-            queue: Queue to download
-            queue_manager: Queue manager instance
-            download_all: If True, download all items regardless of status
-        """
+        """Download all items in a queue"""
         console.clear()
         
         # Get config for proxy settings
@@ -186,11 +197,8 @@ class PlaylistDownloader(BaseDownloader):
         # Use rich.live to keep the status panel persistent at the top
         with Live(status_panel, screen=False, refresh_per_second=4, console=console) as live:
             try:
-                # --- Simulated Playlist Fetching Status ---
-                # This is where the *actual* playlist fetching would happen 
-                # in a different class, but we'll show the status update here.
+                # --- Simulated Playlist Fetching Status (Progress Bar Request) ---
                 status_panel.update_status("[bold blue]Fetching playlist items...[/bold blue]")
-                # Simulate a delay for the fetching process
                 time.sleep(random.uniform(1.0, 2.5)) 
                 
                 items = queue_manager.get_queue_items(queue.id)
@@ -204,7 +212,6 @@ class PlaylistDownloader(BaseDownloader):
                 
                 # Filter items based on download_all flag
                 if download_all:
-                    # Reset all items to pending for redownload
                     pending_items = items
                     for item in pending_items:
                         item.status = DownloadStatus.PENDING.value
@@ -212,7 +219,6 @@ class PlaylistDownloader(BaseDownloader):
                         queue_manager.update_item(item)
                     status_panel.update_status(f"[bold yellow]Redownloading all {len(pending_items)} items...[/bold yellow]")
                 else:
-                    # Only pending items
                     pending_items = [
                         item for item in items
                         if item.status == DownloadStatus.PENDING.value
@@ -220,12 +226,14 @@ class PlaylistDownloader(BaseDownloader):
                 
                 if not pending_items:
                     status_panel.update_status("[bold yellow]No items to download[/bold yellow]")
-                    live.stop() # Stop the live panel
+                    time.sleep(1)
+                    live.stop() 
                     console.print("\n[yellow]No items to download[/yellow]")
                     return
                 
                 # --- DOWNLOAD PROGRESS START ---
-                # Create a single full-width progress bar, which appears *below* the StatusPanel
+                status_panel.update_status(f"[bold green]Starting download of {len(pending_items)} items...[/bold green]")
+                
                 with Progress(
                     BarColumn(bar_width=None),  # Full width
                     TaskProgressColumn(),
@@ -239,15 +247,15 @@ class PlaylistDownloader(BaseDownloader):
                         total=len(pending_items)
                     )
                     
-                    console.print()  # Add spacing after the live panel
+                    console.print() 
                     
                     for idx, item in enumerate(pending_items, 1):
                         # Check for cancellation
                         if keyboard_handler.is_cancelled():
                             status_panel.update_status("[bold red]Download cancelled by user[/bold red]")
-                            live.stop() # Stop the live panel
+                            time.sleep(1)
+                            live.stop()
                             console.print("\n[yellow]Download cancelled by user[/yellow]")
-                            # Record interruption for resume
                             queue_manager.record_queue_interruption(queue.id)
                             break
                         
@@ -256,27 +264,23 @@ class PlaylistDownloader(BaseDownloader):
                             status_panel.update_status("[bold magenta]Paused (Press P to resume)...[/bold magenta]")
                             time.sleep(0.5)
                         
-                        # Resume status update if paused
+                        # Resume status update if not paused
                         if not keyboard_handler.is_paused():
                             status_panel.update_status(f"[bold cyan]Processing Item {idx}/{len(pending_items)}: {item.title[:60]}...[/bold cyan]")
                         
                         # Handle proxy rotation/selection
                         proxy_display = ""
                         if rotation_enabled:
-                            # Rotate proxy based on frequency
                             proxy_index = (download_count // config_manager.config.proxy_rotation_frequency) % len(config_manager.config.proxies)
                             current_proxy = config_manager.config.proxies[proxy_index]
                             download_count += 1
                             proxy_display = f" [blue]| Proxy:[/blue] {current_proxy}"
-                            status_panel.current_proxy = current_proxy # Update panel proxy display
+                            status_panel.current_proxy = current_proxy
                         elif has_proxies and current_proxy:
-                            # Fixed proxy mode
                             proxy_display = f" [blue]| Proxy:[/blue] {current_proxy}"
                         
-                        # Show current item on one line with proxy
                         console.print(f"[cyan]► [{idx}/{len(pending_items)}][/cyan] {item.title[:80]}{proxy_display}")
                         
-                        # Download the item (pass proxy if rotation enabled)
                         item = self.download_item(item, queue, idx, proxy=current_proxy)
                         queue_manager.update_item(item)
                         
@@ -296,17 +300,15 @@ class PlaylistDownloader(BaseDownloader):
                         progress.update(overall_task, advance=1)
                         
                         # Add random wait time between downloads if no proxies configured
-                        if idx < len(pending_items):  # Don't wait after last item
-                            if not has_proxies:
-                                # Random wait between min and max delay
-                                wait_time = random.uniform(
-                                    config_manager.config.min_delay_seconds,
-                                    config_manager.config.max_delay_seconds
-                                )
-                                status_panel.update_status(f"[bold dim]Waiting {wait_time:.1f}s between items...[/bold dim]")
-                                console.print(f"  [dim]Waiting {wait_time:.1f}s...[/dim]")
-                                time.sleep(wait_time)
-                            console.print()  # Add spacing between items
+                        if idx < len(pending_items) and not has_proxies:
+                            wait_time = random.uniform(
+                                config_manager.config.min_delay_seconds,
+                                config_manager.config.max_delay_seconds
+                            )
+                            status_panel.update_status(f"[bold dim]Waiting {wait_time:.1f}s between items...[/bold dim]")
+                            console.print(f"  [dim]Waiting {wait_time:.1f}s...[/dim]")
+                            time.sleep(wait_time)
+                            console.print()
                 
                 # Mark queue as completed if not cancelled
                 if not keyboard_handler.is_cancelled():
@@ -315,14 +317,11 @@ class PlaylistDownloader(BaseDownloader):
                     from datetime import datetime
                     queue.completed_at = datetime.now().isoformat()
                     queue_manager.update_queue(queue)
-                    
-                    # Clear resume data
                     queue_manager.clear_queue_resume(queue.id)
                     
                     if self.stats_manager:
                         self.stats_manager.record_queue_completed()
                     
-                    # Send completion notification
                     if self.notification_manager and self.notification_manager.has_any_notifier():
                         completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
                         self.notification_manager.notify_queue_completed(
@@ -331,13 +330,19 @@ class PlaylistDownloader(BaseDownloader):
                             len(items)
                         )
                     
-                    # Stop the live panel before final print
+                    time.sleep(1)
                     live.stop()
                     console.print(f"\n[bold green]✓ Queue completed: {queue.playlist_title}[/bold green]")
             
+            except Exception as e:
+                # Catch and log fatal errors in the orchestration logic
+                self._log_error(e, context="download_queue fatal error")
+                status_panel.update_status("[bold red]FATAL ERROR: See errors.log[/bold red]")
+                time.sleep(1)
+                live.stop()
+                console.print(f"\n[bold red]FATAL ERROR: An unexpected error occurred. See errors.log for details.[/bold red]")
+                
             finally:
-                # Ensure the keyboard listener and live panel are stopped on exit/error
-                live.stop() 
                 keyboard_handler.stop_listening()
                 keyboard_handler.reset()
-                        
+                

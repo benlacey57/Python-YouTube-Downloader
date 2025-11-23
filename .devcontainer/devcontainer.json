@@ -1,5 +1,5 @@
 {
-    "name": "Youtube Downloader Dev Environment",
+    "name": "Python Downloader Dev Environment",
     "build": {
         "dockerfile": "Dockerfile",
         "context": ".."
@@ -9,8 +9,8 @@
     "mounts": [
         "source=${localWorkspaceFolder},target=/usr/src/app,type=bind,consistency=cached"
     ],
-    "postCreateCommand": "make setup",
-    "postStartCommand": "make run",
+    "postCreateCommand": "python3 install.py",
+    "postStartCommand": "clear && ./run.sh", 
     "customizations": {
         "vscode": {
             "extensions": [
@@ -31,21 +31,21 @@
                 "editor.codeActionsOnSave": {
                     "source.organizeImports": "explicit"
                 },
-                "python.defaultInterpreterPath": "/usr/bin/python3",
-                "black-formatter.path": "/home/devuser/.local/bin/black",
+                "python.defaultInterpreterPath": "./venv/bin/python",
+                "black-formatter.path": "./venv/bin/black",
                 "black-formatter.args": ["--line-length", "100"],
                 "python.formatting.provider": "none",
-                "flake8.path": "/home/devuser/.local/bin/flake8",
+                "flake8.path": "./venv/bin/flake8",
                 "flake8.args": ["--max-line-length=100", "--ignore=E203,W503"],
                 "python.linting.flake8Enabled": true,
-                "mypy-type-checker.path": "/home/devuser/.local/bin/mypy",
+                "mypy-type-checker.path": "./venv/bin/mypy",
                 "mypy-type-checker.enabled": true,
                 "terminal.integrated.profiles.linux": {
                     "bash (Safety Check)": {
                         "path": "/bin/bash",
-                        "args": ["-c", "safety scan || true; exec bash"]
+                        "args": ["-c", "./venv/bin/safety scan || true; exec bash"]
                     }
-                },
+                }
             }
         }
     }

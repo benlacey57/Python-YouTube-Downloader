@@ -1,16 +1,16 @@
 {
-    "name": "Python Downloader Dev Environment",
+    "name": "Python Environment",
     "build": {
         "dockerfile": "Dockerfile",
         "context": ".."
     },
-    "workspaceFolder": "/usr/src/app",
+    "runArgs": ["-v", "/var/run/docker.sock:/var/run/docker.sock"],
     "remoteUser": "devuser",
     "mounts": [
         "source=${localWorkspaceFolder},target=/usr/src/app,type=bind,consistency=cached"
     ],
     "postCreateCommand": "python3 install.py",
-    "postStartCommand": "clear && ./run.sh", 
+    "postStartCommand": "clear && python3 main.py", 
     "customizations": {
         "vscode": {
             "extensions": [

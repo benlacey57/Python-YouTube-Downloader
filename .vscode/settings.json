@@ -1,50 +1,27 @@
 {
-  // -------------------------------------------------------------------------
-  // 1. PYTHON EXTENSION SETTINGS
-  // -------------------------------------------------------------------------
-
-  "python.analysis.extraPaths": [
-    // This setting tells VS Code's Pylance where to find your project modules
-    // so absolute imports (e.g., from managers.config_manager) work correctly.
-    // Ensure the paths match your project root structure.
-    "./managers",
-    "./models",
-    "./notifiers",
-    "./ui",
-    "./utils",
-    "./downloaders"
-  ],
-
-  // Optional: If VS Code doesn't find your virtual environment automatically
-  // "python.defaultInterpreterPath": "./venv/bin/python",
-
-
-  // -------------------------------------------------------------------------
-  // 2. LINTING & FORMATTING (RUFF INTEGRATION)
-  // -------------------------------------------------------------------------
-
-  // Enable format on save for Python files
-  "editor.formatOnSave": true,
-
-  // Set Ruff as the default formatter for Python
-  "python.formatting.provider": "none",
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
+    "workbench.colorTheme": "Shades of Purple",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
     "editor.codeActionsOnSave": {
-      // Run Ruff Fixer on save (applies safe linting fixes)
-      "source.fixAll": "explicit",
-      "source.organizeImports": "explicit"
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "black-formatter.path": "/home/devuser/.local/bin/black",
+    "black-formatter.args": ["--line-length", "100"],
+    "python.formatting.provider": "none",
+    "flake8.path": "/home/devuser/.local/bin/flake8",
+    "flake8.args": ["--max-line-length=100", "--ignore=E203,W503"],
+    "python.linting.flake8Enabled": true,
+    "python.linting.lintOnSave": true,
+    "mypy-type-checker.path": "/home/devuser/.local/bin/mypy",
+    "mypy-type-checker.enabled": true,
+    "terminal.integrated.profiles.linux": {
+        "bash (Safety Check)": {
+            "path": "/bin/bash",
+            "args": ["-c", "safety check || true; exec bash"]
+        }
     }
-  },
-
-  // Configure Ruff for linting and fixing
-  "ruff.enable": true,
-  "ruff.organizeImports": true,
-  "ruff.args": [
-    // Use the same target checks defined in your Makefile/Ruff configuration
-    "--select", "E,W,F,I,UP,C4,B",
-    // This ensures Ruff uses the top directory as the working directory
-    // which is essential for consistent formatting/linting across subfolders.
-    "--target-version", "py310"
-  ],
 }

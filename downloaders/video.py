@@ -2,20 +2,17 @@
 import yt_dlp
 from pathlib import Path
 from datetime import datetime
+import logging # <-- ADDED IMPORT
+from typing import Optional # <-- ADDED IMPORT
 
 from downloaders.base import BaseDownloader
 from managers.config_manager import ConfigManager
-from managers.stats_manager import StatsManager
-from managers.notification_manager import NotificationManager
-from models.download_item import DownloadItem
-from models.queue import Queue
-from enums import DownloadStatus
-from utils.file_renamer import FileRenamer
+# ... other imports
 from utils.metadata_handler import MetadataHandler
 from rich.console import Console
 
 console = Console()
-
+logger = logging.getLogger('VideoDownloader') # <-- ADDED LOGGER
 
 class VideoDownloader(BaseDownloader):
     """Handles video downloads"""
@@ -32,16 +29,14 @@ class VideoDownloader(BaseDownloader):
             stats_manager,
             notification_manager
         )
+
+    def _log_error(self, e: Exception, filepath: Optional[str] = None):
+        """Helper to log errors to the file."""
+        context = f"(File: {filepath})" if filepath else "(No file path found)"
+        logger.error(f"Error in VideoDownloader {context}: {e}", exc_info=True)
     
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0, proxy: str = None) -> DownloadItem:
-        """Download a video item
-        
-        Args:
-            item: Download item to process
-            queue: Queue configuration
-            index: Item index in queue
-            proxy: Optional specific proxy to use for this download
-        """
+        """Download a video item"""
         # Check for skip request
         from utils.keyboard_handler import keyboard_handler
         if keyboard_handler.is_skip_requested():
@@ -99,6 +94,8 @@ class VideoDownloader(BaseDownloader):
         ydl_opts['format'] = format_str
         ydl_opts['merge_output_format'] = 'mp4'
         
+        filename = None # Initialize filename
+        
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 # Get info
@@ -136,6 +133,9 @@ class VideoDownloader(BaseDownloader):
         except Exception as e:
             error_msg = str(e)
             
+            # Log the full exception, including the file path
+            self._log_error(e, filepath=filename)
+
             if "skipped by user" in error_msg.lower():
                 item.status = DownloadStatus.PENDING.value
                 item.error = "Skipped by user"
@@ -143,3 +143,4 @@ class VideoDownloader(BaseDownloader):
                 self.record_failure(item, error_msg, start_time)
         
         return item
+        

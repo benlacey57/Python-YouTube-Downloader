@@ -2,22 +2,22 @@
 import yt_dlp
 from pathlib import Path
 from datetime import datetime
-import logging # <-- ADDED IMPORT
-from typing import Optional # <-- ADDED IMPORT
+import logging
+from typing import Optional
 
 from downloaders.base import BaseDownloader
 from managers.config_manager import ConfigManager
 from managers.stats_manager import StatsManager
 from managers.notification_manager import NotificationManager
-from models.download_item import DownloadItem # <-- ADDED
-from models.queue import Queue # <-- ADDED
-from enums import DownloadStatus # <-- ADDED
-from utils.file_renamer import FileRenamer # <-- ADDED
-from utils.metadata_handler import MetadataHandler
+from models.download_item import DownloadItem
+from models.queue import Queue
+from enums import DownloadStatus
+from utils.file_renamer import FileRenamer
+from utils.live_stream_recorder import LiveStreamRecorder  # <-- Corrected/Ensured Import
 from rich.console import Console
 
 console = Console()
-logger = logging.getLogger('LiveStreamDownloader') # <-- ADDED LOGGER
+logger = logging.getLogger('LiveStreamDownloader')
 
 
 class LiveStreamDownloader(BaseDownloader):
@@ -36,7 +36,8 @@ class LiveStreamDownloader(BaseDownloader):
             notification_manager
         )
         
-        self.live_stream_recorder = LiveStreamRecorder()
+        # This is where the LiveStreamRecorder object is initialized
+        self.live_stream_recorder = LiveStreamRecorder() 
     
     def is_live_stream(self, info: dict) -> bool:
         """Check if content is a live stream"""
@@ -82,14 +83,14 @@ class LiveStreamDownloader(BaseDownloader):
         ydl_opts = self.get_base_ydl_opts(proxy=proxy)
         ydl_opts['outtmpl'] = f'{queue.output_dir}/{base_filename}.%(ext)s'
         
-        # Get live stream recording options
+        # Get live stream recording options using the imported utility class
         stream_opts = self.live_stream_recorder.get_recording_opts(
             wait_for_stream=self.config.wait_for_scheduled_streams,
             max_wait_minutes=self.config.max_stream_wait_minutes
         )
         ydl_opts.update(stream_opts)
         
-        filename = None # Initialize filename
+        filename = None
         
         try:
             console.print(f"[yellow]Recording live stream: {item.title}[/yellow]")

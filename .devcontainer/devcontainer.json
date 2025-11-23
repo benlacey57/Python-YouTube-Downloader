@@ -46,7 +46,6 @@
                         "args": ["-c", "safety scan || true; exec bash"]
                     }
                 },
-                "terminal.integrated.defaultProfile.linux": "bash (Safety Check)"
             }
         }
     }

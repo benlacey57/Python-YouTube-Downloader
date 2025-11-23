@@ -231,16 +231,37 @@ class QueueManager:
             return queues
     
     def update_queue(self, queue: Queue):
-        """Update queue"""
+    def update_queue(self, queue: Queue):
+        """Update queue configuration and status fields"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                 UPDATE queues SET
+                    playlist_url = ?,
+                    playlist_title = ?,
+                    format_type = ?,
+                    quality = ?,
+                    output_dir = ?,
+                    filename_template = ?,
+                    download_order = ?,
+                    storage_provider = ?,
+                    storage_video_quality = ?,
+                    storage_audio_quality = ?,
                     started_at = ?,
                     completed_at = ?,
                     status = ?
                 WHERE id = ?
             """, (
+                queue.playlist_url,
+                queue.playlist_title,
+                queue.format_type,
+                queue.quality,
+                queue.output_dir,
+                queue.filename_template,
+                queue.download_order,
+                queue.storage_provider,
+                queue.storage_video_quality,
+                queue.storage_audio_quality,
                 queue.started_at,
                 queue.completed_at,
                 queue.status,

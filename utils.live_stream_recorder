@@ -1,0 +1,49 @@
+import yt_dlp
+from typing import Dict, Any, Optional
+
+class LiveStreamRecorder:
+    """
+    Utility class to handle logic specific to live stream checking and recording 
+    options for yt-dlp.
+    """
+
+    def is_live_stream(self, info: Dict[str, Any]) -> bool:
+        """
+        Checks if the extracted information (info dict from yt-dlp) indicates a 
+        currently live or scheduled stream.
+        """
+        # A video is a live stream if 'is_live' is True or 'was_live' is True (for ongoing records)
+        return info.get('is_live') is True or info.get('was_live') is True
+
+    def get_recording_opts(self, wait_for_stream: bool, max_wait_minutes: int) -> Dict[str, Any]:
+        """
+        Generates yt-dlp options for handling live stream recording, 
+        including waiting for scheduled streams.
+
+        Args:
+            wait_for_stream (bool): If True, wait for scheduled streams to begin.
+            max_wait_minutes (int): Maximum time to wait in minutes.
+
+        Returns:
+            Dict[str, Any]: A dictionary of yt-dlp options.
+        """
+        opts = {
+            # Use the default extractor for live streams (often HLS/DASH)
+            'force_generic_extractor': True, 
+            # Ensure robustness during recording of fragments
+            'fragment_retries': 10,
+            'retry_sleep_for_fragment_errors': 5,
+            # Prefer MKV or MP4 for live stream recording as they handle segmenting well
+            'merge_output_format': 'mkv',
+        }
+
+        if wait_for_stream and max_wait_minutes > 0:
+            # Use yt-dlp's built-in wait functionality for scheduled streams
+            opts['wait_for_video'] = {
+                'min': max_wait_minutes * 60,  # Convert minutes to seconds
+                'max': max_wait_minutes * 60,
+            }
+            # Silence the "Stream not live yet" warnings during the wait time
+            opts['no_warnings'] = True
+        
+        return opts

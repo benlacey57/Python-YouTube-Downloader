@@ -43,7 +43,7 @@
                 "terminal.integrated.profiles.linux": {
                     "bash (Safety Check)": {
                         "path": "/bin/bash",
-                        "args": ["-c", "safety check || true; exec bash"]
+                        "args": ["-c", "safety scan || true; exec bash"]
                     }
                 },
                 "terminal.integrated.defaultProfile.linux": "bash (Safety Check)"

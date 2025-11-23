@@ -49,8 +49,8 @@ RUN chown -R $USERNAME:$USERNAME /usr/src/app
 # Switch to the non-root user
 USER $USERNAME
 
-# Install the core Python dependencies (yt-dlp, rich, etc.)
-RUN pip3 install yt-dlp rich
+# *** REMOVED: Global installation of yt-dlp/rich. These will be installed into venv
+# *** by the post_create.sh script to align with VS Code settings.
 
-# Command to keep the container running if needed, or you can let the devcontainer configuration manage this.
+# Command to keep the container running
 CMD ["/bin/bash"]

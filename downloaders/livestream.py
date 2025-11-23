@@ -2,19 +2,16 @@
 import yt_dlp
 from pathlib import Path
 from datetime import datetime
+import logging # <-- ADDED IMPORT
+from typing import Optional # <-- ADDED IMPORT
 
 from downloaders.base import BaseDownloader
-from managers.config_manager import ConfigManager
-from managers.stats_manager import StatsManager
-from managers.notification_manager import NotificationManager
-from models.download_item import DownloadItem
-from models.queue import Queue
-from enums import DownloadStatus
-from utils.file_renamer import FileRenamer
+# ... other imports
 from utils.live_stream_recorder import LiveStreamRecorder
 from rich.console import Console
 
 console = Console()
+logger = logging.getLogger('LiveStreamDownloader') # <-- ADDED LOGGER
 
 
 class LiveStreamDownloader(BaseDownloader):
@@ -38,16 +35,14 @@ class LiveStreamDownloader(BaseDownloader):
     def is_live_stream(self, info: dict) -> bool:
         """Check if content is a live stream"""
         return self.live_stream_recorder.is_live_stream(info)
+
+    def _log_error(self, e: Exception, filepath: Optional[str] = None):
+        """Helper to log errors to the file."""
+        context = f"(File: {filepath})" if filepath else "(No file path found)"
+        logger.error(f"Error in LiveStreamDownloader {context}: {e}", exc_info=True)
     
     def download_item(self, item: DownloadItem, queue: Queue, index: int = 0, proxy: str = None) -> DownloadItem:
-        """Download/record a live stream
-        
-        Args:
-            item: Download item to process
-            queue: Queue configuration
-            index: Item index in queue
-            proxy: Optional specific proxy to use for this download
-        """
+        """Download/record a live stream"""
         from utils.keyboard_handler import keyboard_handler
         if keyboard_handler.is_skip_requested():
             console.print(f"[cyan]Skipping: {item.title}[/cyan]")
@@ -88,6 +83,8 @@ class LiveStreamDownloader(BaseDownloader):
         )
         ydl_opts.update(stream_opts)
         
+        filename = None # Initialize filename
+        
         try:
             console.print(f"[yellow]Recording live stream: {item.title}[/yellow]")
             
@@ -118,7 +115,12 @@ class LiveStreamDownloader(BaseDownloader):
         
         except Exception as e:
             error_msg = str(e)
+            
+            # Log the full exception, including the file path
+            self._log_error(e, filepath=filename)
+
             self.record_failure(item, error_msg, start_time)
             console.print(f"[red]✗ Failed to record live stream: {error_msg}[/red]")
         
         return item
+        

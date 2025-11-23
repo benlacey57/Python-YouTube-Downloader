@@ -6,9 +6,10 @@ from rich.console import Console
 from rich.progress import Progress, BarColumn, TaskProgressColumn, TimeRemainingColumn
 from rich.panel import Panel
 from rich.table import Table
-from rich.live import Live          # <-- For persistent status panel
+from rich.live import Live             # <-- ADDED FOR PERSISTENT STATUS PANEL
 import yt_dlp
-import logging                      # <-- For centralized error logging
+import logging                      # <-- ADDED FOR ERROR LOGGING
+from datetime import datetime       # <-- ADDED FOR TIMESTAMPING
 
 from downloaders.base import BaseDownloader
 from downloaders.video import VideoDownloader
@@ -32,7 +33,7 @@ logging.basicConfig(
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 )
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('PlaylistDownloader')
 # -----------------------------------
 
 # --- STATUS PANEL CLASS (FOR PERSISTENT DISPLAY) ---
@@ -167,7 +168,7 @@ class PlaylistDownloader(BaseDownloader):
             return self.audio_downloader.download_item(item, queue, index, proxy=proxy)
         else:
             return self.video_downloader.download_item(item, queue, index, proxy=proxy)
-
+    
     def download_queue(self, queue: Queue, queue_manager: QueueManager, download_all: bool = False):
         """Download all items in a queue"""
         console.clear()
@@ -200,14 +201,14 @@ class PlaylistDownloader(BaseDownloader):
                 items = []
                 pending_items = []
                 
-                # --- SETUP PHASE WITH TRANSIENT PROGRESS BAR ---
-                # This progress bar handles the initial fetching/sorting steps.
+                # --- SETUP PHASE WITH TRANSIENT PROGRESS BAR (NEW) ---
+                # This progress bar handles the initial fetching/sorting steps. It disappears automatically.
                 with Progress(
                     BarColumn(bar_width=None),
                     TaskProgressColumn(),
                     console=console,
                     expand=True,
-                    transient=True # IMPORTANT: This bar disappears once the setup is done
+                    transient=True 
                 ) as setup_progress:
                     setup_task = setup_progress.add_task("[bold blue]Initializing Queue Setup...", total=3)
                     
@@ -270,9 +271,53 @@ class PlaylistDownloader(BaseDownloader):
                     console.print() 
                     
                     for idx, item in enumerate(pending_items, 1):
-                        # ... rest of the download loop logic ...
+                        # Check for cancellation
+                        if keyboard_handler.is_cancelled():
+                            status_panel.update_status("[bold red]Download cancelled by user[/bold red]")
+                            time.sleep(1)
+                            live.stop()
+                            console.print("\n[yellow]Download cancelled by user[/yellow]")
+                            queue_manager.record_queue_interruption(queue.id)
+                            break
                         
-                        # ...
+                        # Check for pause
+                        while keyboard_handler.is_paused() and not keyboard_handler.is_cancelled():
+                            status_panel.update_status("[bold magenta]Paused (Press P to resume)...[/bold magenta]")
+                            time.sleep(0.5)
+                        
+                        # Resume status update if not paused
+                        if not keyboard_handler.is_paused():
+                            status_panel.update_status(f"[bold cyan]Processing Item {idx}/{len(pending_items)}: {item.title[:60]}...[/bold cyan]")
+                        
+                        # Handle proxy rotation/selection
+                        proxy_display = ""
+                        if rotation_enabled:
+                            proxy_index = (download_count // config_manager.config.proxy_rotation_frequency) % len(config_manager.config.proxies)
+                            current_proxy = config_manager.config.proxies[proxy_index]
+                            download_count += 1
+                            proxy_display = f" [blue]| Proxy:[/blue] {current_proxy}"
+                            status_panel.current_proxy = current_proxy
+                        elif has_proxies and current_proxy:
+                            proxy_display = f" [blue]| Proxy:[/blue] {current_proxy}"
+                        
+                        console.print(f"[cyan]► [{idx}/{len(pending_items)}][/cyan] {item.title[:80]}{proxy_display}")
+                        
+                        item = self.download_item(item, queue, idx, proxy=current_proxy)
+                        queue_manager.update_item(item)
+                        
+                        # Show result with file size if available
+                        if item.status == DownloadStatus.COMPLETED.value:
+                            size_str = ""
+                            if item.file_size_bytes:
+                                size_mb = item.file_size_bytes / (1024 * 1024)
+                                if size_mb >= 1024:
+                                    size_str = f" ({size_mb/1024:.2f} GB)"
+                                else:
+                                    size_str = f" ({size_mb:.1f} MB)"
+                            console.print(f"  [green]✓ Downloaded successfully{size_str}[/green]")
+                        elif item.status == DownloadStatus.FAILED.value:
+                            console.print(f"  [red]✗ Failed: {item.error}[/red]")
+                        
                         progress.update(overall_task, advance=1)
                         
                         # Add random wait time between downloads if no proxies configured
@@ -288,7 +333,26 @@ class PlaylistDownloader(BaseDownloader):
                 
                 # Mark queue as completed if not cancelled
                 if not keyboard_handler.is_cancelled():
-                    # ... completion logic ...
+                    status_panel.update_status(f"[bold green]Queue completed: {queue.playlist_title}[/bold green]")
+                    
+                    queue.completed_at = datetime.now().isoformat()
+                    queue_manager.update_queue(queue)
+                    queue_manager.clear_queue_resume(queue.id)
+                    
+                    if self.stats_manager:
+                        self.stats_manager.record_queue_completed()
+                    
+                    if self.notification_manager and self.notification_manager.has_any_notifier():
+                        completed = sum(1 for item in items if item.status == DownloadStatus.COMPLETED.value)
+                        self.notification_manager.notify_queue_completed(
+                            queue.playlist_title,
+                            completed,
+                            len(items)
+                        )
+                    
+                    time.sleep(1)
+                    live.stop()
+                    console.print(f"\n[bold green]✓ Queue completed: {queue.playlist_title}[/bold green]")
             
             except Exception as e:
                 # Catch and log fatal errors in the orchestration logic

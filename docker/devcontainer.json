@@ -4,66 +4,37 @@
         "dockerfile": "Dockerfile",
         "context": "."
     },
-
-    // Set the workspace folder inside the container
     "workspaceFolder": "/usr/src/app",
-
-    // Use the non-root user created in the Dockerfile
     "remoteUser": "devuser",
-
-    // Mount the local repository root into the container's working directory
     "mounts": [
         "source=.,target=/usr/src/app,type=bind,consistency=cached"
     ],
-
-    // ** Linter, Formatter, and Security Tools Setup **
-    // Install all required Python packages for development.
     "postCreateCommand": "pip3 install black flake8 mypy safety",
-
-    // VS Code extensions to install inside the container
     "extensions": [
-        // Core Python development
         "ms-python.python",
-        // Pylance for performance and type checking
         "ms-python.vscode-pylance",
-        // Formatting and linting (tools installed in postCreateCommand)
         "ms-python.flake8",
         "ms-python.black-formatter",
-        // Type checking
         "ms-python.mypy-type-checker",
-        // Security analysis
         "njode.vscode-bananasy", 
-        "ms-python.isort", // Recommended for imports
-        // Theme (Shades of Purple)
+        "ms-python.isort",
         "ahmadawais.shades-of-purple"
     ],
-
-    // Overrides default VS Code settings for this workspace within the container
     "settings": {
         "python.defaultInterpreterPath": "/usr/bin/python3",
-        // Apply custom settings from the settings.json file
         "workbench.colorTheme": "Shades of Purple",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
         },
-
-        // --- Black Formatting ---
         "black-formatter.path": "/home/devuser/.local/bin/black",
         "black-formatter.args": ["--line-length", "100"],
-        "python.formatting.provider": "none", // Disable deprecated providers
-
-        // --- Flake8 Linting (Code Checks) ---
+        "python.formatting.provider": "none",
         "flake8.path": "/home/devuser/.local/bin/flake8",
-        "flake8.args": ["--max-line-length=100", "--ignore=E203,W503"], // Ignore common Black/Flake8 conflicts
+        "flake8.args": ["--max-line-length=100", "--ignore=E203,W503"],
         "python.linting.flake8Enabled": true,
-
-        // --- Mypy (Static Type Checking) ---
         "mypy-type-checker.path": "/home/devuser/.local/bin/mypy",
         "mypy-type-checker.enabled": true,
-
-        // --- Safety (Security Scanning) ---
-        // Safety checks the environment's installed dependencies against known vulnerabilities
         "terminal.integrated.profiles.linux": {
             "bash (Safety Check)": {
                 "path": "/bin/bash",

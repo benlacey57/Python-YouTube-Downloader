@@ -33,6 +33,12 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# --- START: Prompt Customization ---
+# Shorten the terminal prompt (PS1) for the devuser to show only the current directory name (e.g., 'app$ ').
+# This overrides the default verbose prompt defined by Codespaces/Debian.
+RUN echo "PS1='\\W\\$ '" >> /home/$USERNAME/.bashrc
+# --- END: Prompt Customization ---
+
 # Set the working directory
 WORKDIR /usr/src/app
 
@@ -49,4 +55,3 @@ RUN pip3 install yt-dlp rich
 
 # Command to keep the container running if needed, or you can let the devcontainer configuration manage this.
 CMD ["/bin/bash"]
-

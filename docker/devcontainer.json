@@ -18,7 +18,9 @@
         "ms-python.mypy-type-checker",
         "njode.vscode-bananasy", 
         "ms-python.isort",
-        "ahmadawais.shades-of-purple"
+        "ahmadawais.shades-of-purple",
+        "ms-azuretools.vscode-docker", 
+        "ms-vscode.remote-explorer" 
     ],
     "settings": {
         "python.defaultInterpreterPath": "/usr/bin/python3",
